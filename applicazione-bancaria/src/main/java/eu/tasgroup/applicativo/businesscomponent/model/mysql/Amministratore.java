@@ -30,7 +30,7 @@ public class Amministratore implements Serializable {
     @Column(name = "tentativi_errati")
     private short tentativiErrati = 0;
 
-    @Column(name = "account_bloccato")
+    @Column(name = "account_bloccato", columnDefinition = "tinyint(1) default 0")
     private boolean accountBloccato = false;
 
 	public long getCodAdmin() {
