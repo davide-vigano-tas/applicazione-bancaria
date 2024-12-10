@@ -3,7 +3,10 @@ package eu.tasgroup.applicativo.businesscomponent.model.mysql;
 import java.io.Serializable;
 import java.util.Objects;
 
+import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,9 +22,11 @@ public class Conto implements Serializable {
     @Column(name = "cod_conto")
     private long codConto;
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_conto", nullable = false)
-    private String tipoConto;
+    private TipoConto tipoConto;
     
+    //TODO: Valutare uso di Big Decimal
     @Column(nullable = false)
     private double saldo = 0.0;
     
@@ -37,11 +42,11 @@ public class Conto implements Serializable {
 		this.codConto = codConto;
 	}
 
-	public String getTipoConto() {
+	public TipoConto getTipoConto() {
 		return tipoConto;
 	}
 
-	public void setTipoConto(String tipoConto) {
+	public void setTipoConto(TipoConto tipoConto) {
 		this.tipoConto = tipoConto;
 	}
 
@@ -77,7 +82,7 @@ public class Conto implements Serializable {
 		Conto other = (Conto) obj;
 		return Objects.equals(cliete, other.cliete) && codConto == other.codConto
 				&& Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
-				&& Objects.equals(tipoConto, other.tipoConto);
+				&& tipoConto == other.tipoConto;
 	}
 
 	@Override
@@ -85,7 +90,5 @@ public class Conto implements Serializable {
 		return "Conto [codConto=" + codConto + ", tipoConto=" + tipoConto + ", saldo=" + saldo + ", cliete=" + cliete
 				+ "]";
 	}
-    
-    
 
 }
