@@ -32,7 +32,7 @@ public class Conto implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "cod_cliente", nullable = false)
-    private Cliente cliete;
+    private Cliente cliente;
 
 	public long getCodConto() {
 		return codConto;
@@ -58,17 +58,17 @@ public class Conto implements Serializable {
 		this.saldo = saldo;
 	}
 
-	public Cliente getCliete() {
-		return cliete;
+	public Cliente getClinete() {
+		return cliente;
 	}
 
-	public void setCliete(Cliente cliete) {
-		this.cliete = cliete;
+	public void setClinete(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cliete, codConto, saldo, tipoConto);
+		return Objects.hash(cliente, codConto, saldo, tipoConto);
 	}
 
 	@Override
@@ -80,14 +80,14 @@ public class Conto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Conto other = (Conto) obj;
-		return Objects.equals(cliete, other.cliete) && codConto == other.codConto
+		return Objects.equals(cliente, other.cliente) && codConto == other.codConto
 				&& Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
 				&& tipoConto == other.tipoConto;
 	}
 
 	@Override
 	public String toString() {
-		return "Conto [codConto=" + codConto + ", tipoConto=" + tipoConto + ", saldo=" + saldo + ", cliete=" + cliete
+		return "Conto [codConto=" + codConto + ", tipoConto=" + tipoConto + ", saldo=" + saldo + ", cliete=" + cliente
 				+ "]";
 	}
 
