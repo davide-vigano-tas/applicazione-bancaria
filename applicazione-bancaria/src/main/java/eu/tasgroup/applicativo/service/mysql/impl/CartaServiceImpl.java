@@ -11,7 +11,7 @@ import eu.tasgroup.applicativo.repository.mysql.CartaRepository;
 import eu.tasgroup.applicativo.service.mysql.CartaService;
 
 @Service
-public class CartaServiceImp implements CartaService {
+public class CartaServiceImpl implements CartaService {
 
 	@Autowired
 	CartaRepository cartaRepository;
