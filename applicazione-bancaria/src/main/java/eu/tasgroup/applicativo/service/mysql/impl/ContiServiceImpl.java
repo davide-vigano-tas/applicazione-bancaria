@@ -11,7 +11,7 @@ import eu.tasgroup.applicativo.repository.mysql.ContiRepository;
 import eu.tasgroup.applicativo.service.mysql.ContiService;
 
 @Service
-public class ContiServiceImp implements ContiService {
+public class ContiServiceImpl implements ContiService {
 	@Autowired
 	ContiRepository contiRepository;
 

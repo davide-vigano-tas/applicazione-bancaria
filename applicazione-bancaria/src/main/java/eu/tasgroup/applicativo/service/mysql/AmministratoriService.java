@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 
-public interface AdminService {
+public interface AmministratoriService {
 	Optional<Amministratore> findByEmailAdmin(String email);
 	Optional<Amministratore> findById(long id);
 	List<Amministratore> findAll();

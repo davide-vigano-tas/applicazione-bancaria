@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.repository.mysql.AmministratoriRepository;
-import eu.tasgroup.applicativo.service.mysql.AdminService;
+import eu.tasgroup.applicativo.service.mysql.AmministratoriService;
 
-public class AdminServiceImpl implements AdminService {
+public class AmministratoriServiceImpl implements AmministratoriService {
 
 	private AmministratoriRepository amministratoriRepository;
 
-	public AdminServiceImpl(AmministratoriRepository amministratoriRepository) {
+	public AmministratoriServiceImpl(AmministratoriRepository amministratoriRepository) {
 		this.amministratoriRepository = amministratoriRepository;
 	}
 
