@@ -20,6 +20,13 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 			"{ $group: { _id: null, media: { $avg: '$importo' } } }"
 			})
 	Double calcolaMediaTransazioniPerCliente(int codCliente);
+	
+	// numero medio transazioni per cliente
+	@Aggregation(pipeline = {
+		    "{ '$group': { '_id': '$codCliente', 'count': { '$sum': 1 } } }",  // Conta i documenti per codCliente
+		    "{ '$group': { '_id': null, 'media': { '$avg': '$count' } } }"      // Calcola la media dei conteggi
+		})
+	Double numeroMedioTransazioniPerCliente();
 
 	// Totale importo per mese
 	@Aggregation(pipeline = { "{ $match: { $expr: { $eq: [ { $month: '$dataTransazione' }, ?0 ] } } }",
