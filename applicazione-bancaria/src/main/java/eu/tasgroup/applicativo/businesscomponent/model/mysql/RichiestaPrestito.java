@@ -15,33 +15,31 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "richieste_prestito")
 public class RichiestaPrestito implements Serializable {
 
 	private static final long serialVersionUID = -1006436887827958259L;
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "cod_richiesta")
-	private long codRichiesta; 
-	
-	@Column(name="importo", nullable = false)
+	private long codRichiesta;
+
+	@Column(name = "importo", nullable = false)
 	private double importo;
-	
+
 	@Column(name = "data_richiesta", nullable = false)
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
 	private Date dataRichiesta;
-	
+
 	@Column(name = "stato")
 	private StatoRichiestaPrestito stato;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "cod_cliente", nullable = false)
 	private Cliente cliente;
-	
-	
 
 	public long getCodRichiesta() {
 		return codRichiesta;
@@ -107,7 +105,5 @@ public class RichiestaPrestito implements Serializable {
 		return "RichiestaPrestito [codRichiesta=" + codRichiesta + ", importo=" + importo + ", dataRichiesta="
 				+ dataRichiesta + ", stato=" + stato + ", cliente=" + cliente + "]";
 	}
-	
-	
 
 }
