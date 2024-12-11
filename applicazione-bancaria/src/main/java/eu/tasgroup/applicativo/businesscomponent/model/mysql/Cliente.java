@@ -38,7 +38,7 @@ public class Cliente implements Serializable {
     private String passwordCliente;
 
     @Column(name = "tentativi_errati")
-    private short tentativiErrati = 0;
+    private int tentativiErrati = 0;
 
     @Column(name = "account_bloccato", columnDefinition = "tinyint(1) default 0")
     private boolean accountBloccato = false;
@@ -98,11 +98,11 @@ public class Cliente implements Serializable {
 		this.passwordCliente = passwordCliente;
 	}
 
-	public short getTentativiErrati() {
+	public int getTentativiErrati() {
 		return tentativiErrati;
 	}
 
-	public void setTentativiErrati(short tentativiErrati) {
+	public void setTentativiErrati(int tentativiErrati) {
 		this.tentativiErrati = tentativiErrati;
 	}
 
