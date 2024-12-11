@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.repository;
+package eu.tasgroup.applicativo.repository.mysql;
 
 import java.util.Optional;
 
