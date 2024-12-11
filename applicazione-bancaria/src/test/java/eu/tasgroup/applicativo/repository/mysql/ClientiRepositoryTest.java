@@ -30,7 +30,7 @@ class ClientiRepositoryTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		cliente = new Cliente();
-	;
+
 		cliente.setAccountBloccato(false);
 		cliente.setNomeCliente("Samuel");
 		cliente.setCognomeCliente("Mastrelli");
