@@ -1,5 +1,6 @@
 package eu.tasgroup.applicativo.service.mysql.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
@@ -27,6 +28,16 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public Amministratore createOrUpdate(Amministratore amministratore) {
 		return amministratoriRepository.save(amministratore);
+	}
+
+	@Override
+	public List<Amministratore> findAll() {
+		return amministratoriRepository.findAll();
+	}
+
+	@Override
+	public void deleteAdmin(Amministratore amministratore) {
+		amministratoriRepository.delete(amministratore);
 	}
 
 }
