@@ -32,7 +32,6 @@ public class MovimentoConto implements Serializable {
 	private long codMovimento;
 
 	@Column(name = "importo", nullable = false)
-	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	private double importo;
 
     @Column(name = "data_movimento", nullable = false)
