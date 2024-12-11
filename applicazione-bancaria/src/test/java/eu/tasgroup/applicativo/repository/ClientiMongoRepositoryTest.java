@@ -23,7 +23,7 @@ class ClientiMongoRepositoryTest {
 	private ClientiMongoRepository cmr;
 
 	@BeforeAll
-	static void setUpBeforeClass(@Autowired ClientiMongoRepository cmr) { // Passa come parametro
+	static void setUpBeforeClass(@Autowired ClientiMongoRepository cmr) {
 		ClienteMongo c1 = new ClienteMongo();
 		c1.setCodCliente(1);
 		c1.setNomeCliente("Mario");
@@ -71,7 +71,7 @@ class ClientiMongoRepositoryTest {
 	}
 
 	@AfterAll
-	static void tearDownAfterClass(@Autowired ClientiMongoRepository cmr) { // Passa come parametro
+	static void tearDownAfterClass(@Autowired ClientiMongoRepository cmr) {
 		List<ClienteMongo> lista = cmr.findAll();
 		for (ClienteMongo clienteMongo : lista) {
 			cmr.delete(clienteMongo);
