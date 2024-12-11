@@ -26,7 +26,6 @@ public class Conto implements Serializable {
     @Column(name = "tipo_conto", nullable = false)
     private TipoConto tipoConto;
     
-    //TODO: Valutare uso di Big Decimal
     @Column(nullable = false)
     private double saldo = 0.0;
     
