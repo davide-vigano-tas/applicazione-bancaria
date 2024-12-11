@@ -11,17 +11,17 @@ import eu.tasgroup.applicativo.businesscomponent.model.mongo.OperazioniBancarieM
 public interface OperazioniBancarieMongoRepository extends MongoRepository<OperazioniBancarieMongo, String> {
 
 	@Aggregation(pipeline ="{ '$group': { '_id': null, 'totalAmount': { '$sum': '$importo' } } }")
-	double importoTotale();
+	Double importoTotale();
 	
 	@Query("{'tipoOperazione': ?0}")
 	List<OperazioniBancarieMongo> operazioniPerTipo(String tipo);
 	
     @Aggregation(pipeline = {
             "{ '$group': { '_id': null, 'maxDate': { '$max': '$dataOperazione' } } }",
-            "{ '$lookup': { 'from': 'OperazioniBancarie', 'pipeline': [ { '$match': { 'dataOperazione': { '$gte': '$maxDate' } } } ], 'as': 'OperazioniBancarie' } }"
+            "{ '$lookup': { 'from': 'OperazioniBancarie', 'pipeline': [ { '$match': { 'dataOperazione': { '$eq': '$maxDate' } } } ], 'as': 'OperazioniBancarie' } }"
         })
 	List<OperazioniBancarieMongo> ultimeOperazioni();
     
-	@Aggregation(pipeline ="{ '$group': { '_id': null, 'totalAmount': { '$avg': '$importo' } } }")
-	double importoMedioOperazioni();
+	@Aggregation(pipeline ="{ '$group': { '_id': null, 'avgAmount': { '$avg': '$importo' } } }")
+	Double importoMedioOperazioni();
 }

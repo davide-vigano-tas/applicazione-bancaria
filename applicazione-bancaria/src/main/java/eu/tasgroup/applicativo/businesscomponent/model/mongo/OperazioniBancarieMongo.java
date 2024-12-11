@@ -30,9 +30,9 @@ public class OperazioniBancarieMongo implements Serializable {
 
 	private TipoOperazione tipoOperazione;
 
-	private String codContoOrigine;
+	private long codContoOrigine;
 
-	private String codContoDestinazione;
+	private long codContoDestinazione;
 
 	public String get_id() {
 		return _id;
@@ -74,19 +74,19 @@ public class OperazioniBancarieMongo implements Serializable {
 		this.tipoOperazione = tipoOperazione;
 	}
 
-	public String getCodContoOrigine() {
+	public long getCodContoOrigine() {
 		return codContoOrigine;
 	}
 
-	public void setCodContoOrigine(String codContoOrigine) {
+	public void setCodContoOrigine(long codContoOrigine) {
 		this.codContoOrigine = codContoOrigine;
 	}
 
-	public String getCodContoDestinazione() {
+	public long getCodContoDestinazione() {
 		return codContoDestinazione;
 	}
 
-	public void setCodContoDestinazione(String codContoDestinazione) {
+	public void setCodContoDestinazione(long codContoDestinazione) {
 		this.codContoDestinazione = codContoDestinazione;
 	}
 
@@ -105,8 +105,8 @@ public class OperazioniBancarieMongo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		OperazioniBancarieMongo other = (OperazioniBancarieMongo) obj;
-		return Objects.equals(_id, other._id) && Objects.equals(codContoDestinazione, other.codContoDestinazione)
-				&& Objects.equals(codContoOrigine, other.codContoOrigine) && codOperazione == other.codOperazione
+		return Objects.equals(_id, other._id) && codContoDestinazione == other.codContoDestinazione
+				&& codContoOrigine == other.codContoOrigine && codOperazione == other.codOperazione
 				&& Objects.equals(dataOperazione, other.dataOperazione)
 				&& Double.doubleToLongBits(importo) == Double.doubleToLongBits(other.importo)
 				&& tipoOperazione == other.tipoOperazione;
@@ -118,4 +118,6 @@ public class OperazioniBancarieMongo implements Serializable {
 				+ ", dataOperazione=" + dataOperazione + ", tipoOperazione=" + tipoOperazione + ", codContoOrigine="
 				+ codContoOrigine + ", codContoDestinazione=" + codContoDestinazione + "]";
 	}
+
+
 }
