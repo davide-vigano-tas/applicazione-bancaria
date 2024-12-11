@@ -10,7 +10,6 @@ public interface ClientiMongoService {
 	List<ClienteMongo> getClientiList();
 	ClienteMongo createOrUpdate(ClienteMongo cliente);
 	int countById();
-	List<ClienteMongo> clientiSaldoMax();
 	int numeroSaldiNegativi();
 	int numeroSaldiPositivi();
 	double sommaSaldiClienti();
