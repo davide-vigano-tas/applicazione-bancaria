@@ -15,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "transazioni")
@@ -32,7 +34,8 @@ public class Transazione implements Serializable {
 	private double importo;
 	
 	@Column(name = "data_transazione",  nullable = false)
-	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	private Date dataTransazione;
 	
 	@Column(name="tipo_transazione",  nullable = false)
