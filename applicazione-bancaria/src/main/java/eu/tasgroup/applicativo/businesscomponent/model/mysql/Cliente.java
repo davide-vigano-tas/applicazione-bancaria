@@ -48,6 +48,9 @@ public class Cliente implements Serializable {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Set<Conto> conti = new HashSet<>();
+    
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private Set<Carta> carte = new HashSet<>();
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Set<Prestito> prestiti = new HashSet<>();
@@ -130,6 +133,14 @@ public class Cliente implements Serializable {
 		this.conti = conti;
 	}
 
+	public Set<Carta> getCarte() {
+		return carte;
+	}
+
+	public void setCarte(Set<Carta> carte) {
+		this.carte = carte;
+	}
+
 	public Set<Prestito> getPrestiti() {
 		return prestiti;
 	}
@@ -156,8 +167,8 @@ public class Cliente implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountBloccato, codCliente, cognomeCliente, conti, emailCliente, nomeCliente, pagamenti,
-				passwordCliente, prestiti, richiestePrestiti, saldoConto, tentativiErrati);
+		return Objects.hash(accountBloccato, carte, codCliente, cognomeCliente, conti, emailCliente, nomeCliente,
+				pagamenti, passwordCliente, prestiti, richiestePrestiti, saldoConto, tentativiErrati);
 	}
 
 	@Override
@@ -169,11 +180,11 @@ public class Cliente implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Cliente other = (Cliente) obj;
-		return accountBloccato == other.accountBloccato && codCliente == other.codCliente
-				&& Objects.equals(cognomeCliente, other.cognomeCliente) && Objects.equals(conti, other.conti)
-				&& Objects.equals(emailCliente, other.emailCliente) && Objects.equals(nomeCliente, other.nomeCliente)
-				&& Objects.equals(pagamenti, other.pagamenti) && Objects.equals(passwordCliente, other.passwordCliente)
-				&& Objects.equals(prestiti, other.prestiti)
+		return accountBloccato == other.accountBloccato && Objects.equals(carte, other.carte)
+				&& codCliente == other.codCliente && Objects.equals(cognomeCliente, other.cognomeCliente)
+				&& Objects.equals(conti, other.conti) && Objects.equals(emailCliente, other.emailCliente)
+				&& Objects.equals(nomeCliente, other.nomeCliente) && Objects.equals(pagamenti, other.pagamenti)
+				&& Objects.equals(passwordCliente, other.passwordCliente) && Objects.equals(prestiti, other.prestiti)
 				&& Objects.equals(richiestePrestiti, other.richiestePrestiti)
 				&& Double.doubleToLongBits(saldoConto) == Double.doubleToLongBits(other.saldoConto)
 				&& tentativiErrati == other.tentativiErrati;
@@ -184,9 +195,11 @@ public class Cliente implements Serializable {
 		return "Cliente [codCliente=" + codCliente + ", nomeCliente=" + nomeCliente + ", cognomeCliente="
 				+ cognomeCliente + ", emailCliente=" + emailCliente + ", passwordCliente=" + passwordCliente
 				+ ", tentativiErrati=" + tentativiErrati + ", accountBloccato=" + accountBloccato + ", saldoConto="
-				+ saldoConto + ", conti=" + conti + ", prestiti=" + prestiti + ", richiestePrestiti="
-				+ richiestePrestiti + ", pagamenti=" + pagamenti + "]";
+				+ saldoConto + ", conti=" + conti + ", carte=" + carte + ", prestiti=" + prestiti
+				+ ", richiestePrestiti=" + richiestePrestiti + ", pagamenti=" + pagamenti + "]";
 	}
+
+	
 	
 	
 }
