@@ -61,11 +61,11 @@ public class Conto implements Serializable {
 		this.saldo = saldo;
 	}
 
-	public Cliente getClinete() {
+	public Cliente getCliente() {
 		return cliente;
 	}
 
-	public void setClinete(Cliente cliente) {
+	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
 
