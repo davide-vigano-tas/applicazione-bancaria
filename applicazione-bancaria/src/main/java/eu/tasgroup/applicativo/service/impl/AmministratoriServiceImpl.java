@@ -16,8 +16,6 @@ public class AmministratoriServiceImpl implements AmministratoriService {
 	@Autowired
 	private AmministratoriRepository amministratoriRepository;
 
-	
-
 	@Override
 	public Optional<Amministratore> findByEmailAdmin(String email) {
 		return amministratoriRepository.findByEmailAdmin(email);
