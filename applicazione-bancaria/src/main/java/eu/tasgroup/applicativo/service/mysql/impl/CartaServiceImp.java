@@ -24,7 +24,7 @@ public class CartaServiceImp implements CartaService {
 	@Override
 	public void deleteCartaById(long id) {
 		cartaRepository.deleteById(id);
-		
+
 	}
 
 	@Override
@@ -35,7 +35,6 @@ public class CartaServiceImp implements CartaService {
 	@Override
 	public List<Carta> getAll() {
 		return cartaRepository.findAll();
-	} 
-	
-	
+	}
+
 }
