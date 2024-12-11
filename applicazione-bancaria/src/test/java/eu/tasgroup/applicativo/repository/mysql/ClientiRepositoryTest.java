@@ -6,13 +6,19 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.class)
 class ClientiRepositoryTest {
 	
 	@Autowired
@@ -24,7 +30,7 @@ class ClientiRepositoryTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		cliente = new Cliente();
-		cliente.setCodCliente(1);
+	;
 		cliente.setAccountBloccato(false);
 		cliente.setNomeCliente("Samuel");
 		cliente.setCognomeCliente("Mastrelli");
@@ -34,7 +40,7 @@ class ClientiRepositoryTest {
 		
 		
 		cliente2 = new Cliente();
-		cliente2.setCodCliente(2);
+
 		cliente2.setAccountBloccato(false);
 		cliente2.setNomeCliente("Davide");
 		cliente2.setCognomeCliente("Vigano");
@@ -43,9 +49,7 @@ class ClientiRepositoryTest {
 		cliente2.setSaldoConto(250);
 	}
 
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
-	}
+
 
 	@Test
 	@Order(1)
@@ -56,6 +60,19 @@ class ClientiRepositoryTest {
 			clientRepository.save(cliente2);
 			List<Cliente> cliSaldoMax = clientRepository.clientiSaldoMax();
 			assertEquals(1, cliSaldoMax.size());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	@Order(2)
+	void deletetest() {
+		try {
+			
+			clientRepository.delete(cliente);
+			clientRepository.delete(cliente2);
+	
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
