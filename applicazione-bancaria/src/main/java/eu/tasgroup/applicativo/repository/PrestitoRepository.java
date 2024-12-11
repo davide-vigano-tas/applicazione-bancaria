@@ -10,6 +10,6 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 public interface PrestitoRepository extends JpaRepository<Prestito, Long> {
 
 	
-	@Query("Select sum(p.importo) from Prestito p where c.cod_cliente = ?1")
+	@Query("Select sum(p.importo) from Prestito p where p.cliente.codCliente = ?1")
 	double sumPrestitiByCliente(long cod_cliente);
 }
