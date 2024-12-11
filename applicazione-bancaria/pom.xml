@@ -13,7 +13,7 @@
 	<version>1.0</version>
 	<packaging>war</packaging>
 	<name>applicazione-bancaria</name>
-	<description>Applicazione  Bancaria Spring Boot</description>
+	<description>Applicazione Bancaria Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
