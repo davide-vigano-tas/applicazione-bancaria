@@ -3,10 +3,13 @@ package eu.tasgroup.applicativo.service.mongo.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 import eu.tasgroup.applicativo.repository.mongo.ClientiMongoRepository;
 import eu.tasgroup.applicativo.service.mongo.ClientiMongoService;
 
+@Service
 public class ClientiMongoServiceImpl implements ClientiMongoService {
 
 	private ClientiMongoRepository clientiMongoRepository;

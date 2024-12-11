@@ -3,11 +3,14 @@ package eu.tasgroup.applicativo.service.mongo.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.repository.mongo.TransazioneMongoRepository;
 import eu.tasgroup.applicativo.service.mongo.TransazioniMongoService;
 
+@Service
 public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 
 	private TransazioneMongoRepository transazioneMongoRepository;

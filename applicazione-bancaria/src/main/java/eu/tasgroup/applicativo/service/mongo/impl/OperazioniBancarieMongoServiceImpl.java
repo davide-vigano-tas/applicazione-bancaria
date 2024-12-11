@@ -3,10 +3,13 @@ package eu.tasgroup.applicativo.service.mongo.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.OperazioniBancarieMongo;
 import eu.tasgroup.applicativo.repository.mongo.OperazioniBancarieMongoRepository;
 import eu.tasgroup.applicativo.service.mongo.OperazioniBancarieMongoService;
 
+@Service
 public class OperazioniBancarieMongoServiceImpl implements OperazioniBancarieMongoService {
 	
 	private OperazioniBancarieMongoRepository operazioniBancarieMongoRepository;

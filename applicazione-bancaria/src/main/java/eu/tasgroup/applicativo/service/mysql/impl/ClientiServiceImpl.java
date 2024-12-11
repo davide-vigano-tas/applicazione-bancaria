@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.repository.mysql.ClientiRepository;
 import eu.tasgroup.applicativo.service.mysql.ClientiService;
 
+@Service
 public class ClientiServiceImpl implements ClientiService{
 
 	private ClientiRepository clientiRepository;

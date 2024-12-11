@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
 import eu.tasgroup.applicativo.repository.mysql.TransazioneBancariaRepository;
 import eu.tasgroup.applicativo.service.mysql.TransazioneBancariaService;
 
+@Service
 public class TransazioneBancariaServiceImpl implements TransazioneBancariaService {
 
 	@Autowired
