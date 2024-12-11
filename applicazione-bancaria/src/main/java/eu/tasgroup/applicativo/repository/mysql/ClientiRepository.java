@@ -9,7 +9,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 
 public interface ClientiRepository extends JpaRepository<Cliente, Long> {
 	 
-	List<Cliente> countById();
+
 	
 	@Query("Select c from Cliente c where c.saldo >= (Select max(c1.saldo) from Cliente c1)")
 	List<Cliente> clientiSaldoMax();

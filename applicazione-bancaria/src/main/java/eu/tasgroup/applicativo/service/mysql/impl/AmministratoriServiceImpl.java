@@ -3,10 +3,13 @@ package eu.tasgroup.applicativo.service.mysql.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.repository.mysql.AmministratoriRepository;
 import eu.tasgroup.applicativo.service.mysql.AmministratoriService;
 
+@Service
 public class AmministratoriServiceImpl implements AmministratoriService {
 
 	private AmministratoriRepository amministratoriRepository;

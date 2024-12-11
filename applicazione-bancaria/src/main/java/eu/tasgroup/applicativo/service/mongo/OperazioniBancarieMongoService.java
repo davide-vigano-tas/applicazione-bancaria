@@ -10,7 +10,7 @@ public interface OperazioniBancarieMongoService {
 	OperazioniBancarieMongo createOrUpdate(OperazioniBancarieMongo operazione);
 	List<OperazioniBancarieMongo> findAll();
 	double totaleImporto();
-	int numeroOperazioniPerTipo(String tipo);
+	List<OperazioniBancarieMongo> operazioniPerTipo(String tipo);
 	List<OperazioniBancarieMongo> ultimeOperazioni();
 	double importoMedioOperazione();
 

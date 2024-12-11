@@ -12,7 +12,7 @@ import eu.tasgroup.applicativo.service.mysql.PrestitoService;
 
 @Service
 public class PrestitoServiceImpl implements PrestitoService {
-	
+
 	@Autowired
 	PrestitoRepository prestitoRepository;
 
@@ -35,6 +35,4 @@ public class PrestitoServiceImpl implements PrestitoService {
 	public List<Prestito> getAll() {
 		return prestitoRepository.findAll();
 	}
-	
-	
 }
