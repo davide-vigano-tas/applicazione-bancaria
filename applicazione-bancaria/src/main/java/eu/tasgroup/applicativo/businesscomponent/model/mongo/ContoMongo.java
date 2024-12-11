@@ -3,7 +3,6 @@ package eu.tasgroup.applicativo.businesscomponent.model.mongo;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
@@ -15,17 +14,17 @@ public class ContoMongo implements Serializable {
 	private static final long serialVersionUID = -5777712843584436589L;
 
 	@Id
-	private ObjectId codConto;
+	private String codConto;
 
 	private TipoConto tipoConto;
 	private double saldo;
-	private ObjectId codCliente;
+	private String codCliente;
 
-	public ObjectId getCodConto() {
+	public String getCodConto() {
 		return codConto;
 	}
 
-	public void setCodConto(ObjectId codConto) {
+	public void setCodConto(String codConto) {
 		this.codConto = codConto;
 	}
 
@@ -45,11 +44,11 @@ public class ContoMongo implements Serializable {
 		this.saldo = saldo;
 	}
 
-	public ObjectId getCodCliente() {
+	public String getCodCliente() {
 		return codCliente;
 	}
 
-	public void setCodCliente(ObjectId codCliente) {
+	public void setCodCliente(String codCliente) {
 		this.codCliente = codCliente;
 	}
 

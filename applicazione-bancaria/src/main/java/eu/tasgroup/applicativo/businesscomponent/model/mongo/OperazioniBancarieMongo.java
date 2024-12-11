@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +17,7 @@ public class OperazioniBancarieMongo implements Serializable {
 	private static final long serialVersionUID = -7826371922445277625L;
 
 	@Id
-	private ObjectId codOperazione;
+	private String codOperazione;
 
 	private double importo;
 	
@@ -27,15 +26,15 @@ public class OperazioniBancarieMongo implements Serializable {
 
 	private TipoOperazione tipoOperazione;
 
-	private ObjectId codContoOrigine;
+	private String codContoOrigine;
 
-	private ObjectId codContoDestinazione;
+	private String codContoDestinazione;
 
-	public ObjectId getCodOperazione() {
+	public String getCodOperazione() {
 		return codOperazione;
 	}
 
-	public void setCodOperazione(ObjectId codOperazione) {
+	public void setCodOperazione(String codOperazione) {
 		this.codOperazione = codOperazione;
 	}
 
@@ -63,19 +62,19 @@ public class OperazioniBancarieMongo implements Serializable {
 		this.tipoOperazione = tipoOperazione;
 	}
 
-	public ObjectId getCodContoOrigine() {
+	public String getCodContoOrigine() {
 		return codContoOrigine;
 	}
 
-	public void setCodContoOrigine(ObjectId codContoOrigine) {
+	public void setCodContoOrigine(String codContoOrigine) {
 		this.codContoOrigine = codContoOrigine;
 	}
 
-	public ObjectId getCodContoDestinazione() {
+	public String getCodContoDestinazione() {
 		return codContoDestinazione;
 	}
 
-	public void setCodContoDestinazione(ObjectId codContoDestinazione) {
+	public void setCodContoDestinazione(String codContoDestinazione) {
 		this.codContoDestinazione = codContoDestinazione;
 	}
 

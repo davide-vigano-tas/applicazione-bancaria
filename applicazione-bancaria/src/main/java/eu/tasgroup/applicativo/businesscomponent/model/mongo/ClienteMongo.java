@@ -3,7 +3,6 @@ package eu.tasgroup.applicativo.businesscomponent.model.mongo;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
@@ -14,7 +13,7 @@ public class ClienteMongo implements Serializable {
 	private static final long serialVersionUID = 2680924733583898825L;
 
 	@Id
-	private ObjectId codCliente;
+	private String codCliente;
 
 	private String nomeCliente;
 
@@ -30,11 +29,11 @@ public class ClienteMongo implements Serializable {
 
 	private double saldoConto = 0.0;
 
-	public ObjectId getCodCliente() {
+	public String getCodCliente() {
 		return codCliente;
 	}
 
-	public void setCodCliente(ObjectId codCliente) {
+	public void setCodCliente(String codCliente) {
 		this.codCliente = codCliente;
 	}
 

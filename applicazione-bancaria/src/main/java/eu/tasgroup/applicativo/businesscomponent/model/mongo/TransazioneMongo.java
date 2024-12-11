@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +17,7 @@ public class TransazioneMongo implements Serializable {
 	private static final long serialVersionUID = 7732242633800279132L;
 
 	@Id
-	private ObjectId codTransazione;
+	private String codTransazione;
 
 	private double importo;
 
@@ -27,13 +26,13 @@ public class TransazioneMongo implements Serializable {
 
 	private TipoTransazione tipoTransazione;
 
-	private ObjectId conto;
+	private String conto;
 
-	public ObjectId getCodTransazione() {
+	public String getCodTransazione() {
 		return codTransazione;
 	}
 
-	public void setCodTransazione(ObjectId codTransazione) {
+	public void setCodTransazione(String codTransazione) {
 		this.codTransazione = codTransazione;
 	}
 
@@ -61,11 +60,11 @@ public class TransazioneMongo implements Serializable {
 		this.tipoTransazione = tipoTransazione;
 	}
 
-	public ObjectId getConto() {
+	public String getConto() {
 		return conto;
 	}
 
-	public void setConto(ObjectId conto) {
+	public void setConto(String conto) {
 		this.conto = conto;
 	}
 
