@@ -14,5 +14,6 @@ public interface ClientiMongoService {
 	int numeroSaldiPositivi();
 	double sommaSaldiClienti();
 	int numeroClientiPerIntervalloSaldo(double start, double end);
+	void deleteClienteMongo(ClienteMongo cliente);
 
 }

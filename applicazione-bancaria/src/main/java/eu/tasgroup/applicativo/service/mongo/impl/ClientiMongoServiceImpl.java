@@ -61,4 +61,9 @@ public class ClientiMongoServiceImpl implements ClientiMongoService {
 		return clientiMongoRepository.countSaldoClienteByIntervallo(start,end);
 	}
 
+	@Override
+	public void deleteClienteMongo(ClienteMongo cliente) {
+		clientiMongoRepository.delete(cliente);
+	}
+
 }
