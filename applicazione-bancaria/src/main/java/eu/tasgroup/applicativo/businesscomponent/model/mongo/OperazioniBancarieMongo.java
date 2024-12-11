@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,14 +12,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoOperazione;
 import jakarta.persistence.Id;
 
-@Document
+@Document(collection = "OperazioniBancarie")
 public class OperazioniBancarieMongo implements Serializable {
 
 	private static final long serialVersionUID = -7826371922445277625L;
-
+	
 	@Id
-	private String codOperazione;
+    private String _id;
 
+    @Indexed(unique = true)
+    private int codOperazione;
+    
 	private double importo;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,11 +34,19 @@ public class OperazioniBancarieMongo implements Serializable {
 
 	private String codContoDestinazione;
 
-	public String getCodOperazione() {
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public int getCodOperazione() {
 		return codOperazione;
 	}
 
-	public void setCodOperazione(String codOperazione) {
+	public void setCodOperazione(int codOperazione) {
 		this.codOperazione = codOperazione;
 	}
 
@@ -80,7 +92,7 @@ public class OperazioniBancarieMongo implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codContoDestinazione, codContoOrigine, codOperazione, dataOperazione, importo,
+		return Objects.hash(_id, codContoDestinazione, codContoOrigine, codOperazione, dataOperazione, importo,
 				tipoOperazione);
 	}
 
@@ -93,9 +105,8 @@ public class OperazioniBancarieMongo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		OperazioniBancarieMongo other = (OperazioniBancarieMongo) obj;
-		return Objects.equals(codContoDestinazione, other.codContoDestinazione)
-				&& Objects.equals(codContoOrigine, other.codContoOrigine)
-				&& Objects.equals(codOperazione, other.codOperazione)
+		return Objects.equals(_id, other._id) && Objects.equals(codContoDestinazione, other.codContoDestinazione)
+				&& Objects.equals(codContoOrigine, other.codContoOrigine) && codOperazione == other.codOperazione
 				&& Objects.equals(dataOperazione, other.dataOperazione)
 				&& Double.doubleToLongBits(importo) == Double.doubleToLongBits(other.importo)
 				&& tipoOperazione == other.tipoOperazione;
@@ -103,9 +114,8 @@ public class OperazioniBancarieMongo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "OperazioniBancarieMongo [codOperazione=" + codOperazione + ", importo=" + importo + ", dataOperazione="
-				+ dataOperazione + ", tipoOperazione=" + tipoOperazione + ", codContoOrigine=" + codContoOrigine
-				+ ", codContoDestinazione=" + codContoDestinazione + "]";
+		return "OperazioniBancarieMongo [_id=" + _id + ", codOperazione=" + codOperazione + ", importo=" + importo
+				+ ", dataOperazione=" + dataOperazione + ", tipoOperazione=" + tipoOperazione + ", codContoOrigine="
+				+ codContoOrigine + ", codContoDestinazione=" + codContoDestinazione + "]";
 	}
-
 }

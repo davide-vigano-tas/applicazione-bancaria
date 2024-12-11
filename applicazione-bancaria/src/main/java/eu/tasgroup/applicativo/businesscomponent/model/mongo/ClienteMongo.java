@@ -3,17 +3,21 @@ package eu.tasgroup.applicativo.businesscomponent.model.mongo;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
 
-@Document
+@Document(collection = "Clienti")
 public class ClienteMongo implements Serializable {
 
 	private static final long serialVersionUID = 2680924733583898825L;
 
 	@Id
-	private String codCliente;
+    private String _id;
+
+    @Indexed(unique = true)
+    private int codCliente;
 
 	private String nomeCliente;
 
@@ -29,11 +33,19 @@ public class ClienteMongo implements Serializable {
 
 	private double saldoConto = 0.0;
 
-	public String getCodCliente() {
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public int getCodCliente() {
 		return codCliente;
 	}
 
-	public void setCodCliente(String codCliente) {
+	public void setCodCliente(int codCliente) {
 		this.codCliente = codCliente;
 	}
 
@@ -95,8 +107,8 @@ public class ClienteMongo implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountBloccato, codCliente, cognomeCliente, emailCliente, nomeCliente, passwordCliente,
-				saldoConto, tentativiErrati);
+		return Objects.hash(_id, accountBloccato, codCliente, cognomeCliente, emailCliente, nomeCliente,
+				passwordCliente, saldoConto, tentativiErrati);
 	}
 
 	@Override
@@ -108,8 +120,8 @@ public class ClienteMongo implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ClienteMongo other = (ClienteMongo) obj;
-		return accountBloccato == other.accountBloccato && Objects.equals(codCliente, other.codCliente)
-				&& Objects.equals(cognomeCliente, other.cognomeCliente)
+		return Objects.equals(_id, other._id) && accountBloccato == other.accountBloccato
+				&& codCliente == other.codCliente && Objects.equals(cognomeCliente, other.cognomeCliente)
 				&& Objects.equals(emailCliente, other.emailCliente) && Objects.equals(nomeCliente, other.nomeCliente)
 				&& Objects.equals(passwordCliente, other.passwordCliente)
 				&& Double.doubleToLongBits(saldoConto) == Double.doubleToLongBits(other.saldoConto)
@@ -118,9 +130,10 @@ public class ClienteMongo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ClienteMongo [codCliente=" + codCliente + ", nomeCliente=" + nomeCliente + ", cognomeCliente="
-				+ cognomeCliente + ", emailCliente=" + emailCliente + ", passwordCliente=" + passwordCliente
-				+ ", tentativiErrati=" + tentativiErrati + ", accountBloccato=" + accountBloccato + ", saldoConto="
-				+ saldoConto + "]";
+		return "ClienteMongo [_id=" + _id + ", codCliente=" + codCliente + ", nomeCliente=" + nomeCliente
+				+ ", cognomeCliente=" + cognomeCliente + ", emailCliente=" + emailCliente + ", passwordCliente="
+				+ passwordCliente + ", tentativiErrati=" + tentativiErrati + ", accountBloccato=" + accountBloccato
+				+ ", saldoConto=" + saldoConto + "]";
 	}
+
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,13 +12,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import jakarta.persistence.Id;
 
-@Document
-public class TransazioneMongo implements Serializable {
+@Document(collection = "Transazioni")
+public class TransazioniMongo implements Serializable {
 
 	private static final long serialVersionUID = 7732242633800279132L;
 
 	@Id
-	private String codTransazione;
+	private String _id;
+
+	@Indexed(unique = true)
+	private int codTransazione;
 
 	private double importo;
 
@@ -26,13 +30,21 @@ public class TransazioneMongo implements Serializable {
 
 	private TipoTransazione tipoTransazione;
 
-	private String conto;
+	private int cliente;
 
-	public String getCodTransazione() {
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
+	public int getCodTransazione() {
 		return codTransazione;
 	}
 
-	public void setCodTransazione(String codTransazione) {
+	public void setCodTransazione(int codTransazione) {
 		this.codTransazione = codTransazione;
 	}
 
@@ -60,17 +72,17 @@ public class TransazioneMongo implements Serializable {
 		this.tipoTransazione = tipoTransazione;
 	}
 
-	public String getConto() {
-		return conto;
+	public int getCliente() {
+		return cliente;
 	}
 
-	public void setConto(String conto) {
-		this.conto = conto;
+	public void setCliente(int cliente) {
+		this.cliente = cliente;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codTransazione, conto, dataTransazione, importo, tipoTransazione);
+		return Objects.hash(_id, cliente, codTransazione, dataTransazione, importo, tipoTransazione);
 	}
 
 	@Override
@@ -81,8 +93,8 @@ public class TransazioneMongo implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TransazioneMongo other = (TransazioneMongo) obj;
-		return Objects.equals(codTransazione, other.codTransazione) && Objects.equals(conto, other.conto)
+		TransazioniMongo other = (TransazioniMongo) obj;
+		return Objects.equals(_id, other._id) && cliente == other.cliente && codTransazione == other.codTransazione
 				&& Objects.equals(dataTransazione, other.dataTransazione)
 				&& Double.doubleToLongBits(importo) == Double.doubleToLongBits(other.importo)
 				&& tipoTransazione == other.tipoTransazione;
@@ -90,8 +102,10 @@ public class TransazioneMongo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TransazioneMongo [codTransazione=" + codTransazione + ", importo=" + importo + ", dataTransazione="
-				+ dataTransazione + ", tipoTransazione=" + tipoTransazione + ", conto=" + conto + "]";
+		return "TransazioniMongo [_id=" + _id + ", codTransazione=" + codTransazione + ", importo=" + importo
+				+ ", dataTransazione=" + dataTransazione + ", tipoTransazione=" + tipoTransazione + ", cliente="
+				+ cliente + "]";
 	}
 
+	
 }
