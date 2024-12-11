@@ -10,12 +10,13 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 public interface ClientiService {
 	Optional<Cliente> findById(long id);
 	List<Cliente> getClientiList();
-	Cliente createOrUpdate();
-	List<Cliente> totaleClienti();
+	Cliente createOrUpdate(Cliente cliente);
+	void deleteCliente(Cliente cliente);
+	int totaleClienti();
 	List<Cliente> clientiSaldoMax();
-	int numeroConti();
-	int numeroCarte();
-	List<Prestito> listaPrestitiClienti();
-	List<Pagamento> listaPagamentiClienti();
+	int numeroConti(long id);
+	int numeroCarte(long id);
+	List<Prestito> listaPrestitiClienti(long id);
+	List<Pagamento> listaPagamentiClienti(long id);
 	
 }

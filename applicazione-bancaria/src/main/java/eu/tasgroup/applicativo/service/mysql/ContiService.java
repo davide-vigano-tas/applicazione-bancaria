@@ -1,11 +1,19 @@
 package eu.tasgroup.applicativo.service.mysql;
 
 import java.util.List;
+import java.util.Optional;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 
-public interface ContoService {
+public interface ContiService {
+	Conto createOrUpdate(Conto conto);
+	
 	double saldoMedio(Conto conto);
+	
 	void deleteContoById(long id);
+	
+	Optional<Conto> findById(long id);
+	
+	List<Conto> getAll();
 	List<Conto> getContiSaldoZero();
 }
