@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PrestitoRepositoryTest {
 	@Autowired
 	PrestitoRepository prestitoRepository;
