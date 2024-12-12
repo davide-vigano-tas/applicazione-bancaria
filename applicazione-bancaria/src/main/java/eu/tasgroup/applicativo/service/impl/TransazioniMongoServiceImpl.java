@@ -59,4 +59,14 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 		transazioneMongoRepository.delete(transazione);
 	}
 
+	@Override
+	public Optional<TransazioniMongo> ultimaTransazione() {
+		return transazioneMongoRepository.findTopByOrderByDataTransazioneDesc();
+	}
+
+	@Override
+	public List<TransazioniMongo> findByCliente(int cliente) {
+		return transazioneMongoRepository.findByCliente(cliente);
+	}
+
 }

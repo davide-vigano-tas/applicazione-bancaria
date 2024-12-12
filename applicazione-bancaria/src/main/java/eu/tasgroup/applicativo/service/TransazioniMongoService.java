@@ -14,6 +14,8 @@ public interface TransazioniMongoService {
 	double calcoloMediaTransazioniPerCliente(int codCliente);
 	double numeroMedioTransazioniPerCliente();
 	double totaleImportoPerMese(int mese);  
+	Optional<TransazioniMongo> ultimaTransazione();
+	List<TransazioniMongo> findByCliente(int cliente);
 	void deleteTransazioneMongo(TransazioniMongo transazione);
 
 }
