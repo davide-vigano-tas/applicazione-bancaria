@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('error')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+	
+	<div class="container">
+	<div  th:insert="~{fragments/nav :: navbar}"></div>
+		<header class="page-header">
+			<h3>Pagina per visualizzare gli errori</h3>
+		</header>
+		
+		<table>
+			<tr>
+				<td style="width: 20%">Date</td>
+				<td style="width: 80%" th:text="${timestamp}"></td>
+			</tr>
+			<tr>
+				<td>Path</td>
+				<td th:text="${path}"></td>
+			</tr>
+			<tr>
+				<td>Status</td>
+				<td th:text="${status}"></td>
+			</tr>
+			<tr>
+				<td>Message</td>
+				<td th:text="${message}"></td>
+			</tr>
+			<tr>
+				<td>Tipo Eccezione</td>
+				<td th:text="${exception}"></td>
+			</tr>
+			<tr>
+				<td>Trace</td>
+				<td th:text="${trace}"></td>
+			</tr>
+		</table>
+	</div>
+	
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+	<div class="container py-5">
+		<div class="jumbotron bg-light p-5 rounded shadow-sm">
+			<h1 class="display-4 mb-4">Benvenuto!</h1>
+			<p class="lead">Scegli dove vuoi accedere:</p>
+			<hr class="my-4">
+			<div class="d-flex flex-column gap-3">
+				<a class="btn btn-primary btn-lg w-100" role="button" href="/user">
+					<i class="fas fa-user"></i> Area Utente
+				</a> <a class="btn btn-secondary btn-lg w-100" role="button"
+					href="/admin"> <i class="fas fa-user-shield"></i> Area
+					Amministratore
+				</a>
+			</div>
+		</div>
+	</div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

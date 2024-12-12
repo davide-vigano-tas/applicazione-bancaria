@@ -1,0 +1,39 @@
+
+<div th:fragment="footer" xmlns:th="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+	<nav>
+		<h3>Navigazione</h3>
+		<ul sec:authorize="!hasRole('ADMIN')">
+			<li><a href="/user">Sezione utenti</a>
+			<li><a href="/user/conti">Elenco conti</a>
+			<li><a href="/user/nuovoConto">Crea nuovo conto</a>
+			<li><a href="/admin">Sezione Admin</a>
+		</ul>
+		<ul sec:authorize="hasRole('ADMIN')">
+			<li><a href="/admin">Sezione Admin</a>
+			<li><a href="/admin">Elenco conti</a>
+			<li><a href="/admin">Elenco utenti</a>
+			<li><a href="/user">Sezione Utenti</a>
+		</ul>
+	</nav>
+
+	<nav>
+		<h3>Roba</h3>
+		<ul>
+			<li><a href="#">...</a>
+			<li><a href="#">...</a>
+			<li><a href="#">...</a>
+			<li><a href="#">Site Map</a>
+		</ul>
+	</nav>
+
+	<section>
+		<h3>Network</h3>
+		<ul>
+			<li><a href="#">Facebook</a>
+			<li><a href="#">Instagram</a>
+			<li><a href="#">X</a>
+			<li><a href="#">Linkedin</a>
+		</ul>
+	</section>
+</div>
