@@ -181,7 +181,7 @@ public class Cliente implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Cliente other = (Cliente) obj;
-		return accountBloccato == other.accountBloccato && Objects.equals(carte, other.carte)
+		return accountBloccato == other.accountBloccato
 				&& codCliente == other.codCliente && Objects.equals(cognomeCliente, other.cognomeCliente)
 				&& Objects.equals(emailCliente, other.emailCliente)
 				&& Objects.equals(nomeCliente, other.nomeCliente) 
