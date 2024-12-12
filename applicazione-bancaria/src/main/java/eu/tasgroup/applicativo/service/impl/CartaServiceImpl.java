@@ -20,11 +20,10 @@ public class CartaServiceImpl implements CartaService {
 	public Carta createOrUpdate(Carta carta) {
 		return cartaRepository.saveAndFlush(carta);
 	}
-
+	
 	@Override
 	public void deleteCartaById(long id) {
 		cartaRepository.deleteById(id);
-
 	}
 
 	@Override
