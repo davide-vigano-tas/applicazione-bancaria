@@ -44,13 +44,19 @@ public class OperazioniBancarieMongoServiceImpl implements OperazioniBancarieMon
 	}
 
 	@Override
-	public List<OperazioniBancarieMongo> ultimeOperazioni() {
+	public Optional<OperazioniBancarieMongo> ultimeOperazioni() {
 		return operazioniBancarieMongoRepository.ultimeOperazioni();
 	}
 
 	@Override
 	public double importoMedioOperazione() {
 		return operazioniBancarieMongoRepository.importoMedioOperazioni();
+	}
+
+	@Override
+	public void delete(OperazioniBancarieMongo operazioniBancarieMongo) {
+		operazioniBancarieMongoRepository.delete(operazioniBancarieMongo);
+		
 	}
 
 }

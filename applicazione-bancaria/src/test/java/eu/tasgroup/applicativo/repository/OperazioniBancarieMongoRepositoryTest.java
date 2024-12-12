@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -95,9 +96,9 @@ class OperazioniBancarieMongoRepositoryTest {
 		try {
 		
 			System.out.println(operazioniBancarieMongoRepository.findAll());
-			List<OperazioniBancarieMongo> last = operazioniBancarieMongoRepository.ultimeOperazioni();
+			Optional<OperazioniBancarieMongo> last = operazioniBancarieMongoRepository.ultimeOperazioni();
 			
-			assertEquals(1,  last.size());
+			assertTrue(last.isPresent());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

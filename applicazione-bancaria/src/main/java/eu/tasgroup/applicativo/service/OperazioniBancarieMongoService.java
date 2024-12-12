@@ -11,7 +11,8 @@ public interface OperazioniBancarieMongoService {
 	List<OperazioniBancarieMongo> findAll();
 	double totaleImporto();
 	List<OperazioniBancarieMongo> operazioniPerTipo(String tipo);
-	List<OperazioniBancarieMongo> ultimeOperazioni();
+	Optional<OperazioniBancarieMongo> ultimeOperazioni();
 	double importoMedioOperazione();
+	void delete(OperazioniBancarieMongo operazioniBancarieMongo);
 
 }

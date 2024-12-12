@@ -1,6 +1,7 @@
 package eu.tasgroup.applicativo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,11 +17,8 @@ public interface OperazioniBancarieMongoRepository extends MongoRepository<Opera
 	@Query("{'tipoOperazione': ?0}")
 	List<OperazioniBancarieMongo> operazioniPerTipo(String tipo);
 	
-    @Aggregation(pipeline = {
-            "{ '$group': { '_id': null, 'maxDate': { '$max': '$dataOperazione' } } }",
-            "{ '$lookup': { 'from': 'OperazioniBancarie', 'pipeline': [ { '$match': { 'dataOperazione': { '$eq': '$maxDate' } } } ], 'as': 'OperazioniBancarie' } }"
-        })
-	List<OperazioniBancarieMongo> ultimeOperazioni();
+	@Aggregation(pipeline = { "{ '$sort': { 'dataOperazione': -1 } }", "{ '$limit': 1 }" })
+	Optional<OperazioniBancarieMongo> ultimeOperazioni();
     
 	@Aggregation(pipeline ="{ '$group': { '_id': null, 'avgAmount': { '$avg': '$importo' } } }")
 	Double importoMedioOperazioni();
