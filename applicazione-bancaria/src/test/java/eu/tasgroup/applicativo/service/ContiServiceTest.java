@@ -1,8 +1,10 @@
 package eu.tasgroup.applicativo.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -14,11 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 
 
 @SpringBootTest
