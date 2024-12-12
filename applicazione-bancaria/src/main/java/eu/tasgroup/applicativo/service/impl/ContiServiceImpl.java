@@ -16,7 +16,7 @@ public class ContiServiceImpl implements ContiService {
 	ContiRepository contiRepository;
 
 	@Override
-	public double saldoMedio() {
+	public Double saldoMedio() {
 		return contiRepository.saldoMedio();
 	}
 

@@ -10,10 +10,10 @@ public interface TransazioniMongoService {
 	Optional<TransazioniMongo> findById(String id);
 	TransazioniMongo createOrUpdate(TransazioniMongo transazione);
 	List<TransazioniMongo> findAll();
-	int numeroTransazioniPerTipo(TipoTransazione tipo);
-	double calcoloMediaTransazioniPerCliente(int codCliente);
-	double numeroMedioTransazioniPerCliente();
-	double totaleImportoPerMese(int mese);  
+	Integer numeroTransazioniPerTipo(TipoTransazione tipo);
+	Double calcoloMediaTransazioniPerCliente(int codCliente);
+	Double numeroMedioTransazioniPerCliente();
+	Double totaleImportoPerMese(int mese);  
 	Optional<TransazioniMongo> ultimaTransazione();
 	List<TransazioniMongo> findByCliente(int cliente);
 	void deleteTransazioneMongo(TransazioniMongo transazione);

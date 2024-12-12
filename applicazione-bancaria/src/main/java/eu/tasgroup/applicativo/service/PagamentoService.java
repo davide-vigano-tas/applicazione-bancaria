@@ -15,5 +15,5 @@ public interface PagamentoService {
 	
 	List<Pagamento> getAll();
 	
-	double sumPagamentiByCliente(long id);
+	Double sumPagamentiByCliente(long id);
 }

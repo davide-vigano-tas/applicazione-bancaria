@@ -11,7 +11,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 
 public interface TransazioneMongoRepository extends MongoRepository<TransazioniMongo, String> {
 
-	int countByTipoTransazione(TipoTransazione tipo);
+	Integer countByTipoTransazione(TipoTransazione tipo);
 
 	// Media transazioni per cliente
 	@Aggregation(pipeline = { "{ $match: { cliente: ?0 } }", "{ $group: { _id: null, media: { $avg: '$importo' } } }" })

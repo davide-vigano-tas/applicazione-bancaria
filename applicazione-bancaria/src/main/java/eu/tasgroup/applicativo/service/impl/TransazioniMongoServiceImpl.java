@@ -35,23 +35,28 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 	}
 
 	@Override
-	public int numeroTransazioniPerTipo(TipoTransazione tipo) {
-		return transazioneMongoRepository.countByTipoTransazione(tipo);
+	public Integer numeroTransazioniPerTipo(TipoTransazione tipo) {
+		
+		Integer result = transazioneMongoRepository.countByTipoTransazione(tipo);
+		return (result != null) ? result : 0;
 	}
 
 	@Override
-	public double calcoloMediaTransazioniPerCliente(int codCliente) {
-		return transazioneMongoRepository.calcolaMediaTransazioniPerCliente(codCliente);
+	public Double calcoloMediaTransazioniPerCliente(int codCliente) {
+		Double result = transazioneMongoRepository.calcolaMediaTransazioniPerCliente(codCliente);
+		return (result != null) ? result : 0.00;
 	}
 
 	@Override
-	public double numeroMedioTransazioniPerCliente() {
-		return transazioneMongoRepository.numeroMedioTransazioniPerCliente();
+	public Double numeroMedioTransazioniPerCliente() {
+		Double result = transazioneMongoRepository.numeroMedioTransazioniPerCliente();
+		return (result != null) ? result : 0.00;
 	}
 
 	@Override
-	public double totaleImportoPerMese(int mese) {
-		return transazioneMongoRepository.totaleImportoPerMese(mese);
+	public Double totaleImportoPerMese(int mese) {
+		Double result = transazioneMongoRepository.totaleImportoPerMese(mese);
+		return (result != null) ? result : 0.00;
 	}
 
 	@Override
