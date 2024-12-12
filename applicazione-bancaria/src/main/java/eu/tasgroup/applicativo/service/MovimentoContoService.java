@@ -3,6 +3,7 @@ package eu.tasgroup.applicativo.service;
 import java.util.List;
 import java.util.Optional;
 
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
 
 public interface MovimentoContoService {
@@ -13,4 +14,6 @@ public interface MovimentoContoService {
 	Optional<MovimentoConto> getMovimentoContoById(long id);
 	
 	List<MovimentoConto> getAll();
+	
+	List<MovimentoConto> findMovimentiContoByConto(Conto conto);
 }

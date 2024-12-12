@@ -90,8 +90,7 @@ public class Conto implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Conto [codConto=" + codConto + ", tipoConto=" + tipoConto + ", saldo=" + saldo + ", cliete=" + cliente
+		return "Conto [codConto=" + codConto + ", tipoConto=" + tipoConto + ", saldo=" + saldo + ", cliente=" + cliente
 				+ "]";
 	}
-
 }

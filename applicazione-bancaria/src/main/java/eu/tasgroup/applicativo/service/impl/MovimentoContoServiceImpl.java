@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
 import eu.tasgroup.applicativo.repository.MovimentoContoRepository;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
@@ -34,6 +35,11 @@ public class MovimentoContoServiceImpl implements MovimentoContoService{
 	@Override
 	public List<MovimentoConto> getAll() {
 		return mcr.findAll();
+	}
+
+	@Override
+	public List<MovimentoConto> findMovimentiContoByConto(Conto conto) {
+		return mcr.findByConto(conto);
 	}
 	
 }
