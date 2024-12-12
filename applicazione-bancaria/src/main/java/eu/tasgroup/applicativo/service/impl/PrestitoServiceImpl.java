@@ -35,4 +35,9 @@ public class PrestitoServiceImpl implements PrestitoService {
 	public List<Prestito> getAll() {
 		return prestitoRepository.findAll();
 	}
+
+	@Override
+	public double sumPrestitiByCliente(long id) {
+		return prestitoRepository.sumPrestitiByCliente(id);
+	}
 }
