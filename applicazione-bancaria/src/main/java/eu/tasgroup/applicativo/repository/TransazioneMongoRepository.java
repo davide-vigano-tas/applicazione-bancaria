@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
@@ -15,17 +14,12 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 	int countByTipoTransazione(TipoTransazione tipo);
 
 	// Media transazioni per cliente
-	@Aggregation(pipeline = { 
-			"{ $match: { cliente: ?0 } }", 
-			"{ $group: { _id: null, media: { $avg: '$importo' } } }"
-			})
+	@Aggregation(pipeline = { "{ $match: { cliente: ?0 } }", "{ $group: { _id: null, media: { $avg: '$importo' } } }" })
 	Double calcolaMediaTransazioniPerCliente(int codCliente);
-	
+
 	// numero medio transazioni per cliente
-	@Aggregation(pipeline = {
-		    "{ '$group': { '_id': '$codCliente', 'count': { '$sum': 1 } } }",  // Conta i documenti per codCliente
-		    "{ '$group': { '_id': null, 'media': { '$avg': '$count' } } }"      // Calcola la media dei conteggi
-		})
+	@Aggregation(pipeline = { "{ '$group': { '_id': '$cliente', 'count': { '$sum': 1 } } }",
+			"{ '$group': { '_id': null, 'media': { '$avg': '$count' } } }" })
 	Double numeroMedioTransazioniPerCliente();
 
 	// Totale importo per mese
@@ -34,7 +28,7 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 	Double totaleImportoPerMese(int mese);
 
 	// Data ultima transazione
-	@Query(value = "{}", sort = "{ 'dataTransazione': -1 }")
+	@Aggregation(pipeline = { "{ '$sort': { 'dataTransazione': -1 } }", "{ '$limit': 1 }" })	
 	Optional<TransazioniMongo> findTopByOrderByDataTransazioneDesc();
 
 	// Transazioni per cliente
