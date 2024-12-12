@@ -44,7 +44,7 @@ public class MovimentoConto implements Serializable {
 	private TipoMovimento tipoMovimento;
 
 	@ManyToOne
-	@JoinColumn(name = "cod_contoe", nullable = false)
+	@JoinColumn(name = "cod_conto", nullable = false)
 	private Conto conto;
 
 	public long getCodMovimento() {
