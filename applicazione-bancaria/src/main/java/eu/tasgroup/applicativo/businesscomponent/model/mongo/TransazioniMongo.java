@@ -21,7 +21,7 @@ public class TransazioniMongo implements Serializable {
 	private String _id;
 
 	@Indexed(unique = true)
-	private int codTransazione;
+	private long codTransazione;
 
 	private double importo;
 
@@ -30,7 +30,7 @@ public class TransazioniMongo implements Serializable {
 
 	private TipoTransazione tipoTransazione;
 
-	private int cliente;
+	private long cliente;
 
 	public String get_id() {
 		return _id;
@@ -40,11 +40,12 @@ public class TransazioniMongo implements Serializable {
 		this._id = _id;
 	}
 
-	public int getCodTransazione() {
+
+	public long getCodTransazione() {
 		return codTransazione;
 	}
 
-	public void setCodTransazione(int codTransazione) {
+	public void setCodTransazione(long codTransazione) {
 		this.codTransazione = codTransazione;
 	}
 
@@ -72,11 +73,12 @@ public class TransazioniMongo implements Serializable {
 		this.tipoTransazione = tipoTransazione;
 	}
 
-	public int getCliente() {
+
+	public long getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(int cliente) {
+	public void setCliente(long cliente) {
 		this.cliente = cliente;
 	}
 

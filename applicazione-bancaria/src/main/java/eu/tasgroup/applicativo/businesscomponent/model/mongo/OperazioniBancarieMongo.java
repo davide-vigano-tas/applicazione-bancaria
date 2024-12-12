@@ -21,7 +21,7 @@ public class OperazioniBancarieMongo implements Serializable {
     private String _id;
 
     @Indexed(unique = true)
-    private int codOperazione;
+    private long codOperazione;
     
 	private double importo;
 	
@@ -42,11 +42,12 @@ public class OperazioniBancarieMongo implements Serializable {
 		this._id = _id;
 	}
 
-	public int getCodOperazione() {
+
+	public long getCodOperazione() {
 		return codOperazione;
 	}
 
-	public void setCodOperazione(int codOperazione) {
+	public void setCodOperazione(long codOperazione) {
 		this.codOperazione = codOperazione;
 	}
 
