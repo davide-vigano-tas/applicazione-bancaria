@@ -22,6 +22,11 @@ public class ClientiMongoServiceImpl implements ClientiMongoService {
 	public Optional<ClienteMongo> findById(String id) {
 		return clientiMongoRepository.findById(id);
 	}
+	
+	@Override
+	public Optional<ClienteMongo> findfindByCodCliente(int codCliente) {
+		return clientiMongoRepository.findfindByCodCliente(codCliente);
+	}
 
 	@Override
 	public List<ClienteMongo> getClientiList() {
@@ -68,5 +73,4 @@ public class ClientiMongoServiceImpl implements ClientiMongoService {
 	public void deleteClienteMongo(ClienteMongo cliente) {
 		clientiMongoRepository.delete(cliente);
 	}
-
 }

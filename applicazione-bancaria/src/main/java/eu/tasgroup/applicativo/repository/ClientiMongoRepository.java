@@ -1,6 +1,7 @@
 package eu.tasgroup.applicativo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -9,6 +10,8 @@ import org.springframework.data.mongodb.repository.Query;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 
 public interface ClientiMongoRepository extends MongoRepository<ClienteMongo, String> {
+	
+	Optional<ClienteMongo> findfindByCodCliente(int codCliente);
 
 	@Query("{'saldoConto' : {$gt : ?0}}")
 	List<ClienteMongo> saldoMaggioreDi(double saldo);
