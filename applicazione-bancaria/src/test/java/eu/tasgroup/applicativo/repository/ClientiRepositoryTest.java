@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.repository.mysql;
+package eu.tasgroup.applicativo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
