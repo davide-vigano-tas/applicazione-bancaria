@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
-import eu.tasgroup.applicativo.repository.ClientiRepository;
-import eu.tasgroup.applicativo.repository.ContiRepository;
 
 @SpringBootTest
 class ContiRepositoryTest {
