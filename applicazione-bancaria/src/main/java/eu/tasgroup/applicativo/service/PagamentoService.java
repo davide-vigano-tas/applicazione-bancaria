@@ -14,4 +14,6 @@ public interface PagamentoService {
 	Optional<Pagamento> getPagamentoById(long id);
 	
 	List<Pagamento> getAll();
+	
+	double sumPagamentiByCliente(long id);
 }

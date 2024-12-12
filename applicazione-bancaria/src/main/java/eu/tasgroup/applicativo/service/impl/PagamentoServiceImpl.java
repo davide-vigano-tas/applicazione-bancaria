@@ -35,6 +35,11 @@ public class PagamentoServiceImpl implements PagamentoService {
 	public List<Pagamento> getAll() {
 		return pagamentoRepository.findAll();
 	}
+
+	@Override
+	public double sumPagamentiByCliente(long id) {
+		return pagamentoRepository.sumPagamentiByCliente(id);
+	}
 	
 	
 }
