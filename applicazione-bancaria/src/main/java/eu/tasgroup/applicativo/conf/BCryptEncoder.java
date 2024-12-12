@@ -17,7 +17,7 @@ public class BCryptEncoder {
      * @param passwordDB password criptata, generalmente presa dal DB
      * @return True se le password corrispondono, altrimenti false
      */
-    public static boolean passwordEncodedMatch(String password, String passwordDB) {
+    public static boolean passwordMatch(String password, String passwordDB) {
         return bCryptPasswordEncoder.matches(password, passwordDB);
     }
 }
