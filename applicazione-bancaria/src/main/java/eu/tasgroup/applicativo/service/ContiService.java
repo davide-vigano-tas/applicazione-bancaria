@@ -8,7 +8,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 public interface ContiService {
 	Conto createOrUpdate(Conto conto);
 	
-	double saldoMedio(Conto conto);
+	double saldoMedio();
 	
 	void deleteContoById(long id);
 	
