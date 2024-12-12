@@ -8,6 +8,7 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,19 +47,19 @@ public class Cliente implements Serializable {
     @Column(name = "saldo_conto", nullable = false)
     private double saldoConto = 0.0;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Conto> conti = new HashSet<>();
     
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Carta> carte = new HashSet<>();
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Prestito> prestiti = new HashSet<>();
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<RichiestaPrestito> richiestePrestiti = new HashSet<>();
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Pagamento> pagamenti = new HashSet<>();
     
 	public long getCodCliente() {
@@ -167,8 +168,8 @@ public class Cliente implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountBloccato, carte, codCliente, cognomeCliente, conti, emailCliente, nomeCliente,
-				pagamenti, passwordCliente, prestiti, richiestePrestiti, saldoConto, tentativiErrati);
+		return Objects.hash(accountBloccato, codCliente, cognomeCliente, emailCliente, nomeCliente,
+				 passwordCliente, saldoConto, tentativiErrati);
 	}
 
 	@Override
@@ -182,10 +183,9 @@ public class Cliente implements Serializable {
 		Cliente other = (Cliente) obj;
 		return accountBloccato == other.accountBloccato && Objects.equals(carte, other.carte)
 				&& codCliente == other.codCliente && Objects.equals(cognomeCliente, other.cognomeCliente)
-				&& Objects.equals(conti, other.conti) && Objects.equals(emailCliente, other.emailCliente)
-				&& Objects.equals(nomeCliente, other.nomeCliente) && Objects.equals(pagamenti, other.pagamenti)
-				&& Objects.equals(passwordCliente, other.passwordCliente) && Objects.equals(prestiti, other.prestiti)
-				&& Objects.equals(richiestePrestiti, other.richiestePrestiti)
+				&& Objects.equals(emailCliente, other.emailCliente)
+				&& Objects.equals(nomeCliente, other.nomeCliente) 
+				&& Objects.equals(passwordCliente, other.passwordCliente)
 				&& Double.doubleToLongBits(saldoConto) == Double.doubleToLongBits(other.saldoConto)
 				&& tentativiErrati == other.tentativiErrati;
 	}
@@ -195,8 +195,7 @@ public class Cliente implements Serializable {
 		return "Cliente [codCliente=" + codCliente + ", nomeCliente=" + nomeCliente + ", cognomeCliente="
 				+ cognomeCliente + ", emailCliente=" + emailCliente + ", passwordCliente=" + passwordCliente
 				+ ", tentativiErrati=" + tentativiErrati + ", accountBloccato=" + accountBloccato + ", saldoConto="
-				+ saldoConto + ", conti=" + conti + ", carte=" + carte + ", prestiti=" + prestiti
-				+ ", richiestePrestiti=" + richiestePrestiti + ", pagamenti=" + pagamenti + "]";
+				+ saldoConto + "]";
 	}
 
 	

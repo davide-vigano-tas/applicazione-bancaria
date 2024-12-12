@@ -38,7 +38,7 @@ public class ClientiServiceImpl implements ClientiService{
 	
 	@Override
 	public Cliente createOrUpdate(Cliente cliente) {
-		return clientiRepository.save(cliente);
+		return clientiRepository.saveAndFlush(cliente);
 	}
 
 	@Override
