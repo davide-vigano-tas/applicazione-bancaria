@@ -1,6 +1,7 @@
 package eu.tasgroup.applicativo.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -68,6 +69,12 @@ class ClientiMongoRepositoryTest {
 	@Order(3)
 	void testCountSaldoClienteByIntervallo() {
 		assertEquals(2, cmr.countSaldoClienteByIntervallo(5, 5000));
+	}
+	
+	@Test
+	@Order(4)
+	void testFindfindByCodCliente () {
+		assertNotNull(cmr.findByCodCliente(1));
 	}
 
 	@AfterAll

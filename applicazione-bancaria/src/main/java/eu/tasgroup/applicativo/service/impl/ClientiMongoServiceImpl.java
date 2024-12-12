@@ -24,8 +24,8 @@ public class ClientiMongoServiceImpl implements ClientiMongoService {
 	}
 	
 	@Override
-	public Optional<ClienteMongo> findfindByCodCliente(int codCliente) {
-		return clientiMongoRepository.findfindByCodCliente(codCliente);
+	public Optional<ClienteMongo> findByCodCliente(int codCliente) {
+		return clientiMongoRepository.findByCodCliente(codCliente);
 	}
 
 	@Override

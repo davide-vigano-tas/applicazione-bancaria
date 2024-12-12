@@ -11,7 +11,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 
 public interface ClientiMongoRepository extends MongoRepository<ClienteMongo, String> {
 	
-	Optional<ClienteMongo> findfindByCodCliente(int codCliente);
+	Optional<ClienteMongo> findByCodCliente(int codCliente);
 
 	@Query("{'saldoConto' : {$gt : ?0}}")
 	List<ClienteMongo> saldoMaggioreDi(double saldo);
