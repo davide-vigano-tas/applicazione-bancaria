@@ -22,6 +22,7 @@ class PrestitoRepositoryTest {
 	ClientiRepository clientiRepository;
 	
 	static Cliente cliente;
+	static Cliente cliente2;
 	static Prestito prestito1;
 	static Prestito prestito2;
 
@@ -35,6 +36,15 @@ class PrestitoRepositoryTest {
 		cliente.setEmailCliente("sam@prova.email");
 		cliente.setPasswordCliente("pass01$");
 		cliente.setSaldoConto(300);
+		
+		cliente2 = new Cliente();
+		
+		cliente2.setAccountBloccato(false);
+		cliente2.setNomeCliente("Samuel");
+		cliente2.setCognomeCliente("Mastrelli");
+		cliente2.setEmailCliente("sam2@prova.email");
+		cliente2.setPasswordCliente("pass01$");
+		cliente2.setSaldoConto(300);
 		
 		
 		prestito1 = new Prestito();
@@ -59,6 +69,8 @@ class PrestitoRepositoryTest {
 	void testSumPrestitiByCliente() {
 		try {
 			Cliente clienteCreato = clientiRepository.save(cliente);
+			Cliente clienteCreato2 = clientiRepository.save(cliente2);
+			
 			prestito1.setCliente(clienteCreato);
 			prestito2.setCliente(clienteCreato);
 			
@@ -67,6 +79,9 @@ class PrestitoRepositoryTest {
 			
 			double sum = prestitoRepository.sumPrestitiByCliente(clienteCreato.getCodCliente());
 			assertEquals(600.0, sum);
+			
+			System.err.println(prestitoRepository.sumPrestitiByCliente(clienteCreato2.getCodCliente()));
+			//double sum2 = prestitoRepository.sumPrestitiByCliente(clienteCreato2.getCodCliente());
 			
 		}catch (Exception e) {
 			fail(e.getMessage());
@@ -83,6 +98,7 @@ class PrestitoRepositoryTest {
 			prestitoRepository.delete(prestito2);
 			
 			clientiRepository.delete(cliente);
+			clientiRepository.delete(cliente2);
 			
 	
 		}catch (Exception e) {
