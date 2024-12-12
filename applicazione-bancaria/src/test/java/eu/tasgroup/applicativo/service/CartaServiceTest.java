@@ -84,7 +84,7 @@ class CartaServiceTest {
 	@Order(5)
 	void testDeleteCartaById() {
 		cartaService.deleteCartaById(carta.getCodCarta());
-		clienteService.deleteCliente(cliente);
+		clienteService.deleteCliente(clienteService.findById(cliente.getCodCliente()).get());
 		
 		assertTrue(cartaService.getAll().isEmpty());
 		assertTrue(clienteService.getClientiList().isEmpty());

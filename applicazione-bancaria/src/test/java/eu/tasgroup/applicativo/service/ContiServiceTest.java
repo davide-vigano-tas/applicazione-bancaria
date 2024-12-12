@@ -41,11 +41,7 @@ class ContiServiceTest {
 		cliente.setCognomeCliente("Mastrelli");
 		cliente.setEmailCliente("sam@prova.com");
 		cliente.setPasswordCliente("pass01");
-		cliente.setConti(new HashSet<Conto>());
-		cliente.setCarte(new HashSet<Carta>());
-		cliente.setPagamenti(new HashSet<Pagamento>());
-		cliente.setPrestiti(new HashSet<Prestito>());
-		
+	
 		conto = new Conto();
 		conto.setSaldo(0);
 		conto.setTipoConto(TipoConto.CORRENTE);
