@@ -15,5 +15,5 @@ public interface PrestitoService {
 	
 	List<Prestito> getAll();
 	
-	double sumPrestitiByCliente(long id);
+	Double sumPrestitiByCliente(long id);
 }

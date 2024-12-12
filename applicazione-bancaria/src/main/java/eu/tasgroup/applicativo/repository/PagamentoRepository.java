@@ -10,5 +10,5 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
 	
 	@Query("Select sum(p.importo) from Pagamento p where p.cliente.codCliente = ?1")
-	double sumPagamentiByCliente(long cod_cliente);
+	Double sumPagamentiByCliente(long cod_cliente);
 }

@@ -12,7 +12,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 public interface ContiRepository extends JpaRepository<Conto, Long>{
 
 	@Query("Select avg(c.saldo) from Conto c")
-	double saldoMedio();
+	Double saldoMedio();
 	
 	@Query("Select c from Conto c where c.saldo = 0")
 	List<Conto> getContiSaldoZero();

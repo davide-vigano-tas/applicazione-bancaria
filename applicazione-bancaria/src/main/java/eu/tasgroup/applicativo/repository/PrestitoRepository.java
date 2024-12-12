@@ -11,5 +11,5 @@ public interface PrestitoRepository extends JpaRepository<Prestito, Long> {
 
 	
 	@Query("Select sum(p.importo) from Prestito p where p.cliente.codCliente = ?1")
-	double sumPrestitiByCliente(long cod_cliente);
+	Double sumPrestitiByCliente(long cod_cliente);
 }
