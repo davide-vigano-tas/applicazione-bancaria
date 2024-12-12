@@ -19,4 +19,5 @@ public interface ClientiService {
 	List<Prestito> listaPrestitiClienti(long id);
 	List<Pagamento> listaPagamentiClienti(long id);
 	
+	Optional<Cliente> findByEmailCliente(String email);
 }

@@ -90,5 +90,10 @@ public class ClientiServiceImpl implements ClientiService{
 		clientiRepository.delete(cliente);
 	}
 
+	@Override
+	public Optional<Cliente> findByEmailCliente(String email) {
+		return clientiRepository.findByEmailCliente(email);
+	}
+
 
 }
