@@ -34,7 +34,7 @@ import eu.tasgroup.applicativo.service.PrestitoService;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ClientiServiceImplTest {
+class ClientiServiceTest {
 	
 	@Autowired
 	ClientiService clientiService;

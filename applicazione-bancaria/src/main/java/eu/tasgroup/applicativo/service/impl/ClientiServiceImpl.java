@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
@@ -11,6 +12,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.service.ClientiService;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClientiServiceImpl implements ClientiService{
@@ -47,30 +49,38 @@ public class ClientiServiceImpl implements ClientiService{
 	}
 
 	@Override
+	@Transactional
 	public int numeroConti(long id) {
 		Cliente c = clientiRepository.findById(id).get();
+		Hibernate.initialize(c.getConti());
 		return c.getConti().size();
 	}
 
 	@Override
+	@Transactional
 	public int numeroCarte(long id) {
 		Cliente c = clientiRepository.findById(id).get();
+		Hibernate.initialize(c.getCarte());
 		return c.getCarte().size();
 	}
 
 	@Override
+	@Transactional
 	public List<Prestito> listaPrestitiClienti(long id) {
 		Cliente c = clientiRepository.findById(id).get();
 		List<Prestito> lista = new ArrayList<Prestito>();
+		Hibernate.initialize(c.getPrestiti());
 		lista.addAll(c.getPrestiti());
 		return lista;
 		
 	}
 
 	@Override
+	@Transactional
 	public List<Pagamento> listaPagamentiClienti(long id) {
 		Cliente c = clientiRepository.findById(id).get();
 		List<Pagamento> lista = new ArrayList<Pagamento>();
+		Hibernate.initialize(c.getPagamenti());
 		lista.addAll(c.getPagamenti());
 		return lista;
 	}
