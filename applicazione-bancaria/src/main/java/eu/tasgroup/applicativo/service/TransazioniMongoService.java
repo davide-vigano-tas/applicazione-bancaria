@@ -12,7 +12,7 @@ public interface TransazioniMongoService {
 	List<TransazioniMongo> findAll();
 	int numeroTransazioniPerTipo(TipoTransazione tipo);
 	double calcoloMediaTransazioniPerCliente(int codCliente);
-	int numeroMedioTransazioniPerCliente();
+	double numeroMedioTransazioniPerCliente();
 	double totaleImportoPerMese(int mese);  
 	void deleteTransazioneMongo(TransazioniMongo transazione);
 

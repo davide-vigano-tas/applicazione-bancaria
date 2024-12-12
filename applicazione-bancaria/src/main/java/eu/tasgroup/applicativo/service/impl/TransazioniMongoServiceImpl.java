@@ -45,8 +45,8 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 	}
 
 	@Override
-	public int numeroMedioTransazioniPerCliente() {
-		return transazioneMongoRepository.numeroMedioTransazioniPerCliente().intValue();
+	public double numeroMedioTransazioniPerCliente() {
+		return transazioneMongoRepository.numeroMedioTransazioniPerCliente();
 	}
 
 	@Override
