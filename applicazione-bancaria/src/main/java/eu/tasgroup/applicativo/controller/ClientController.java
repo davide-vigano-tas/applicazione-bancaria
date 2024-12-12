@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
+import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
@@ -28,6 +30,7 @@ import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
+import eu.tasgroup.applicativo.service.TransazioniMongoService;
 
 @Controller
 @RequestMapping("/user")
@@ -44,6 +47,9 @@ public class ClientController {
 	
 	@Autowired
 	MovimentoContoService movimentoContoService;
+	
+	@Autowired
+	TransazioniMongoService transazioniMongoService;
 	
 	//Homepage user
 	@GetMapping({"", "/"})
@@ -209,6 +215,7 @@ public class ClientController {
 		} else return new ModelAndView("redirect:/userlogin");
 	}
 	
+	//Prelievo
 	@PostMapping("/preleva")
 	public ModelAndView preleva(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-conti");
@@ -226,8 +233,25 @@ public class ClientController {
 				transazione.setTipoTransazione(TipoTransazione.ADDEBITO);
 				transazione = transazioneService.createOrUpdate(transazione);
 				
+				TransazioniMongo tmongo = new TransazioniMongo();
+				tmongo.setCliente(c.getCodCliente());
+				tmongo.setCodTransazione(transazione.getCodTransazione());
+				tmongo.setDataTransazione(transazione.getDataTransazione());
+				tmongo.setImporto(transazione.getImporto());
+				tmongo.setTipoTransazione(transazione.getTipoTransazione());
+				
 				Conto conto = transazione.getConto();
 				contiService.createOrUpdate(conto);
+				
+				MovimentoConto mvc = new MovimentoConto();
+				
+				mvc.setConto(conto);
+				mvc.setDataMovimento(new Date());
+				mvc.setImporto(transazione.getImporto());
+				mvc.setTipoMovimento(TipoMovimento.ADDEBITO);
+				
+				movimentoContoService.createOrUpdate(mvc);
+				
 				conto.setSaldo(conto.getSaldo()-transazione.getImporto());
 				c = clientiService.findById(c.getCodCliente()).get();
 				c.setSaldoConto(c.getSaldoConto()-transazione.getImporto());
@@ -240,6 +264,78 @@ public class ClientController {
 			
 		} else return new ModelAndView("redirect:/userlogin");
 	}
+	
+	//Pagina per inserire la quantità che si desidera prelevare
+	@GetMapping("/deposita/{id}")
+	public ModelAndView depositaPage(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("user-deposito");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject(c);
+			if(contiService.findById(id).isPresent()) {
+				Conto conto = contiService.findById(id).get();
+				mv.addObject("user_conto", conto);
+				Transazione tr = new Transazione();
+				tr.setConto(conto);
+				return mv;
+			}
+			return new ModelAndView("redirect:/user/conti");
+		} else return new ModelAndView("redirect:/userlogin");
+	}
+	
+	
+	//Prelievo
+	@PostMapping("/deposita")
+	public ModelAndView deposita(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("user-conti");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			
+			if(transazione.getImporto() < 0) {
+				return new ModelAndView("redirect:/user/deposita/"+transazione.getConto().getCodConto());
+			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
+				return new ModelAndView("redirect:/user/depoita/"+transazione.getConto().getCodConto());
+			} else {
+				transazione.setDataTransazione(new Date());
+				transazione.setTipoTransazione(TipoTransazione.ACCREDITO);
+				transazione = transazioneService.createOrUpdate(transazione);
+				
+				TransazioniMongo tmongo = new TransazioniMongo();
+				tmongo.setCliente(c.getCodCliente());
+				tmongo.setCodTransazione(transazione.getCodTransazione());
+				tmongo.setDataTransazione(transazione.getDataTransazione());
+				tmongo.setImporto(transazione.getImporto());
+				tmongo.setTipoTransazione(transazione.getTipoTransazione());
+				
+				Conto conto = transazione.getConto();
+				contiService.createOrUpdate(conto);
+				
+				MovimentoConto mvc = new MovimentoConto();
+				
+				mvc.setConto(conto);
+				mvc.setDataMovimento(new Date());
+				mvc.setImporto(transazione.getImporto());
+				mvc.setTipoMovimento(TipoMovimento.ACCREDITO);
+				
+				movimentoContoService.createOrUpdate(mvc);
+				
+				conto.setSaldo(conto.getSaldo()+transazione.getImporto());
+				c = clientiService.findById(c.getCodCliente()).get();
+				c.setSaldoConto(c.getSaldoConto()+transazione.getImporto());
+				
+				
+				clientiService.createOrUpdate(c);
+			}
+			mv.addObject(c);
+			return mv;
+			
+		} else return new ModelAndView("redirect:/userlogin");
+	}
+	
 	
 
 }
