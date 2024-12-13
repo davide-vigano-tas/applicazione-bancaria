@@ -40,6 +40,7 @@ public class SecurityConfig {
 	                        .loginPage("/admin-login")
 	                        .failureUrl("/admin-login?error=true")
 	                        .failureHandler(failureHandler)
+	                        .usernameParameter("email")
 	                        .defaultSuccessUrl("/admin/", true)
 	                        .permitAll()
 	        )
@@ -61,13 +62,15 @@ public class SecurityConfig {
 	    	.securityMatcher("/user/**")
 	        .authorizeHttpRequests(authorize -> authorize
 	        	.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+	        	.requestMatchers("/user/user-registrazione").permitAll()
 	            .requestMatchers("/user/**").hasRole("USER")
 	            .anyRequest().authenticated()
 	        )
 	        .formLogin(form -> form
-	            .loginPage("/user-login")
-	            .failureHandler(failureHandler)
+	            .loginPage("/user/user-login")
+	            .usernameParameter("email")
 	            .defaultSuccessUrl("/user/", true)
+	            .failureHandler(failureHandler)
 	            .permitAll()
 	        )
 	        .logout(logout -> logout

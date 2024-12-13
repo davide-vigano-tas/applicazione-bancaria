@@ -27,9 +27,8 @@ public class CostumerUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
 		if (email.endsWith("@tasgroup.eu")) {
-
+			System.err.println("Sono entrato in admin");
 			Optional<Amministratore> adminOptional = ar.findByEmailAdmin(email);
 
 			return adminOptional.map((admin) -> {
