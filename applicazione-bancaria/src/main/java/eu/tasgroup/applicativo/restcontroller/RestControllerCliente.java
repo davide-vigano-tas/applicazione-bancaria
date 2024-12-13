@@ -29,6 +29,7 @@ import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import eu.tasgroup.applicativo.utility.Statistiche;
 
 @RestController
 @RequestMapping("/api")

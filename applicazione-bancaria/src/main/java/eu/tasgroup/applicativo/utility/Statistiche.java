@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.restcontroller;
+package eu.tasgroup.applicativo.utility;
 
 import java.util.Date;
 import java.util.List;
