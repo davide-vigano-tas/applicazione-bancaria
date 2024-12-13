@@ -32,7 +32,6 @@ public class BaseController {
 	
 	@GetMapping(value = "/user/user-registrazione")
 	public ModelAndView registrazioneUtente() {
-		
 		//TODO: controllo : può accedere solo se non loggato
 		
 		ModelAndView mv = new  ModelAndView();
@@ -43,9 +42,8 @@ public class BaseController {
 
 	@PostMapping(value = "/user/user-form-registrazione")
 	public ModelAndView registrazioneUtenteForm(Cliente cliente) {
-
 		ModelAndView mv = new ModelAndView();
-
+		
 		if (cs.findByEmailCliente(cliente.getEmailCliente()).isPresent()) {
 			
 			// TODO: Gestire errore email già registrata
@@ -55,7 +53,7 @@ public class BaseController {
 		}else {
 			cliente.setPasswordCliente(BCryptEncoder.encode(cliente.getPasswordCliente()));
 			cs.createOrUpdate(cliente);
-			return new ModelAndView("redirect:/user-login");
+			return new ModelAndView("redirect:/user/user-login");
 		}
 	}
 	

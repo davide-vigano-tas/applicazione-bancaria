@@ -63,7 +63,8 @@ public class SecurityConfig {
 	        .authorizeHttpRequests(authorize -> authorize
 	        	.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 	        	.requestMatchers("/user/user-registrazione").permitAll()
-	            .requestMatchers("/user/**").hasRole("USER")
+	        	.requestMatchers("/user/user-form-registrazione").permitAll()
+	        	.requestMatchers("/user/**").hasRole("USER")
 	            .anyRequest().authenticated()
 	        )
 	        .formLogin(form -> form
