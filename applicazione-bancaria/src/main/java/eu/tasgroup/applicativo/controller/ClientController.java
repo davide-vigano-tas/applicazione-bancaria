@@ -80,7 +80,7 @@ public class ClientController {
 			mv.addObject("user", cliente.get());
 			return mv;
 		}
-		return new ModelAndView("redirect:/userlogin");
+		return new ModelAndView("redirect:/user/user-login");
 
 	}
 
@@ -97,7 +97,7 @@ public class ClientController {
 			mv.addObject("user_conti", conti);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Pagina del form per aprire un nuovo conto
@@ -114,7 +114,7 @@ public class ClientController {
 			mv.addObject("user_conto", conto);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Inserimento nuovo conto
@@ -138,7 +138,7 @@ public class ClientController {
 			mv.addObject("user_carte", carte);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Pagina del form per creare una nuova carta
@@ -154,7 +154,7 @@ public class ClientController {
 			mv.addObject("user_carta", carta);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Inserimento nuovo conto
@@ -183,7 +183,7 @@ public class ClientController {
 			return new ModelAndView("redirect:/user/conti");
 
 		}
-		return new ModelAndView("redirect:/userlogin");
+		return new ModelAndView("redirect:/user/user-login");
 
 	}
 
@@ -204,7 +204,7 @@ public class ClientController {
 			return new ModelAndView("redirect:/user/conti");
 
 		}
-		return new ModelAndView("redirect:/userlogin");
+		return new ModelAndView("redirect:/user/user-login");
 
 	}
 
@@ -221,7 +221,7 @@ public class ClientController {
 			mv.addObject("user_richieste", rp);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Prestiti andati a buonfine
@@ -237,7 +237,7 @@ public class ClientController {
 			mv.addObject("user_prestiti", prestiti);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Elenco pagamenti cliente
@@ -253,7 +253,7 @@ public class ClientController {
 			mv.addObject("user_pagamenti", pagamenti);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Pagina per inserire la quantità che si desidera prelevare
@@ -275,7 +275,7 @@ public class ClientController {
 			}
 			return new ModelAndView("redirect:/user/conti");
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Prelievo
@@ -298,7 +298,7 @@ public class ClientController {
 			return mv;
 
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Pagina per inserire la quantità che si desidera prelevare
@@ -320,7 +320,7 @@ public class ClientController {
 			}
 			return new ModelAndView("redirect:/user/conti");
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Prelievo
@@ -341,7 +341,7 @@ public class ClientController {
 			return mv;
 
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Form richiesta prestito
@@ -358,7 +358,7 @@ public class ClientController {
 			mv.addObject("user_richiesta", rp);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Richiesta prrestito
@@ -390,7 +390,7 @@ public class ClientController {
 			mv.addObject("user_contitarget", conti);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 	}
 
 	// Impostazioni transazione bancaria verso un altro conto
@@ -415,7 +415,7 @@ public class ClientController {
 			mv.addObject("user_transazionebancaria", tb);
 			return mv;
 		} else
-			return new ModelAndView("redirect:/userlogin");
+			return new ModelAndView("redirect:/user/user-login");
 
 	}
 
