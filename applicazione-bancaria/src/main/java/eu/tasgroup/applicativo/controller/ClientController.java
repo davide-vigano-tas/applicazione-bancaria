@@ -270,6 +270,7 @@ public class ClientController {
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
+				mv.addObject("transazione", tr);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
@@ -314,6 +315,7 @@ public class ClientController {
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
+				mv.addObject("transazione", tr);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
