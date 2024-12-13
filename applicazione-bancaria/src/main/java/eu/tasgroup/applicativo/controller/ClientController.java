@@ -248,7 +248,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			List<Pagamento> pagamenti = clientiService.listaPagamentiClienti(c.getCodCliente());
 			mv.addObject("user_pagamenti", pagamenti);
 			return mv;
@@ -264,7 +264,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
@@ -294,7 +294,7 @@ public class ClientController {
 			} else if (!gc.prelievo(transazione, c)) {
 				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
 			}
-			mv.addObject(c);
+			mv.addObject("user",c);
 			return mv;
 
 		} else
@@ -309,7 +309,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
@@ -337,7 +337,7 @@ public class ClientController {
 			} else if (!gc.deposito(transazione, c)) {
 				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
 			}
-			mv.addObject(c);
+			mv.addObject("user",c);
 			return mv;
 
 		} else
@@ -383,7 +383,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			Conto conto = contiService.findById(id).get();
 			session.setAttribute("user_conto", conto);
 			List<Conto> conti = contiService.getAll();
@@ -403,7 +403,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			Conto origine = (Conto) session.getAttribute("user_conto");
 			if (!contiService.findById(id).isPresent())
 				return new ModelAndView("redirect:/user/contitarget/" + origine.getCodConto());
