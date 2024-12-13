@@ -11,13 +11,14 @@
 				<div class="card shadow-sm">
 					<div class="card-header bg-primary text-white">
 						<h4 class="text-center">
-							<i class="fas fa-sign-in-alt"></i> Crea nuovo conto
+							<i class="fas fa-university"></i> Crea nuovo conto
 						</h4>
 					</div>
 					<div class="card-body">
-						<form th:action="@{user/nuovoConto}" th:object="${user_conto}"
+						<form th:action="@{nuovoConto}" th:object="${user_conto}"
 							method="post">
 							<div class="mb-3">
+								<input type="hidden" th:field="*{cliente}" th:value="${user}">
 								<label for="tipoConto" class="form-label">Tipologia Conto</label> 
 								<select th:field="*{tipoConto}" id="tipoConto" class="form-select" required>
                     				<option value="" disabled selected>Scegli una tipologia</option>
@@ -26,7 +27,7 @@
 							</div>
 							<div class="d-grid">
 								<button type="submit" class="btn btn-primary">
-									<i class="fas fa-sign-in-alt"></i> Crea
+									<i class="fas fa-plus"></i> Crea
 								</button>
 							</div>
 						</form>
