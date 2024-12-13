@@ -3,7 +3,6 @@ package eu.tasgroup.applicativo.conf;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,46 +26,50 @@ public class CostumerUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		System.err.println("Sono dentro");
+		System.err.println("Email: " + email);
 		if (email.endsWith("@tasgroup.eu")) {
 			System.err.println("Sono entrato in admin");
-			Optional<Amministratore> adminOptional = ar.findByEmailAdmin(email);
+			
+			try {
+				Optional<Amministratore> adminOptional = ar.findByEmailAdmin(email);
 
-			return adminOptional.map((admin) -> {
-				if (admin.isAccountBloccato()) {
-					throw new LockedException("Account amministratore bloccato: " + email);
+				if (adminOptional.isPresent()) {
+					
+					Amministratore admin = adminOptional.get();
+					
+					System.err.println("Admin: \n" + admin);
+					return User.withUsername(admin.getEmailAdmin())
+							.accountLocked(admin.isAccountBloccato())
+							.password(admin.getPasswordAdmin()).roles("ADMIN")
+							.build();
 				}
-				
-                if (admin.getTentativiErrati() > 0) {
-                    admin.setTentativiErrati(0);
-                    ar.save(admin);
-                }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			throw new UsernameNotFoundException(email);
 
-				return User.builder()
-						.username(admin.getEmailAdmin())
-						.password(admin.getPasswordAdmin())
-						.roles("ADMIN")
-						.build();
-				}).orElseThrow(() -> new UsernameNotFoundException("Amministratore non trovato " + email));
+			
 		}
 
-		Optional<Cliente> clienteOptional = cr.findByEmailCliente(email);
-
-		return clienteOptional.map((cliente) -> {
+		try {
+			Optional<Cliente> clienteOptional = cr.findByEmailCliente(email);
 			
-			if (cliente.isAccountBloccato()) {
-				System.err.println("Utente bloccato");
-				throw new LockedException("Account cliente bloccato: " + email);
+			System.err.println(clienteOptional);
+			if (clienteOptional.isPresent()) {
+				
+				Cliente cliente = clienteOptional.get();
+				
+				System.err.println("Cliente: \n" + cliente);
+				return User.withUsername(cliente.getEmailCliente())
+						.accountLocked(cliente.isAccountBloccato())
+						.password(cliente.getPasswordCliente()).roles("USER")
+						.build();
 			}
-			
-			/*
-			 * if (cliente.getTentativiErrati() > 0) { cliente.setTentativiErrati(0);
-			 * cr.save(cliente); }
-			 */
-			return User.builder()
-					.username(cliente.getEmailCliente())
-					.password(cliente.getPasswordCliente())
-					.roles("USER").build();
-			}).orElseThrow(() -> new UsernameNotFoundException("Cliente non trovato " + email));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		throw new UsernameNotFoundException(email);
 	}
 
 }

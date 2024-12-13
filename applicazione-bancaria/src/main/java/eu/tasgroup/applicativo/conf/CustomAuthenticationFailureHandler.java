@@ -26,26 +26,40 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
-		/*
-		 * String email = request.getParameter("username");
-		 * 
-		 * if (email.endsWith("@tasgroup.eu")) {
-		 * ar.findByEmailAdmin(email).ifPresent(admin -> { int nuoviTentativi =
-		 * admin.getTentativiErrati() + 1; admin.setTentativiErrati(nuoviTentativi); if
-		 * (nuoviTentativi >= 100) { admin.setAccountBloccato(true); } ar.save(admin);
-		 * }); } else { cr.findByEmailCliente(email).ifPresent(cliente -> { int
-		 * nuoviTentativi = cliente.getTentativiErrati() + 1;
-		 * cliente.setTentativiErrati(nuoviTentativi); if (nuoviTentativi >= 100) {
-		 * cliente.setAccountBloccato(true); } cr.save(cliente); }); }
-		 * 
-		 * String password = request.getParameter("password"); String passwordDB =
-		 * cr.findByEmailCliente(email).get().getPasswordCliente();
-		 * 
-		 * System.err.println("Email inserita: " + email);
-		 * System.err.println("Password inserita: " + password);
-		 * System.err.println("Password Match: " + BCryptEncoder.passwordMatch(password,
-		 * passwordDB));
-		 */
-		response.sendRedirect("/user/login?error=true");
+
+		String email = request.getParameter("email");
+
+		if (email.endsWith("@tasgroup.eu")) {
+			ar.findByEmailAdmin(email).ifPresent(admin -> {
+				int nuoviTentativi = admin.getTentativiErrati() + 1;
+				admin.setTentativiErrati(nuoviTentativi);
+				if (nuoviTentativi >= 5) {
+					admin.setAccountBloccato(true);
+				}
+				ar.save(admin);
+			});
+			response.sendRedirect("/admin/admin-login?error=true");
+		} else {
+			cr.findByEmailCliente(email).ifPresent(cliente -> {
+				int nuoviTentativi = cliente.getTentativiErrati() + 1;
+				cliente.setTentativiErrati(nuoviTentativi);
+				if (nuoviTentativi >= 5) {
+					cliente.setAccountBloccato(true);
+				}
+				cr.save(cliente);
+				
+				String password = request.getParameter("password");
+				String passwordDB = cr.findByEmailCliente(email).get().getPasswordCliente();
+				boolean isBloccato = cr.findByEmailCliente(email).get().isAccountBloccato();
+
+				System.err.println("Email inserita: " + email);
+				System.err.println("Password inserita: " + password);
+				System.err.println("Password Match: " + BCryptEncoder.passwordMatch(password, passwordDB));
+				System.err.println("Account Bloccato: " + isBloccato);
+			});
+			
+			// TODO: Mandare i vari messaggi di errore
+			response.sendRedirect("/user/user-login?error=true");
+		}
 	}
 }

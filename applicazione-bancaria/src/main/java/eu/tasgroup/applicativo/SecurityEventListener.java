@@ -4,6 +4,7 @@ import org.springframework.security.authentication.event.AuthenticationFailureBa
 import org.springframework.stereotype.Component;
 import org.springframework.context.event.EventListener;
 
+//TODO: Da rimuovere 
 @Component
 public class SecurityEventListener {
 
