@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('transazioni')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Transazioni</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${c.nomeCliente}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${c.cognomeCliente}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${c.emailCliente}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${c.saldoConto}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                	<table class="table table-striped">
+                		<thead>
+                			<tr>
+                				<th>Codice Transazioni</th>
+                				<th>Importo</th>
+                				<th>Data Transazione</th>
+                				<th>Tipo Transazione</th>
+                			</tr>
+                		</thead>
+                		<tbody>
+                			<tr th:each="transazione : ${user_transazioni}">
+                				<td th:text="${transazione.codTransazione}"></td>
+                				<td th:text="${transazione.importo}"></td>
+                				<td th:text="${transazione.dataTransazione}"></td>
+                				<td th:text="${transazione.tipoTransazione}"></td>
+                			</tr>
+                		</tbody>
+                	</table>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
