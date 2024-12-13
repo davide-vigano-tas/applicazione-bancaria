@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
+import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
@@ -101,6 +102,7 @@ public class ClientController {
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if(cliente.isPresent()) {
+			mv.addObject("tipo_conto",TipoConto.values());
 			mv.addObject("user", cliente.get());
 			Conto conto = new Conto();
 			conto.setCliente(cliente.get());
