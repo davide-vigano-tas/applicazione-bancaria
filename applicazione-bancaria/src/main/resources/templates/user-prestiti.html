@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments/cdn :: cdn('transazioni')}"></head>
+<head th:replace="~{fragments/cdn :: cdn('prestiti')}"></head>
 <body>
 	<div th:insert="~{fragments/nav :: navbar}"></div>
 
 <div class="container py-5">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h4>Transazioni</h4>
+                <h4>Prestiti</h4>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
@@ -25,18 +25,18 @@
                 	<table class="table table-striped">
                 		<thead>
                 			<tr>
-                				<th>Codice Transazioni</th>
+                				<th>Codice Prestito</th>
                 				<th>Importo</th>
-                				<th>Data Transazione</th>
-                				<th>Tipo Transazione</th>
+                				<th>Tassa Interesse</th>
+                				<th>Durata</th>
                 			</tr>
                 		</thead>
                 		<tbody>
-                			<tr th:each="transazione : ${user_transazioni}">
-                				<td th:text="${transazione.codTransazione}"></td>
-                				<td th:text="${transazione.importo}"></td>
-                				<td th:text="${transazione.dataTransazione}"></td>
-                				<td th:text="${transazione.tipoTransazione}"></td>
+                			<tr th:each="prestito : ${user_prestiti}">
+                				<td th:text="${prestito.codPrestito}"></td>
+                				<td th:text="${prestito.importo}"></td>
+                				<td th:text="${prestito.tassoInteresse}"></td>
+                				<td th:text="${prestito.durataMesi}"></td>
                 			</tr>
                 		</tbody>
                 	</table>
