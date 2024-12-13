@@ -24,6 +24,7 @@ import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
@@ -32,6 +33,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
+import eu.tasgroup.applicativo.service.CartaService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
@@ -44,182 +46,226 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/user")
 public class ClientController {
-	
+
 	@Autowired
 	ClientiService clientiService;
-	
+
 	@Autowired
 	ContiService contiService;
 	
 	@Autowired
+	CartaService cartaService;
+
+	@Autowired
 	TransazioneService transazioneService;
-	
+
 	@Autowired
 	MovimentoContoService movimentoContoService;
-	
+
 	@Autowired
 	TransazioniMongoService transazioniMongoService;
-	
+
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
-	
+
 	GestioneTransazioni gc = new GestioneTransazioni();
-	
-	//Homepage user
-	@GetMapping({"", "/"})
+
+	// Homepage user
+	@GetMapping({ "", "/" })
 	public ModelAndView userPage(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-page");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			mv.addObject("user", cliente.get());
 			return mv;
 		}
 		return new ModelAndView("redirect:/userlogin");
-		
+
 	}
-	
-	
-	//Eleco conti user
+
+	// Eleco conti user
 	@GetMapping("/conti")
 	public ModelAndView userConti(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
-			List<Conto> conti = new ArrayList<Conto>(c.getConti()) ;
+			mv.addObject("user", c);
+			List<Conto> conti = new ArrayList<Conto>(c.getConti());
 			mv.addObject("user_conti", conti);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Pagina del form per aprire un nuovo conto
+
+	// Pagina del form per aprire un nuovo conto
 	@GetMapping("/nuovoConto")
 	public ModelAndView contoForm(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-contoform");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
-			mv.addObject("tipo_conto",TipoConto.values());
+		if (cliente.isPresent()) {
+			mv.addObject("tipo_conto", TipoConto.values());
 			mv.addObject("user", cliente.get());
 			Conto conto = new Conto();
 			conto.setCliente(cliente.get());
 			mv.addObject("user_conto", conto);
 			return mv;
-		}
-		else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	
-	//Inserimento nuovo conto
+
+	// Inserimento nuovo conto
 	@PostMapping("/nuovoConto")
 	public ModelAndView contoForm(Conto conto) {
 		contiService.createOrUpdate(conto);
-		
+
 		return new ModelAndView("redirect:/user/conti");
 	}
-	
-	//Transazioni legate a un conto
+
+	// Elenco carte user
+	@GetMapping("/carte")
+	public ModelAndView userCarte(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("user-carte");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if (cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject("user", c);
+			List<Carta> carte = new ArrayList<Carta>(c.getCarte());
+			mv.addObject("user_carte", carte);
+			return mv;
+		} else
+			return new ModelAndView("redirect:/userlogin");
+	}
+
+	// Pagina del form per creare una nuova carta
+	@GetMapping("/nuovoCarta")
+	public ModelAndView cartaForm(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("user-cartaform");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if (cliente.isPresent()) {
+			mv.addObject("user", cliente.get());
+			Carta carta = new Carta();
+			carta.setCliente(cliente.get());
+			mv.addObject("user_carta", carta);
+			return mv;
+		} else
+			return new ModelAndView("redirect:/userlogin");
+	}
+
+	// Inserimento nuovo conto
+	@PostMapping("/nuovaCarta")
+	public ModelAndView cartaForm(Carta carta) {
+		cartaService.createOrUpdate(carta);
+
+		return new ModelAndView("redirect:/user/conti");
+	}
+
+	// Transazioni legate a un conto
 	@GetMapping("/transazioniConto/{id}")
 	public ModelAndView transazioniConto(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-transazioniconto");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			mv.addObject("user", cliente.get());
-			if(contiService.findById(id).isPresent()) {
+			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
-				List<Transazione> transazioni = transazioneService.getAll()
-						.stream().filter((t) -> t.getConto().equals(conto)).toList();
+				List<Transazione> transazioni = transazioneService.getAll().stream()
+						.filter((t) -> t.getConto().equals(conto)).toList();
 				mv.addObject("user_transazioni", transazioni);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
-			
+
 		}
 		return new ModelAndView("redirect:/userlogin");
-		
+
 	}
-	
-	
-	//Movimenti legate a un conto
+
+	// Movimenti legate a un conto
 	@GetMapping("/movimentiConto/{id}")
 	public ModelAndView movimentiConto(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-movimenticonto");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			mv.addObject("user", cliente.get());
-			if(contiService.findById(id).isPresent()) {
+			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				List<MovimentoConto> movimenti = movimentoContoService.findMovimentiContoByConto(conto);
 				mv.addObject("user_movimenti", movimenti);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
-			
+
 		}
 		return new ModelAndView("redirect:/userlogin");
-		
+
 	}
-	
-	//Visualizza richieste prestiti
+
+	// Visualizza richieste prestiti
 	@GetMapping("/richiestePrestiti")
 	public ModelAndView userRichiestePrestiti(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-richiesteprestiti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
-			List<RichiestaPrestito> rp = new ArrayList<RichiestaPrestito>(c.getRichiestePrestiti()) ;
+			List<RichiestaPrestito> rp = new ArrayList<RichiestaPrestito>(c.getRichiestePrestiti());
 			mv.addObject("user_richieste", rp);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Prestiti andati a buonfine
+
+	// Prestiti andati a buonfine
 	@GetMapping("/prestiti")
 	public ModelAndView userPrestiti(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-prestiti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
 			List<Prestito> prestiti = clientiService.listaPrestitiClienti(c.getCodCliente());
 			mv.addObject("user_prestiti", prestiti);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Elenco pagamenti cliente
+
+	// Elenco pagamenti cliente
 	@GetMapping("/pagamenti")
 	public ModelAndView userPagamenti(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-pagamenti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
 			List<Pagamento> pagamenti = clientiService.listaPagamentiClienti(c.getCodCliente());
 			mv.addObject("user_pagamenti", pagamenti);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Pagina per inserire la quantità che si desidera prelevare
+
+	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/preleva/{id}")
 	public ModelAndView prelevaPage(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-addebito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
-			if(contiService.findById(id).isPresent()) {
+			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
@@ -227,41 +273,43 @@ public class ClientController {
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Prelievo
+
+	// Prelievo
 	@PostMapping("/preleva")
 	public ModelAndView preleva(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			
-			if(transazione.getImporto() < 0) {
-				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
+
+			if (transazione.getImporto() < 0) {
+				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
 			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
-				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
-			} else if(!gc.prelievo(transazione, c)) {
-				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
+				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+			} else if (!gc.prelievo(transazione, c)) {
+				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
 			}
 			mv.addObject(c);
 			return mv;
-			
-		} else return new ModelAndView("redirect:/userlogin");
+
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Pagina per inserire la quantità che si desidera prelevare
+
+	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/deposita/{id}")
 	public ModelAndView depositaPage(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-deposito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
-			if(contiService.findById(id).isPresent()) {
+			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
@@ -269,67 +317,69 @@ public class ClientController {
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	
-	//Prelievo
+
+	// Prelievo
 	@PostMapping("/deposita")
 	public ModelAndView deposita(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			
-			if(transazione.getImporto() < 0) {
-				return new ModelAndView("redirect:/user/deposita/"+transazione.getConto().getCodConto());
-			} else if(!gc.deposito(transazione, c)) {
-				return new ModelAndView("redirect:/user/deposita/"+transazione.getConto().getCodConto());
+
+			if (transazione.getImporto() < 0) {
+				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
+			} else if (!gc.deposito(transazione, c)) {
+				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
 			}
 			mv.addObject(c);
 			return mv;
-			
-		} else return new ModelAndView("redirect:/userlogin");
+
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Form richiesta prestito
+
+	// Form richiesta prestito
 	@GetMapping("/richiediPrestito")
 	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-richiestaform");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject("user", c);
 			RichiestaPrestito rp = new RichiestaPrestito();
 			rp.setCliente(c);
 			mv.addObject("user_richiesta", rp);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	
-	//Richiesta prrestito
+
+	// Richiesta prrestito
 	@PostMapping("/richiediPrestito")
 	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
-		if(richiestaPrestito.getImporto() < 0)
+		if (richiestaPrestito.getImporto() < 0)
 			return new ModelAndView("redirect:/user/richiediPrestito");
 		richiestaPrestito.setDataRichiesta(new Date());
 		richiestaPrestito.setStato(StatoRichiestaPrestito.IN_ATTESA);
 		richiestePrestitoService.createOrUpdate(richiestaPrestito);
 		return new ModelAndView("redirect:/user/richiestePrestiti");
 	}
-	
-	//Lista di conti,tra cui scegliere a quale si vuole trasferire denaro
+
+	// Lista di conti,tra cui scegliere a quale si vuole trasferire denaro
 	@GetMapping("/contitarget/{id}")
-	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails, 
+	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
 		ModelAndView mv = new ModelAndView("user-contitarget");
-		if(!contiService.findById(id).isPresent()) return new ModelAndView("redirect:/user/conti");
+		if (!contiService.findById(id).isPresent())
+			return new ModelAndView("redirect:/user/conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
 			Conto conto = contiService.findById(id).get();
@@ -337,52 +387,57 @@ public class ClientController {
 			List<Conto> conti = contiService.getAll();
 			mv.addObject("user_contitarget", conti);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
+		} else
+			return new ModelAndView("redirect:/userlogin");
 	}
-	
-	//Impostazioni transazione bancaria verso un altro conto
+
+	// Impostazioni transazione bancaria verso un altro conto
 	@GetMapping("/formtransazionebancaria/{id}")
-	public ModelAndView formTBancaria(@PathVariable long id,
-			@AuthenticationPrincipal UserDetails userDetails, 
+	public ModelAndView formTBancaria(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
 		ModelAndView mv = new ModelAndView("user-tbancaria-form");
-		
+
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
+		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 			mv.addObject(c);
 			Conto origine = (Conto) session.getAttribute("user_conto");
-			if(!contiService.findById(id).isPresent()) return new ModelAndView("redirect:/user/contitarget/"+
-					origine.getCodConto());
+			if (!contiService.findById(id).isPresent())
+				return new ModelAndView("redirect:/user/contitarget/" + origine.getCodConto());
 			Conto destinazione = contiService.findById(id).get();
 			TransazioneBancaria tb = new TransazioneBancaria();
 			tb.setContoOrigine(origine);
 			tb.setContoDestinazione(destinazione);
-	
+
 			mv.addObject("user_transazionebancaria", tb);
 			return mv;
-		} else return new ModelAndView("redirect:/userlogin");
-	
+		} else
+			return new ModelAndView("redirect:/userlogin");
+
 	}
-	
+
 	@PostMapping("/transazionebancaria")
-	public ModelAndView transazioneBancaria( @RequestParam String metodoPagamento, 
-			TransazioneBancaria tb, HttpSession session) {
-		if(tb.getImporto() <0 )
-			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
-		if(tb.getImporto() > tb.getContoOrigine().getSaldo())
-			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
-		
-		
+	public ModelAndView transazioneBancaria(@RequestParam String metodoPagamento, TransazioneBancaria tb,
+			HttpSession session) {
+		if (tb.getImporto() < 0)
+			return new ModelAndView(
+					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
+		if (tb.getImporto() > tb.getContoOrigine().getSaldo())
+			return new ModelAndView(
+					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
+
 		Pagamento p = new Pagamento();
 		try {
-			p.setMetodoPagamento(TipoMetodo.valueOf(metodoPagamento.toUpperCase())); 
-		}catch (IllegalArgumentException e) {
-			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+			p.setMetodoPagamento(TipoMetodo.valueOf(metodoPagamento.toUpperCase()));
+		} catch (IllegalArgumentException e) {
+			return new ModelAndView(
+					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		}
-		
-		if(!gc.transazioneBancaria(tb, p))  return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+
+		if (!gc.transazioneBancaria(tb, p))
+			return new ModelAndView(
+					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		session.removeAttribute("user_conto");
 		return new ModelAndView("redirect:/user/conti");
 	}
