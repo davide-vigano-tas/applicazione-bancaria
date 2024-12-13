@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,18 +49,23 @@ public class Cliente implements Serializable {
     @Column(name = "saldo_conto", nullable = false)
     private double saldoConto = 0.0;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Conto> conti = new HashSet<>();
     
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Carta> carte = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Prestito> prestiti = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<RichiestaPrestito> richiestePrestiti = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Pagamento> pagamenti = new HashSet<>();
     
