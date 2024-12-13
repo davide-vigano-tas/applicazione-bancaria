@@ -51,6 +51,15 @@ footer nav {
 	padding: 30px;
 }
 
+footer a {
+	text-decoration: none;
+	color: #212529;
+}
+
+footer a:hover {
+	color: #30A3E6;
+}
+
 footer section {
 	float: left;
 	padding: 30px;

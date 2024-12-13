@@ -1,39 +1,45 @@
 
 <div th:fragment="footer" xmlns:th="http://www.w3.org/1999/xhtml"
 	xmlns:sec="http://thymeleaf.org/extras/spring-security">
-	<nav>
+	
+	<div class="container">
+	<div class="row justify-content-around">
+	
+	<nav class="col-md-3">
 		<h3>Navigazione</h3>
-		<ul sec:authorize="!hasRole('ADMIN')">
-			<li><a href="/user">Sezione utenti</a>
-			<li><a href="/user/conti">Elenco conti</a>
-			<li><a href="/user/nuovoConto">Crea nuovo conto</a>
-			<li><a href="/admin">Sezione Admin</a>
+		<ul class="nav flex-column" sec:authorize="!hasRole('ADMIN')">
+			<li class="nav nav-item mt-1"><a href="/user">Sezione utenti</a>
+			<li class="nav nav-item mt-1"><a href="/user/conti">Elenco conti</a>
+			<li class="nav nav-item mt-1"><a href="/user/nuovoConto">Crea nuovo conto</a>
+			<li class="nav nav-item mt-1"><a href="/admin">Sezione Admin</a>
 		</ul>
-		<ul sec:authorize="hasRole('ADMIN')">
-			<li><a href="/admin">Sezione Admin</a>
-			<li><a href="/admin">Elenco conti</a>
-			<li><a href="/admin">Elenco utenti</a>
-			<li><a href="/user">Sezione Utenti</a>
+		<ul class="nav flex-column"  sec:authorize="hasRole('ADMIN')">
+			<li class="nav nav-item mt-1"><a href="/admin">Sezione Admin</a>
+			<li class="nav nav-item mt-1"><a href="/admin">Elenco conti</a>
+			<li class="nav nav-item mt-1"><a href="/admin">Elenco utenti</a>
+			<li class="nav nav-item mt-1"><a href="/user">Sezione Utenti</a>
 		</ul>
 	</nav>
 
-	<nav>
+	<nav class="col-md-3">
 		<h3>Roba</h3>
-		<ul>
-			<li><a href="#">...</a>
-			<li><a href="#">...</a>
-			<li><a href="#">...</a>
-			<li><a href="#">Site Map</a>
+		<ul class="nav flex-column" >
+			<li class="nav nav-item mt-1"><a href="#">Roba 1</a>
+			<li class="nav nav-item mt-1"><a href="#">Roba 2</a>
+			<li class="nav nav-item mt-1"><a href="#">Roba 3</a>
+			<li class="nav nav-item mt-1"><a href="#">Site Map</a>
 		</ul>
 	</nav>
 
-	<section>
+	<section class="col-md-3">
 		<h3>Network</h3>
-		<ul>
-			<li><a href="#">Facebook</a>
-			<li><a href="#">Instagram</a>
-			<li><a href="#">X</a>
-			<li><a href="#">Linkedin</a>
+		<ul class="nav flex-column" >
+			<li class="nav nav-item mt-1"><a href="#">Facebook</a>
+			<li class="nav nav-item mt-1"><a href="#">Instagram</a>
+			<li class="nav nav-item mt-1"><a href="#">X</a>
+			<li class="nav nav-item mt-1"><a href="#">Linkedin</a>
 		</ul>
 	</section>
+	</div>
+	</div>
 </div>
