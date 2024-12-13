@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.service.AmministratoriService;
+import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 
 @Controller
@@ -19,6 +21,8 @@ public class BaseController {
 	private ClientiService cs;
 	@Autowired
 	private AmministratoriService as;
+	@Autowired
+	private ClientiMongoService cms;
 	
 	@GetMapping("/")
 	public ModelAndView home() {
@@ -52,7 +56,21 @@ public class BaseController {
 			return mv;
 		}else {
 			cliente.setPasswordCliente(BCryptEncoder.encode(cliente.getPasswordCliente()));
-			cs.createOrUpdate(cliente);
+			cliente = cs.createOrUpdate(cliente);
+			
+			// Aggiungo il cliente anche su MongoDB
+			ClienteMongo clienteMongo = new ClienteMongo();
+			clienteMongo.setAccountBloccato(cliente.isAccountBloccato());
+			clienteMongo.setCodCliente(cliente.getCodCliente());
+			clienteMongo.setCognomeCliente(cliente.getCognomeCliente());
+			clienteMongo.setEmailCliente(cliente.getEmailCliente());
+			clienteMongo.setNomeCliente(cliente.getNomeCliente());
+			clienteMongo.setPasswordCliente(cliente.getPasswordCliente());
+			clienteMongo.setSaldoConto(cliente.getSaldoConto());
+			clienteMongo.setTentativiErrati(cliente.getTentativiErrati());
+			
+			cms.createOrUpdate(clienteMongo);
+			
 			return new ModelAndView("redirect:/user/user-login");
 		}
 	}

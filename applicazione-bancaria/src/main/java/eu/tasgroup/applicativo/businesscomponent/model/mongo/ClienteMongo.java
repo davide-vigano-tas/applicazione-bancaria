@@ -17,7 +17,7 @@ public class ClienteMongo implements Serializable {
     private String _id;
 
     @Indexed(unique = true)
-    private int codCliente;
+    private long codCliente;
 
 	private String nomeCliente;
 
@@ -41,11 +41,11 @@ public class ClienteMongo implements Serializable {
 		this._id = _id;
 	}
 
-	public int getCodCliente() {
+	public long getCodCliente() {
 		return codCliente;
 	}
 
-	public void setCodCliente(int codCliente) {
+	public void setCodCliente(long codCliente) {
 		this.codCliente = codCliente;
 	}
 
