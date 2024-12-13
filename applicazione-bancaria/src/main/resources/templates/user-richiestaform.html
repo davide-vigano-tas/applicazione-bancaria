@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Utente</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${utente.nomeCliente}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${utente.cognomeCliente}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${utente.emailCliente}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${utente.saldoConto}"></span></p>
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${utente.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${utente.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h5><i class="fa-regular fa-building-columns"></i></h5>
+                        <p><strong>Richiesta prestito:</strong> </p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <form th:action="@{/user/richiestaPrestito}" th:object="${user_richiesta}" method="post"  class="form-horizontal" >
+                        		<div class="form-group">
+                        <input type="hidden" th:field="*{cliente}">
+						<label class="col-md-1 control-label">Importo</label>
+						<div class="col-md-4">
+							<div class="input-group">
+								<span class="input-group-addon"> <i
+									class="fas fa-eur"></i>
+								</span> <input type="number" step="0.01" name="importo" id="importo" th:field="*{importo}"
+									placeholder="importo.." class="form-control" required>
+							</div>
+						</div>
+						
+					</div>
+                        </form>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
