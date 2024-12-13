@@ -10,7 +10,7 @@
                 <h4>Informazioni Utente</h4>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <div class="col-md-6">
                         <p><strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span></p>
                         <p><strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span></p>
@@ -23,18 +23,38 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row">
+                <div class="row my-4">
                     <div class="col-md-4 text-center">
-                        <h5><i class="fas fa-credit-card"></i></h5>
-                        <p><strong>Carte:</strong> <span th:text="${user.carte.size()}"></span></p>
+                    	<a href="/user/carte">
+	                        <i class="fas fa-credit-card"></i><br>
+	                        <strong>Carte:</strong> <span th:text="${user.carte.size()}"></span>
+                    	</a>
                     </div>
                     <div class="col-md-4 text-center">
-                        <h5><i class="fas fa-university"></i></h5>
-                        <p><strong>Conti:</strong> <span th:text="${user.conti.size()}"></span></p>
+	                    <a href="/user/conti">
+	                        <i class="fas fa-university"></i><br>
+	                        <strong>Conti:</strong> <span th:text="${user.conti.size()}"></span>
+	                    </a>
                     </div>
                     <div class="col-md-4 text-center">
-                        <h5><i class="fas fa-hand-holding-usd"></i></h5>
-                        <p><strong>Prestiti:</strong> <span th:text="${user.prestiti.size()}"></span></p>
+	                    <a href="/user/prestiti">
+	                        <i class="fas fa-hand-holding-usd"></i><br>
+	                        <strong>Prestiti:</strong> <span th:text="${user.prestiti.size()}"></span>
+	                    </a>
+                    </div>
+                </div>
+                <div class="row my-4">
+                    <div class="col-md-4 text-center">
+                    	<a href="/user/pagamenti">
+	                        <i class="fas fa-euro"></i><br>
+	                        <strong>Pagamenti:</strong> <span th:text="${user.pagamenti.size()}"></span>
+                    	</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+	                    <a href="/user/richiestePrestiti">
+	                        <i class="fas fa-hand-holding-usd"></i><br>
+	                        <strong>Prestiti Richiesti:</strong> <span th:text="${user.richiestePrestiti.size()}"></span>
+	                    </a>
                     </div>
                 </div>
             </div>
