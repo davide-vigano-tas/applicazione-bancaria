@@ -2,21 +2,21 @@ package eu.tasgroup.applicativo.conf;
 
 import java.util.Optional;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 
-@Service
+@Configuration
 public class CostumerUserDetailsService implements UserDetailsService {
-
+	
 	private final AmministratoriRepository ar;
 	private final ClientiRepository cr;
 
@@ -54,13 +54,14 @@ public class CostumerUserDetailsService implements UserDetailsService {
 		return clienteOptional.map((cliente) -> {
 			
 			if (cliente.isAccountBloccato()) {
+				System.err.println("Utente bloccato");
 				throw new LockedException("Account cliente bloccato: " + email);
 			}
 			
-			if (cliente.getTentativiErrati() > 0) {
-                cliente.setTentativiErrati(0);
-                cr.save(cliente);
-            }
+			/*
+			 * if (cliente.getTentativiErrati() > 0) { cliente.setTentativiErrati(0);
+			 * cr.save(cliente); }
+			 */
 			return User.builder()
 					.username(cliente.getEmailCliente())
 					.password(cliente.getPasswordCliente())
