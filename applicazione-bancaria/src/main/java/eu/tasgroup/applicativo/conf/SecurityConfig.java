@@ -29,45 +29,66 @@ public class SecurityConfig {
 	@Bean
 	@Order(1)
     SecurityFilterChain adminFilterChain(HttpSecurity http, CustomAuthenticationFailureHandler failureHandler) throws Exception {
-        http.authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-        )
-        .formLogin((form) -> form
-                        .loginPage("/admin-login")
-                        .failureUrl("/admin-login?error=true")
-                        .failureHandler(failureHandler)
-                        .defaultSuccessUrl("/admin/", true)
-                        .permitAll()
-        )
-        .logout((logout) -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout"))
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .permitAll()
-        );
-        return http.build();
+        http
+	        .securityMatcher("/admin/**")
+	        .authorizeHttpRequests((authorize) -> authorize
+	        				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+	                        .requestMatchers("/admin/**").hasRole("ADMIN")
+	                        .anyRequest().authenticated()
+	        )
+	        .formLogin((form) -> form
+	                        .loginPage("/admin-login")
+	                        .failureUrl("/admin-login?error=true")
+	                        .failureHandler(failureHandler)
+	                        .defaultSuccessUrl("/admin/", true)
+	                        .permitAll()
+	        )
+	        .logout((logout) -> logout
+	                        .logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout"))
+	                        .logoutSuccessUrl("/")
+	                        .invalidateHttpSession(true)
+	                        .clearAuthentication(true)
+	                        .permitAll()
+	        );
+       return http.build();
     }
 	
-	/*
-	 * @Bean
-	 * 
-	 * @Order(2) SecurityFilterChain clientefilterChain(HttpSecurity http) throws
-	 * Exception { http.authorizeHttpRequests((authorize) -> authorize
-	 * .requestMatchers("/user/**").hasRole("USER") ) .formLogin((form) -> form
-	 * .loginPage("/user-login") .failureUrl("/user-login?error=true")
-	 * .defaultSuccessUrl("/user/", true) .permitAll() ) .logout((logout) -> logout
-	 * .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-	 * .logoutSuccessUrl("/") .invalidateHttpSession(true)
-	 * .clearAuthentication(true) .permitAll() ); return http.build(); }
-	 * 
-	 * @Bean
-	 * 
-	 * @Order(3) SecurityFilterChain defaultFilterChain(HttpSecurity http) throws
-	 * Exception { http.authorizeHttpRequests(authorize -> authorize
-	 * .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).
-	 * permitAll() .anyRequest().permitAll() ); return http.build(); }
-	 */
+	
+	@Bean
+	@Order(2)
+	SecurityFilterChain userFilterChain(HttpSecurity http, CustomAuthenticationFailureHandler failureHandler) throws Exception {
+	    http
+	    	.securityMatcher("/user/**")
+	        .authorizeHttpRequests(authorize -> authorize
+	        	.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+	            .requestMatchers("/user/**").hasRole("USER")
+	            .anyRequest().authenticated()
+	        )
+	        .formLogin(form -> form
+	            .loginPage("/user-login")
+	            .failureHandler(failureHandler)
+	            .defaultSuccessUrl("/user/", true)
+	            .permitAll()
+	        )
+	        .logout(logout -> logout
+	            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+	            .logoutSuccessUrl("/")
+	            .invalidateHttpSession(true)
+	            .clearAuthentication(true)
+	        );
+	    return http.build();
+	}
+
+	  
+	@Bean
+	@Order(3)
+	SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
+	    http
+	        .authorizeHttpRequests(authorize -> authorize
+	        		.anyRequest().permitAll()
+	        );
+	    return http.build();
+	}
 
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
