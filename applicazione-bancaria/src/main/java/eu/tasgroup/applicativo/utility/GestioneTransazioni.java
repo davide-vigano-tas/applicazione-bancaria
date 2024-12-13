@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
@@ -27,7 +29,7 @@ import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneBancariaService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
-
+@Component
 public class GestioneTransazioni {
 	
 	@Autowired
@@ -78,7 +80,7 @@ public class GestioneTransazioni {
 				Conto conto = t.getConto();
 				contiService.createOrUpdate(conto);
 				
-				
+				conto = contiService.findById(conto.getCodConto()).get();
 				
 				mvc.setConto(conto);
 				mvc.setDataMovimento(new Date());
@@ -90,11 +92,12 @@ public class GestioneTransazioni {
 				conto.setSaldo(conto.getSaldo()-t.getImporto());
 				c = clientiService.findById(c.getCodCliente()).get();
 				c.setSaldoConto(c.getSaldoConto()-t.getImporto());
-				
 			
-				
-				
-				clientiService.createOrUpdate(c);
+				conto = contiService.createOrUpdate(conto);
+				c =clientiService.createOrUpdate(c);
+
+				System.err.println(contiService.findById(conto.getCodConto()).get());
+				System.err.println(clientiService.findById(c.getCodCliente()).get());
 				
 				return true;
 				
@@ -129,7 +132,7 @@ public class GestioneTransazioni {
 				Conto conto = t.getConto();
 				contiService.createOrUpdate(conto);
 				
-				
+				conto = contiService.findById(conto.getCodConto()).get();
 				
 				mvc.setConto(conto);
 				mvc.setDataMovimento(new Date());
@@ -143,7 +146,11 @@ public class GestioneTransazioni {
 				c.setSaldoConto(c.getSaldoConto()+t.getImporto());
 				
 				
-				clientiService.createOrUpdate(c);
+				conto = contiService.createOrUpdate(conto);
+				c = clientiService.createOrUpdate(c);
+
+				System.err.println(contiService.findById(conto.getCodConto()).get());
+				System.err.println(clientiService.findById(c.getCodCliente()).get());
 				
 				return true;
 				
@@ -166,7 +173,9 @@ public class GestioneTransazioni {
 	
 		Cliente or = tb.getContoOrigine().getCliente();
 		Cliente dest = tb.getContoDestinazione().getCliente();
+		
 		try {
+			
 			
 			tb.setDataTransazione(new Date());
 			tb.setTipoTransazione(TipoTransazione.TRASFERIMENTO);
@@ -197,7 +206,8 @@ public class GestioneTransazioni {
 			pagamento.setImporto(tb.getImporto());
 			
 			pagamento = pagamentoService.createOrUpdate(pagamento);
-			clientiService.createOrUpdate(or);
+
+			System.err.println(or);
 			
 			return true;
 			
