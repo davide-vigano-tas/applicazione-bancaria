@@ -36,10 +36,10 @@
                 		</thead>
                 		<tbody>
                 			<tr th:each="movimento : ${user_movimenti}">
-                				<th th:text="${movimento.codMovimento}"></th>
-                				<th th:text="${#numbers.formatCurrency(movimento.importo)}"></th>
-                				<th th:text="${#dates.format(movimento.dataMovimento, 'yyyy-MM-dd HH:mm:ss')}"></th>
-                				<th th:text="${movimento.tipoMovimento}"></th>
+                				<td th:text="${movimento.codMovimento}"></td>
+                				<td th:text="${#numbers.formatCurrency(movimento.importo)}"></td>
+                				<td th:text="${#dates.format(movimento.dataMovimento, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                				<td th:text="${movimento.tipoMovimento}"></td>
                 			</tr>
                 			<tr>
                 				<th>
