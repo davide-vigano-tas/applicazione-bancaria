@@ -216,7 +216,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			List<RichiestaPrestito> rp = new ArrayList<RichiestaPrestito>(c.getRichiestePrestiti());
 			mv.addObject("user_richieste", rp);
 			return mv;
@@ -232,7 +232,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject(c);
+			mv.addObject("user",c);
 			List<Prestito> prestiti = clientiService.listaPrestitiClienti(c.getCodCliente());
 			mv.addObject("user_prestiti", prestiti);
 			return mv;
