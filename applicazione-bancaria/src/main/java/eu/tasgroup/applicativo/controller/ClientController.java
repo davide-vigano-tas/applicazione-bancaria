@@ -1,6 +1,7 @@
 package eu.tasgroup.applicativo.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
+import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
@@ -27,12 +30,15 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import eu.tasgroup.applicativo.utility.GestioneTransazioni;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user")
@@ -55,6 +61,8 @@ public class ClientController {
 	
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
+	
+	GestioneTransazioni gc = new GestioneTransazioni();
 	
 	//Homepage user
 	@GetMapping({"", "/"})
@@ -233,36 +241,8 @@ public class ClientController {
 				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
 			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
 				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
-			} else {
-				transazione.setDataTransazione(new Date());
-				transazione.setTipoTransazione(TipoTransazione.ADDEBITO);
-				transazione = transazioneService.createOrUpdate(transazione);
-				
-				TransazioniMongo tmongo = new TransazioniMongo();
-				tmongo.setCliente(c.getCodCliente());
-				tmongo.setCodTransazione(transazione.getCodTransazione());
-				tmongo.setDataTransazione(transazione.getDataTransazione());
-				tmongo.setImporto(transazione.getImporto());
-				tmongo.setTipoTransazione(transazione.getTipoTransazione());
-				
-				Conto conto = transazione.getConto();
-				contiService.createOrUpdate(conto);
-				
-				MovimentoConto mvc = new MovimentoConto();
-				
-				mvc.setConto(conto);
-				mvc.setDataMovimento(new Date());
-				mvc.setImporto(transazione.getImporto());
-				mvc.setTipoMovimento(TipoMovimento.ADDEBITO);
-				
-				movimentoContoService.createOrUpdate(mvc);
-				
-				conto.setSaldo(conto.getSaldo()-transazione.getImporto());
-				c = clientiService.findById(c.getCodCliente()).get();
-				c.setSaldoConto(c.getSaldoConto()-transazione.getImporto());
-				
-				
-				clientiService.createOrUpdate(c);
+			} else if(!gc.prelievo(transazione, c)) {
+				return new ModelAndView("redirect:/user/preleva/"+transazione.getConto().getCodConto());
 			}
 			mv.addObject(c);
 			return mv;
@@ -302,38 +282,8 @@ public class ClientController {
 			
 			if(transazione.getImporto() < 0) {
 				return new ModelAndView("redirect:/user/deposita/"+transazione.getConto().getCodConto());
-			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
-				return new ModelAndView("redirect:/user/depoita/"+transazione.getConto().getCodConto());
-			} else {
-				transazione.setDataTransazione(new Date());
-				transazione.setTipoTransazione(TipoTransazione.ACCREDITO);
-				transazione = transazioneService.createOrUpdate(transazione);
-				
-				TransazioniMongo tmongo = new TransazioniMongo();
-				tmongo.setCliente(c.getCodCliente());
-				tmongo.setCodTransazione(transazione.getCodTransazione());
-				tmongo.setDataTransazione(transazione.getDataTransazione());
-				tmongo.setImporto(transazione.getImporto());
-				tmongo.setTipoTransazione(transazione.getTipoTransazione());
-				
-				Conto conto = transazione.getConto();
-				contiService.createOrUpdate(conto);
-				
-				MovimentoConto mvc = new MovimentoConto();
-				
-				mvc.setConto(conto);
-				mvc.setDataMovimento(new Date());
-				mvc.setImporto(transazione.getImporto());
-				mvc.setTipoMovimento(TipoMovimento.ACCREDITO);
-				
-				movimentoContoService.createOrUpdate(mvc);
-				
-				conto.setSaldo(conto.getSaldo()+transazione.getImporto());
-				c = clientiService.findById(c.getCodCliente()).get();
-				c.setSaldoConto(c.getSaldoConto()+transazione.getImporto());
-				
-				
-				clientiService.createOrUpdate(c);
+			} else if(!gc.deposito(transazione, c)) {
+				return new ModelAndView("redirect:/user/deposita/"+transazione.getConto().getCodConto());
 			}
 			mv.addObject(c);
 			return mv;
@@ -341,6 +291,7 @@ public class ClientController {
 		} else return new ModelAndView("redirect:/userlogin");
 	}
 	
+	//Form richiesta prestito
 	@GetMapping("/richiediPrestito")
 	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-richiestaform");
@@ -356,6 +307,8 @@ public class ClientController {
 		} else return new ModelAndView("redirect:/userlogin");
 	}
 	
+	
+	//Richiesta prrestito
 	@PostMapping("/richiediPrestito")
 	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
 		if(richiestaPrestito.getImporto() < 0)
@@ -364,6 +317,72 @@ public class ClientController {
 		richiestaPrestito.setStato(StatoRichiestaPrestito.IN_ATTESA);
 		richiestePrestitoService.createOrUpdate(richiestaPrestito);
 		return new ModelAndView("redirect:/user/richiestePrestiti");
+	}
+	
+	//Lista di conti,tra cui scegliere a quale si vuole trasferire denaro
+	@GetMapping("/contitarget/{id}")
+	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails, 
+			HttpSession session) {
+		ModelAndView mv = new ModelAndView("user-contitarget");
+		if(!contiService.findById(id).isPresent()) return new ModelAndView("redirect:/user/conti");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject(c);
+			Conto conto = contiService.findById(id).get();
+			session.setAttribute("user_conto", conto);
+			List<Conto> conti = contiService.getAll();
+			mv.addObject("user_contitarget", conti);
+			return mv;
+		} else return new ModelAndView("redirect:/userlogin");
+	}
+	
+	//Impostazioni transazione bancaria verso un altro conto
+	@GetMapping("/formtransazionebancaria/{id}")
+	public ModelAndView formTBancaria(@PathVariable long id,
+			@AuthenticationPrincipal UserDetails userDetails, 
+			HttpSession session) {
+		ModelAndView mv = new ModelAndView("user-tbancaria-form");
+		
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject(c);
+			Conto origine = (Conto) session.getAttribute("user_conto");
+			if(!contiService.findById(id).isPresent()) return new ModelAndView("redirect:/user/contitarget/"+
+					origine.getCodConto());
+			Conto destinazione = contiService.findById(id).get();
+			TransazioneBancaria tb = new TransazioneBancaria();
+			tb.setContoOrigine(origine);
+			tb.setContoDestinazione(destinazione);
+	
+			mv.addObject("user_transazionebancaria", tb);
+			return mv;
+		} else return new ModelAndView("redirect:/userlogin");
+	
+	}
+	
+	@PostMapping("/transazionebancaria")
+	public ModelAndView transazioneBancaria( @RequestParam String metodoPagamento, 
+			TransazioneBancaria tb, HttpSession session) {
+		if(tb.getImporto() <0 )
+			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+		if(tb.getImporto() > tb.getContoOrigine().getSaldo())
+			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+		
+		
+		Pagamento p = new Pagamento();
+		try {
+			p.setMetodoPagamento(TipoMetodo.valueOf(metodoPagamento.toUpperCase())); 
+		}catch (IllegalArgumentException e) {
+			return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+		}
+		
+		if(!gc.transazioneBancaria(tb, p))  return new ModelAndView("redirect:/user/formtransazionebancaria/"+tb.getContoDestinazione().getCodConto());
+		session.removeAttribute("user_conto");
+		return new ModelAndView("redirect:/user/conti");
 	}
 
 }
