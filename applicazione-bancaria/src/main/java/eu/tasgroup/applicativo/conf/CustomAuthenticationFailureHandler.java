@@ -32,7 +32,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 			ar.findByEmailAdmin(email).ifPresent(admin -> {
 				int nuoviTentativi = admin.getTentativiErrati() + 1;
 				admin.setTentativiErrati(nuoviTentativi);
-				if (nuoviTentativi >= 5) {
+				if (nuoviTentativi >= 100) {
 					admin.setAccountBloccato(true);
 				}
 				ar.save(admin);
@@ -41,13 +41,19 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 			cr.findByEmailCliente(email).ifPresent(cliente -> {
 				int nuoviTentativi = cliente.getTentativiErrati() + 1;
 				cliente.setTentativiErrati(nuoviTentativi);
-				if (nuoviTentativi >= 5) {
+				if (nuoviTentativi >= 100) {
 					cliente.setAccountBloccato(true);
 				}
 				cr.save(cliente);
 			});
 		}
-
-		response.sendRedirect("/login?error=true");
+		
+		String password = request.getParameter("password");
+		String passwordDB = cr.findByEmailCliente(email).get().getPasswordCliente();
+		
+		System.err.println("Email inserita: " + email);
+		System.err.println("Password inserita: " + password);
+		System.err.println("Password Match: " + BCryptEncoder.passwordMatch(password, passwordDB));
+		response.sendRedirect("/user/login?error=true");
 	}
 }

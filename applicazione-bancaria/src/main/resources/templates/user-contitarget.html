@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('conti page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Utente</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${c.nomeCliente}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${c.cognomeCliente}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${c.emailCliente}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${c.saldoConto}"></span></p>
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${c.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${c.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                <div><h3>Scegli conto per il trasferimento</h3></div>
+                	<table>
+                		<thead>
+                			<tr>
+                				<td>Codice Conto</td>
+                				<td>Tipo Conto</td>
+                				<td></td>
+                			</tr>
+                		</thead>
+                		<tbody>
+                			<tr th:each="conto : ${user_conti}">
+                				<td th:text="${conto.codConto}"></td>
+                				<td th:text="${conto.tipoConto}"></td>
+                				<td> 
+                					<a class="btn btn-primary btn-lg w-100" 
+                					role="button" th:href="@{|/user/formtransazionebancaria/${conto.codConto}|}" ></a>
+                				</td>
+                			</tr>
+                			
+                		</tbody>
+                	</table>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

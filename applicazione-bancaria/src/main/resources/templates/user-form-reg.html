@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Login')}">
+</head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+	<div class="container py-5">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-success text-white">
+						<h4 class="text-center">
+							<i class="fas fa-user-plus"></i> Registrazione
+						</h4>
+					</div>
+					<div class="card-body">
+						<form th:action="@{/user/user-form-registrazione}" method="post" th:object="${cliente}" id="userForm">
+							<div class="mb-3">
+								<label for="nomeCliente" class="form-label">
+									<i class="fas fa-user"></i> Nome
+								</label>
+								<input type="text" class="form-control" id="nomeCliente" name="nomeCliente"
+									placeholder="Inserisci il tuo nome" required th:field="*{nomeCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="cognomeCliente" class="form-label">
+									<i class="fas fa-user"></i> Cognome
+								</label>
+								<input type="text" class="form-control" id="cognomeCliente" name="cognomeCliente"
+									placeholder="Inserisci il tuo cognome" required th:field="*{cognomeCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="emailCliente" class="form-label">
+									<i class="fas fa-envelope"></i> Email
+								</label>
+								<input type="email" class="form-control" id="emailCliente" name="emailCliente"
+									placeholder="Inserisci la tua email" required th:field="*{emailCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="passwordCliente" class="form-label">
+									<i class="fas fa-lock"></i> Password
+								</label>
+								<input type="password" class="form-control" id="passwordCliente" name="passwordCliente"
+									placeholder="Inserisci la tua password" required th:field="*{passwordCliente}">
+							</div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-success">
+									<i class="fas fa-user-plus"></i> Registrati
+								</button>
+							</div>
+						</form>
+					</div>
+					
+					<div class="card-footer d-grid">
+						<a href="/user/user-login" class="btn btn-primary mt-2">
+							<i class="fas fa-sign-in-alt"></i> Hai già un account? Accedi
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

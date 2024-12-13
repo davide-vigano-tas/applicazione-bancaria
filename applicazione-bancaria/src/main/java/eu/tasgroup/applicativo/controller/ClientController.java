@@ -372,7 +372,7 @@ public class ClientController {
 		return new ModelAndView("redirect:/user/richiestePrestiti");
 	}
 
-	// Lista di conti,tra cui scegliere a quale si vuole trasferire denaro
+	// Lista di conti,tra cui scegliere a quale si vuole trasferire denaro dal conto identificato da id
 	@GetMapping("/contitarget/{id}")
 	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
