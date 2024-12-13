@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
@@ -29,6 +30,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
+import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 
@@ -50,6 +52,9 @@ public class ClientController {
 	
 	@Autowired
 	TransazioniMongoService transazioniMongoService;
+	
+	@Autowired
+	RichiestePrestitoService richiestePrestitoService;
 	
 	//Homepage user
 	@GetMapping({"", "/"})
@@ -336,6 +341,29 @@ public class ClientController {
 		} else return new ModelAndView("redirect:/userlogin");
 	}
 	
+	@GetMapping("/richiediPrestito")
+	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("user-richiestaform");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject("user", c);
+			RichiestaPrestito rp = new RichiestaPrestito();
+			rp.setCliente(c);
+			mv.addObject("user_richiesta", rp);
+			return mv;
+		} else return new ModelAndView("redirect:/userlogin");
+	}
 	
+	@PostMapping("/richiediPrestito")
+	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
+		if(richiestaPrestito.getImporto() < 0)
+			return new ModelAndView("redirect:/user/richiediPrestito");
+		richiestaPrestito.setDataRichiesta(new Date());
+		richiestaPrestito.setStato(StatoRichiestaPrestito.IN_ATTESA);
+		richiestePrestitoService.createOrUpdate(richiestaPrestito);
+		return new ModelAndView("redirect:/user/richiestePrestiti");
+	}
 
 }
