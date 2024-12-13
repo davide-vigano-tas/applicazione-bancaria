@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,20 +60,29 @@ public class RestControllerCliente {
 
 	// Creazione cliente
 	@PostMapping("/clienti")
-	public Cliente postCliente(@RequestBody Cliente clienteMySQL) {
-		ClienteMongo clienteMongo = new ClienteMongo();
+	public  ResponseEntity<Cliente> postCliente(@RequestBody Cliente clienteMySQL) {
 
-		clienteMongo.setCodCliente((int) clienteMySQL.getCodCliente());
-		clienteMongo.setNomeCliente(clienteMySQL.getNomeCliente());
-		clienteMongo.setCognomeCliente(clienteMySQL.getCognomeCliente());
-		clienteMongo.setEmailCliente(clienteMySQL.getEmailCliente());
-		clienteMongo.setPasswordCliente(clienteMySQL.getPasswordCliente());
-		clienteMongo.setTentativiErrati(clienteMySQL.getTentativiErrati());
-		clienteMongo.setAccountBloccato(clienteMySQL.isAccountBloccato());
-		clienteMongo.setSaldoConto(clienteMySQL.getSaldoConto());
+		System.out.println("Cliente ricevuto: " + clienteMySQL);
+	    try {
+	        Cliente savedCliente = clientiService.createOrUpdate(clienteMySQL);
+	        ClienteMongo clienteMongo = new ClienteMongo();
+	        
+	        clienteMongo.setCodCliente((int) clienteMySQL.getCodCliente());
+	        clienteMongo.setNomeCliente(clienteMySQL.getNomeCliente());
+	        clienteMongo.setCognomeCliente(clienteMySQL.getCognomeCliente());
+	        clienteMongo.setEmailCliente(clienteMySQL.getEmailCliente());
+	        clienteMongo.setPasswordCliente(clienteMySQL.getPasswordCliente());
+	        clienteMongo.setTentativiErrati(clienteMySQL.getTentativiErrati());
+	        clienteMongo.setAccountBloccato(clienteMySQL.isAccountBloccato());
+	        clienteMongo.setSaldoConto(clienteMySQL.getSaldoConto());
+	        
+	        clientiMongoService.createOrUpdate(clienteMongo);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
 
-		clientiMongoService.createOrUpdate(clienteMongo);
-		return clientiService.createOrUpdate(clienteMySQL);
 	}
 
 	@GetMapping("/clienti/{id}")
@@ -88,17 +99,17 @@ public class RestControllerCliente {
 	public Statistiche getStatistiche() {
 		Statistiche statistiche = new Statistiche();
 
-		//Numero totale di clienti
+		// Numero totale di clienti
 		statistiche.setNumeroTotaleCliente(clientiService.totaleClienti());
 
-		//Cliente con il saldo più alto
+		// Cliente con il saldo più alto
 		statistiche.setClienteSaldoMaggiore(clientiService.clientiSaldoMax());
-		
-		//Data dell'ultima transazione
-		transazioniMongoService.ultimaTransazione()
-        .ifPresent(transazione -> statistiche.setDataUltimaTransazione(transazione.getDataTransazione()));
 
-		//Totale transazioni (numero e somma importi)
+		// Data dell'ultima transazione
+		transazioniMongoService.ultimaTransazione()
+				.ifPresent(transazione -> statistiche.setDataUltimaTransazione(transazione.getDataTransazione()));
+
+		// Totale transazioni (numero e somma importi)
 		List<TransazioniMongo> listaT = transazioniMongoService.findAll();
 		double somma = 0;
 		for (TransazioniMongo t : listaT) {
@@ -106,54 +117,52 @@ public class RestControllerCliente {
 		}
 		statistiche.setNumeroTotaleTransazioni(listaT.size());
 		statistiche.setSommaTotaleTransazioni(somma);
-		
-		//Saldo medio dei conti
+
+		// Saldo medio dei conti
 		statistiche.setSaldoMedioConti(contiService.saldoMedio());
 
-		//Numero di conti per cliente
+		// Numero di conti per cliente
 		Map<Long, Integer> mappaContiPerCliente = new HashMap<Long, Integer>();
 		for (Cliente c : clientiService.getClientiList()) {
 			mappaContiPerCliente.put(c.getCodCliente(), clientiService.numeroConti(c.getCodCliente()));
 		}
 		statistiche.setContiPerCliente(mappaContiPerCliente);
 
-		//Numero di carte di credito per cliente
+		// Numero di carte di credito per cliente
 		Map<Long, Integer> mappaCartePerCliente = new HashMap<Long, Integer>();
 		for (Cliente c : clientiService.getClientiList()) {
 			mappaCartePerCliente.put(c.getCodCliente(), clientiService.numeroCarte(c.getCodCliente()));
 		}
 		statistiche.setCartePerCliente(mappaCartePerCliente);
 
-		//Importo totale dei prestiti per cliente
+		// Importo totale dei prestiti per cliente
 		Map<Long, Double> mappaImportoTotPrestitiPerCliente = clientiService.getClientiList().stream()
 				.collect(Collectors.toMap(Cliente::getCodCliente,
 						cliente -> prestitoService.sumPrestitiByCliente(cliente.getCodCliente())));
 		statistiche.setImportoTotPrestitiPerCliente(mappaImportoTotPrestitiPerCliente);
 
-		//Importo totale dei pagamenti per cliente
+		// Importo totale dei pagamenti per cliente
 		Map<Long, Double> mappaImportoTotPagamentiPerCliente = clientiService.getClientiList().stream()
 				.collect(Collectors.toMap(Cliente::getCodCliente,
 						cliente -> pagamentoService.sumPagamentiByCliente(cliente.getCodCliente())));
 		statistiche.setImportoTotPagamentiPerCliente(mappaImportoTotPagamentiPerCliente);
 
-		//Numero totale di transazioni per tipo
+		// Numero totale di transazioni per tipo
 		Map<TipoTransazione, Integer> mappaNumeroTransazioniPerTipo = Arrays.stream(TipoTransazione.values()).collect(
 				Collectors.toMap(tipo -> tipo, tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)));
 		statistiche.setNumeroTransazioniPerTipo(mappaNumeroTransazioniPerTipo);
 
-		//Numero medio di transazioni per cliente
+		// Numero medio di transazioni per cliente
 		statistiche.setMediaTransazioniPerCliente(transazioniMongoService.numeroMedioTransazioniPerCliente());
-		
-		//Totale importo transazioni per mese
-		Map<String, Double> totaleImportoTranszioniPerMese = Arrays.stream(Mese.values()).collect(
-				Collectors.toMap(
-						mese -> {
-							System.err.println("Mese: " + mese.name() + ", Ordinal: " + mese.ordinal());
-				            return mese.name(); 
-						},
-						mese -> transazioniMongoService.totaleImportoPerMese(mese.ordinal())));
+
+		// Totale importo transazioni per mese
+		Map<String, Double> totaleImportoTranszioniPerMese = Arrays.stream(Mese.values())
+				.collect(Collectors.toMap(mese -> {
+					System.err.println("Mese: " + mese.name() + ", Ordinal: " + mese.ordinal());
+					return mese.name();
+				}, mese -> transazioniMongoService.totaleImportoPerMese(mese.ordinal())));
 		statistiche.setTotaleImportoTranszioniPerMese(totaleImportoTranszioniPerMese);
-		
+
 		return statistiche;
 	}
 
