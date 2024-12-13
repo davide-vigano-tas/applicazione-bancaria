@@ -190,14 +190,16 @@ public class GestioneTransazioni {
 			if(!deposito(toDest, dest)) return false;
 			
 			
+		
+			
+			tb = transazioneBancariaService.createOrUpdate(tb);
 			opmongo.setCodContoDestinazione(tb.getContoDestinazione().getCodConto());
 			opmongo.setCodContoOrigine(tb.getContoOrigine().getCodConto());
 			opmongo.setDataOperazione(tb.getDataTransazione());
 			opmongo.setImporto(tb.getImporto());
 			opmongo.setTipoOperazione(TipoOperazione.TRASFERIMENTO);
 			opmongo.setCodOperazione(tb.getCodTransazioneBancaria());
-			
-			tb = transazioneBancariaService.createOrUpdate(tb);
+			System.err.println(opmongo);
 			opmongo = operazioniBancarieMongoService.createOrUpdate(opmongo);
 			
 			or = clientiService.findById(or.getCodCliente()).get();
