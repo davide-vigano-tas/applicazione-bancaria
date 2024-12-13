@@ -42,7 +42,7 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 	}
 
 	@Override
-	public Double calcoloMediaTransazioniPerCliente(int codCliente) {
+	public Double calcoloMediaTransazioniPerCliente(long codCliente) {
 		Double result = transazioneMongoRepository.calcolaMediaTransazioniPerCliente(codCliente);
 		return (result != null) ? result : 0.00;
 	}
@@ -70,7 +70,7 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 	}
 
 	@Override
-	public List<TransazioniMongo> findByCliente(int cliente) {
+	public List<TransazioniMongo> findByCliente(long cliente) {
 		return transazioneMongoRepository.findByCliente(cliente);
 	}
 

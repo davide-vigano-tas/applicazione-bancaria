@@ -15,7 +15,7 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 
 	// Media transazioni per cliente
 	@Aggregation(pipeline = { "{ $match: { cliente: ?0 } }", "{ $group: { _id: null, media: { $avg: '$importo' } } }" })
-	Double calcolaMediaTransazioniPerCliente(int codCliente);
+	Double calcolaMediaTransazioniPerCliente(long codCliente);
 
 	// numero medio transazioni per cliente
 	@Aggregation(pipeline = { "{ '$group': { '_id': '$cliente', 'count': { '$sum': 1 } } }",
@@ -32,5 +32,5 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 	Optional<TransazioniMongo> findTopByOrderByDataTransazioneDesc();
 
 	// Transazioni per cliente
-	List<TransazioniMongo> findByCliente(int cliente);
+	List<TransazioniMongo> findByCliente(long cliente);
 }

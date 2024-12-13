@@ -11,11 +11,11 @@ public interface TransazioniMongoService {
 	TransazioniMongo createOrUpdate(TransazioniMongo transazione);
 	List<TransazioniMongo> findAll();
 	Integer numeroTransazioniPerTipo(TipoTransazione tipo);
-	Double calcoloMediaTransazioniPerCliente(int codCliente);
+	Double calcoloMediaTransazioniPerCliente(long codCliente);
 	Double numeroMedioTransazioniPerCliente();
 	Double totaleImportoPerMese(int mese);  
 	Optional<TransazioniMongo> ultimaTransazione();
-	List<TransazioniMongo> findByCliente(int cliente);
+	List<TransazioniMongo> findByCliente(long cliente);
 	void deleteTransazioneMongo(TransazioniMongo transazione);
 
 }
