@@ -25,7 +25,7 @@
                 <hr>
                 <div>
                 	<div><h3>Richieste prestiti</h3></div>
-                	<table>
+                	<table class="table table-striped">
                 		<thead>
                 			<tr>
                 				<td>Codice</td>
@@ -41,13 +41,11 @@
                 				<td th:text="${#dates.format(richiesta.dataRichiesta, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 				<td th:text="${richiesta.stato}"></td>
                 			</tr>
-                			<tr>
-                				<th>
-                				<a class="btn btn-primary btn-lg w-100" role="button" href="/user/conti">Vai ai conti</a>
-                				</th>
-                			</tr>
+                			
                 		</tbody>
                 	</table>
+                	
+                	<a class="btn btn-primary btn-md" role="button" href="/user/conti">Vai ai conti</a>
                 </div>
             </div>
         </div>
