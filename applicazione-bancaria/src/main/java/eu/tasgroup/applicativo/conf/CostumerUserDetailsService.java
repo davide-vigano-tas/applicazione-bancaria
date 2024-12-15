@@ -26,8 +26,6 @@ public class CostumerUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		System.err.println("Sono dentro");
-		System.err.println("Email: " + email);
 		if (email.endsWith("@tasgroup.eu")) {
 			System.err.println("Sono entrato in admin");
 			
@@ -37,8 +35,6 @@ public class CostumerUserDetailsService implements UserDetailsService {
 				if (adminOptional.isPresent()) {
 					
 					Amministratore admin = adminOptional.get();
-					
-					System.err.println("Admin: \n" + admin);
 					return User.withUsername(admin.getEmailAdmin())
 							.accountLocked(admin.isAccountBloccato())
 							.password(admin.getPasswordAdmin()).roles("ADMIN")

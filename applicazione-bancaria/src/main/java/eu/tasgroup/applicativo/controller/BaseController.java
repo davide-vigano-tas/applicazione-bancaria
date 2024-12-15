@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.conf.BCryptEncoder;
-import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 
@@ -19,8 +17,6 @@ public class BaseController {
 	
 	@Autowired
 	private ClientiService cs;
-	@Autowired
-	private AmministratoriService as;
 	@Autowired
 	private ClientiMongoService cms;
 	
@@ -75,37 +71,9 @@ public class BaseController {
 		}
 	}
 	
-	@GetMapping("/admin-login")
+	@GetMapping("/admin/admin-login")
 	public ModelAndView loginAdmin() {
 		return new ModelAndView("admin-login");
 	}
 	
-	@GetMapping(value = "/admin-registrazione")
-	public ModelAndView registrazioneAdmin() {
-		
-		//TODO: controllo : può accedere solo se non loggato
-		
-		ModelAndView mv = new  ModelAndView();
-		mv.setViewName("admin-form-registrazione");
-		mv.addObject("admin", new Amministratore());
-		return mv;
-	}
-
-	@PostMapping(value = "/admin-form-registrazione")
-	public ModelAndView registrazioneAdminForm(Amministratore admin) {
-
-		ModelAndView mv = new ModelAndView();
-
-		if (as.findByEmailAdmin(admin.getEmailAdmin()).isPresent()) {
-			
-			// TODO: Gestire errore email già registrata
-			
-			mv.setViewName("admin-form-reg");
-			return mv;
-		}else {
-			admin.setPasswordAdmin(BCryptEncoder.encode(admin.getPasswordAdmin()));
-			as.createOrUpdate(admin);
-			return new ModelAndView("redirect:/admin-login");
-		}
-	}
 }

@@ -1,48 +1,63 @@
-<header th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml"
-	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<header th:fragment="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+    <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Applicazione Bancaria</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-item"><a href="/admin">Sezione Admin</a></li>
+                            <li class="dropdown-item"><a href="/admin/conti">Elenco conti</a></li>
+                            <li class="dropdown-item"><a href="/admin/utenti">Elenco utenti</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="!hasRole('ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">User</a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-item"><a href="/user">Sezione utenti</a></li>
+                            <li class="dropdown-item"><a href="/user/conti">Elenco conti</a></li>
+                            <li class="dropdown-item"><a href="/user/prestiti">Elenco prestiti</a></li>
+                            <li class="dropdown-item"><a href="/user/richiestePrestiti">Elenco richieste prestiti</a></li>
+                            <li class="dropdown-item"><a href="/user/nuovoConto">Crea nuovo conto</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex" sec:authorize="isAuthenticated()">
+                	<button class="btn btn-outline-light" id="logoutButton" 
+				            th:data-logout-url="${#authentication.name eq 'admin' ? '/admin/admin-logout' : '/user/user-logout'}" 
+				            onclick="confirmLogout()">
+				        <i class="fas fa-sign-out-alt"></i> Logout
+				    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+    function confirmLogout() {
+        const logoutButton = document.getElementById('logoutButton');
+        const logoutUrl = logoutButton.getAttribute('data-logout-url');
 
-	<nav class="navbar navbar-dark navbar-expand-lg bg-dark">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="/">Applicazione Bancaria</a>
-			<button class="navbar-toggler" type="button"
-				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item">
-						<a class="nav-link active" aria-current="page" href="/">Home</a>
-					</li>
-						
-					<li class="nav-item dropdown"  sec:authorize="hasRole('ADMIN')">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Admin
-						</a>
-						<ul class="dropdown-menu">
-							<li class="dropdown-item"><a href="/admin">Sezione Admin</a>
-							<li class="dropdown-item"><a href="/admin">Elenco conti</a>
-							<li class="dropdown-item"><a href="/admin">Elenco utenti</a>
-							<li class="dropdown-item"><a href="/user">Sezione Utenti</a>
-						</ul>
-					</li>
-					
-					<li class="nav-item dropdown"  sec:authorize="!hasRole('ADMIN')">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							User
-						</a>
-						<ul class="dropdown-menu">
-							<li class="dropdown-item"><a href="/user">Sezione utenti</a>
-							<li class="dropdown-item"><a href="/user/conti">Elenco conti</a>
-							<li class="dropdown-item"><a href="/user/prestiti">Elenco prestiti</a>
-							<li class="dropdown-item"><a href="/user/richiestePrestiti">Elenco richieste prestiti</a>
-							<li class="dropdown-item"><a href="/user/nuovoConto">Crea nuovo conto</a>
-							<li class="dropdown-item"><a href="/admin">Sezione Admin</a>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
+        Swal.fire({
+            title: 'Sei sicuro?',
+            text: "Se effettui il logout tutte le modifiche che non hai salvato verranno perse",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, esci',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = logoutUrl;
+            }
+        });
+    }
+</script>
 </header>

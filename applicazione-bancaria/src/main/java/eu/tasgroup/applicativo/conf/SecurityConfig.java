@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
@@ -39,8 +40,7 @@ public class SecurityConfig {
 	        	        	.requestMatchers("/admin/**").hasRole("ADMIN")
 	        )
 	        .formLogin((form) -> form
-	                        .loginPage("/admin-login")
-	                        .failureUrl("/admin-login?error=true")
+	                        .loginPage("/admin/admin-login")
 	                        .failureHandler(failureHandler)
 	        	            .successHandler(successHandler)
 	                        .usernameParameter("email")
@@ -48,7 +48,7 @@ public class SecurityConfig {
 	                        .permitAll()
 	        )
 	        .logout((logout) -> logout
-	        				.logoutUrl("/admin/logout")
+	        				.logoutRequestMatcher(new AntPathRequestMatcher("/admin/admin-logout"))
 	                        .logoutSuccessUrl("/")
 	                        .invalidateHttpSession(true)
 	                        .clearAuthentication(true)
@@ -73,13 +73,14 @@ public class SecurityConfig {
 	        .formLogin(form -> form
         		.loginPage("/user/user-login")
 	            .defaultSuccessUrl("/user/", true)
+	            .failureUrl("/user/user-login?error=true")
 	            .failureHandler(failureHandler)
 	            .successHandler(successHandler)
 	            .usernameParameter("email")
 	            .permitAll()
 	        )
 	        .logout(logout -> logout
-        		.logoutUrl("/user/logout")
+	        	.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
                 .logoutSuccessUrl("/")
                 .permitAll()
 	        );
