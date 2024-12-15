@@ -19,17 +19,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.Mese;
+import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.PrestitoService;
+import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import eu.tasgroup.applicativo.utility.DettTrans;
 import eu.tasgroup.applicativo.utility.Statistiche;
+import eu.tasgroup.applicativo.utility.StatisticheExtra;
 
 @RestController
 @RequestMapping("/api")
@@ -53,6 +58,9 @@ public class RestControllerCliente {
 
 	@Autowired
 	PagamentoService pagamentoService;
+	
+	@Autowired
+	RichiestePrestitoService richiestePrestitoService;
 
 	@GetMapping("/clienti")
 	public List<Cliente> getClienti() {
@@ -166,5 +174,94 @@ public class RestControllerCliente {
 
 		return statistiche;
 	}
+	
+	//statistiche extra
+		@GetMapping("/statistiche-extra")
+		public StatisticheExtra statisticheExtra() {
+			StatisticheExtra stat = new StatisticheExtra();
+			
+			//Stato delle Richieste di Prestito: Numero di richieste in attesa, approvate e rifiutate.
+			Map<StatoRichiestaPrestito, Integer> prestitiRichiestiPerStato = Arrays.stream(StatoRichiestaPrestito.values())
+					.collect(Collectors.toMap(
+							tipo -> tipo, 
+							tipo -> richiestePrestitoService.findByStatus(tipo).size()
+							));	
+			stat.setPrestitiRichiestiPerStato(prestitiRichiestiPerStato);
+			
+			
+			//Importo Totale dei Prestiti Approvati: Somma degli importi dei prestiti approvati per ogni cliente.
+			Map<Long,Double> sommaPrestitiApprovatiPerCliente = new HashMap<Long,Double>();
+			for(Cliente c : clientiService.getClientiList()) {
+				Double somma = 0.00;
+				if(!c.getRichiestePrestiti().isEmpty()) {
+					for(RichiestaPrestito p : c.getRichiestePrestiti()) {
+						if(p.getStato().equals(StatoRichiestaPrestito.APPROVATO)) {
+							somma += p.getImporto();
+						}
+					}
+					//LA LISTA PRESTITI è FATTA DA QUELLI APPROVATI?
+//					for(Prestito p : c.getPrestiti()) {
+//							somma += p.getImporto();
+//					}
+					sommaPrestitiApprovatiPerCliente.put(c.getCodCliente(), somma);
+				}
+			}
+			stat.setSommaPrestitiApprovatiPerCliente(sommaPrestitiApprovatiPerCliente);
+			
+			
+			//Rapporto Transazioni ACCREDITO/ADDEBITO: Percentuale di transazioni di tipo ACCREDITO rispetto al totale.
+			//conta anche sul totale (include i trasferimenti)
+			double percentualeTransazioniAccredito;
+			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
+				percentualeTransazioniAccredito= (100.00/transazioniMongoService.findAll().size())
+						*transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
+			} else {
+				percentualeTransazioniAccredito = 0.00;
+			}
+			stat.setPercentualeTransazioniAccredito(percentualeTransazioniAccredito);
+			
+			//Questo considera la percentuale di accrediti sulla somma di acrediti e addebit (senzabtrasferimenti)
+			double rapportoAccreditoAddebito;
+			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null
+					&& transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO) != null) {
+				rapportoAccreditoAddebito= (100.00/(
+						transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO)
+						+transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO)))
+						*transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
+			} else if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
+				rapportoAccreditoAddebito = 100.00;
+			} else {
+				rapportoAccreditoAddebito = 0.00;			
+			}
+			stat.setPercentualeTransazioniAccredito(rapportoAccreditoAddebito);
+			
+			
+			
+			//Dettagli Transazioni per Cliente: Visualizzazione dettagliata delle transazioni per ogni
+			//cliente, includendo importo medio, numero totale e tipologia.
+			Map<Long,DettTrans> dettagliTransazioniPerCliente = new HashMap<Long, DettTrans>();
+			for(Cliente c : clientiService.getClientiList()) {
+				if(!transazioniMongoService.findByCliente(c.getCodCliente()).isEmpty()) {
+					dettagliTransazioniPerCliente.put(c.getCodCliente(),
+							new DettTrans(
+									transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()), 
+									transazioniMongoService.findByCliente(c.getCodCliente()).size(), 
+									Arrays
+									.stream(TipoTransazione.values())
+									.collect(Collectors.toMap(
+											tipo -> tipo, 
+											tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)
+											))
+									)
+							);
+				}
+			}
+			stat.setDettagliTransazioniPerCliente(dettagliTransazioniPerCliente);
+			
+			return stat;
+		}
+		
+
+		
 
 }
