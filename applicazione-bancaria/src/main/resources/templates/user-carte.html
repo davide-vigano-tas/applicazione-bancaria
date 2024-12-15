@@ -24,7 +24,7 @@
                 </div>
                 <hr>
                 <div>
-                	<table>
+                	<table class="table table-striped">
                 		<thead>
                 			<tr>
                 				<th>Codice Carta</th>
@@ -38,13 +38,13 @@
                 				<td th:text="${carta.numeroCarta}"></td>
                 				<td th:text="${carta.dataScadenza}"></td>
                 			</tr>
-                			<tr>
-                				<td>
-                				<a class="btn btn-primary btn-lg w-100" role="button" href="/user/nuovaCarta">Crea nuova Carta</a>
-                				</td>
-                			</tr>
                 		</tbody>
                 	</table>
+                	<div class="row justify-content-center">
+                	<div class="col-md-5">
+                		<a class="btn btn-primary btn-lg w-100" role="button" href="/user/nuovaCarta">Crea nuova Carta</a>
+                	</div>
+                	</div>
                 </div>
             </div>
         </div>
