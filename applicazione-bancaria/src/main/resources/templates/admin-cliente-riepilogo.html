@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Admin</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${admin.nomeAdmin}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${admin.cognomeAdmin}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${admin.emailAdmin}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${admin.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${admin.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                
+                <div class="card" style="width: 18rem;">
+				
+					  <div class="card-body">
+					    <h5 class="card-title">
+					    Cliente <th:block th:text="${admin_cliente.codCliente}"></th:block></h5>
+					    
+					  </div>
+					  <ul class="list-group list-group-flush">
+					    <li class="list-group-item">Nome: <th:block th:text="${admin_cliente.nomeCliente}"></th:block> </li>
+					    <li class="list-group-item">Cognome: <th:block th:text="${admin_cliente.cognomeCliente}"></th:block></li>
+					    <li class="list-group-item">Email: <th:block th:text="${admin_cliente.emailCliente}"></th:block> </li>
+					  </ul>
+					
+					</div>
+       
+                <div class="row my-2">
+                
+                		<button class="btn btn-info btn-md"
+							style="float: left; width: 100px; margin-top: 20px; margin-bottom: 10px;"
+							onclick="showConti()">Conti</button>
+					<div class="alert alert-info" id="conti"
+				style="padding: 10px;  display: none;">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Codice</th>
+           						<th style="width: 200px;">Tipo</th>
+           						<th style="width: 200px;">Saldo</th>
+        
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="conto : ${admin_conti_cliente}">
+           			
+           						<td th:text="${conto.codConto}"></td>
+           						<td th:text="${conto.tipoConto}"></td>
+           						<td th:text="${#numbers.formatCurrency(conto.saldo)}"></td>
+           		
+           					</tr>
+           				</tbody>
+           			</table>
+           			
+           			</div>
+					<script>
+						function showConti() {
+								if($('#conti').is(":visible")) {
+										$('#conti').fadeOut(200);
+			
+									} else {
+											$('#conti').fadeIn(300);
+										}
+							}
+					</script>
+                </div>
+  					<div class="row my-2">
+                
+                		<button class="btn btn-info btn-md"
+							style="float: left; width: 100px;  margin-top: 20px; margin-bottom: 10px;"
+							onclick="showCarte()">Carte</button>
+					<div class="alert alert-info" id="carte"
+				style="padding: 10px;  display: none;">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Codice</th>
+           						<th style="width: 200px;">Numero</th>
+           						<th style="width: 200px;">Data Scadenza</th>
+           						<th style="width: 200px;">Cvv</th>
+        
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="carta : ${admin_carte_cliente}">
+           			
+           						<td th:text="${carta.codCarta}"></td>
+           						<td th:text="${carta.numeroCarta}"></td>
+           						<td th:text="${#dates.format(carta.dataScadenza, 'dd/MM/yyyy')}"></td>
+           						<td th:text="${carta.cvv}"></td>
+           					</tr>
+           				</tbody>
+           			</table>
+           			
+           			</div>
+					<script>
+						function showCarte() {
+								if($('#carte').is(":visible")) {
+										$('#carte').fadeOut(200);
+			
+									} else {
+											$('#carte').fadeIn(300);
+										}
+							}
+					</script>
+                </div>
+                
+            	<div class="row my-2">
+                
+                		<button class="btn btn-info btn-md"
+							style="float: left; width: 100px;  margin-top: 20px; margin-bottom: 10px;"
+							onclick="showPrestiti()">Prestiti</button>
+					<div class="alert alert-info" id="prestiti"
+				style="padding: 10px;  display: none;">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Codice</th>
+           						<th style="width: 200px;">Importo</th>
+           						<th style="width: 200px;">Tasso di interesse</th>
+           						<th style="width: 200px;">Durata</th>
+        
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="p : ${admin_prestiti_cliente}">
+           			
+           						<td th:text="${p.codPrestito}"></td>
+           						<td th:text="${#numbers.formatCurrency(p.importo)}"></td>
+           						<td th:text="${#numbers.formatCurrency(p.tassoInteresse)}"></td>
+           						<td th:text="${p.durataMesi}"></td>
+           					</tr>
+           				</tbody>
+           			</table>
+           			
+           			</div>
+					<script>
+						function showPrestiti() {
+								if($('#prestiti').is(":visible")) {
+										$('#prestiti').fadeOut(200);
+			
+									} else {
+											$('#prestiti').fadeIn(300);
+										}
+							}
+					</script>
+                </div>
+                
+                 	<div class="row my-2">
+                
+                		<button class="btn btn-info btn-md"
+							style="float: left; width: 120px;  margin-top: 20px; margin-bottom: 10px;"
+							onclick="showTr()">Transazioni</button>
+					<div class="alert alert-info" id="transazioni"
+				style="padding: 10px;  display: none;">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Codice</th>
+           						<th style="width: 200px;">Importo</th>
+           						<th style="width: 200px;">Data</th>
+           						<th style="width: 200px;">Tipo</th>
+        
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="t : ${admin_transazioni_cliente}">
+           			
+           						<td th:text="${t.codTransazione}"></td>
+           						<td th:text="${#numbers.formatCurrency(t.importo)}"></td>
+           						<td th:text="${#dates.format(t.dataTransazione, 'dd/MM/yyyy HH:mm:ss')}"></td>
+           						<td th:text="${p.tipoTransazione}"></td>
+           					</tr>
+           				</tbody>
+           			</table>
+           			
+           			</div>
+					<script>
+						function showTr() {
+								if($('#transazioni').is(":visible")) {
+										$('#transazioni').fadeOut(200);
+			
+									} else {
+											$('#transazioni').fadeIn(300);
+										}
+							}
+					</script>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
