@@ -69,22 +69,22 @@
 		</a>
 
        	<div class="collapse" id="saldoMaxSection">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                    <th>Saldo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="cliente : ${clienti_saldo_max}">
-                    <td th:text="${cliente.nomeCliente}"></td>
-                    <td th:text="${cliente.cognomeCliente}"></td>
-                    <td th:text="${cliente.saldoConto} + ' €'"></td>
-                </tr>
-            </tbody>
-        </table>
+	        <table class="table table-striped">
+	            <thead>
+	                <tr>
+	                    <th>Nome</th>
+	                    <th>Cognome</th>
+	                    <th>Saldo</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr th:each="cliente : ${clienti_saldo_max}">
+	                    <td th:text="${cliente.nomeCliente}"></td>
+	                    <td th:text="${cliente.cognomeCliente}"></td>
+	                    <td th:text="${cliente.saldoConto} + ' €'"></td>
+	                </tr>
+	            </tbody>
+	        </table>
         </div>
         
         <!-- Sezione Transazioni -->
@@ -222,6 +222,80 @@
 	            </tbody>
 	        </table>
 		</div>
+	 	<!-- Sezione Prestiti -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#prestitiSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		       	<i class="fa-solid fa-piggy-bank"></i>
+		        &nbsp;Prestiti
+		    </span>
+		    <i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+        <div id="prestitiSection" class="row collapse">
+            <div class="col-md-4">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-warning text-white">Prestiti in attesa</div>
+                    <div class="card-body">
+                        <h3 th:text="${num_attesa}"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-success text-white">Prestiti approvati</div>
+                    <div class="card-body">
+                        <h3 th:text="${num_approvate}"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-danger text-white">Prestiti rifiutati</div>
+                    <div class="card-body">
+                        <h3 th:text="${num_rifiutate}"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Statistiche Extra per Cliente -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#statisticheClientiExtraSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		        <i class="fa-solid fa-chart-line"></i>
+		        &nbsp;Statistiche extra per cliente
+		    </span>
+	    	<i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+		<div class="collapse" id="statisticheClientiExtraSection">
+	        <table class="table table-striped" id="tabellaStatisticheClientiExtra">
+	            <thead>
+	                <tr>
+	                	<th>Codice cliente</th>
+	                    <th>Cliente</th>
+	                    <th>Numero prestiti</th>
+	                    <th>Valore prestiti</th>
+	                    <th>Numero transazioni</th>
+	                    <th>Importo medio transazioni</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr th:each="entry : ${statistiche_clienti_extra}">
+	                	<td th:text="${entry.key.codCliente}"></td>
+	                    <td th:text="${entry.key.nomeCliente} + ' ' + ${entry.key.cognomeCliente}"></td>
+	                    <td th:text="${entry.value[0]}"></td>
+	                    <td th:text="${entry.value[1]}+ ' €'"></td>
+	                    <td th:text="${entry.value[2]}"></td>
+	                    <td th:text="${entry.value[3]} + ' €'"></td>
+	                </tr>
+	            </tbody>
+	        </table>
+        </div>
 	</div>
     <!-- Footer -->
     <footer th:insert="~{fragments/footer :: footer}"></footer>
@@ -229,6 +303,7 @@
     <script>
     $(document).ready(function() {
         $('#tabellaStatisticheClienti').DataTable();
+        $('#tabellaStatisticheClientiExtra').DataTable();
     });
 </script>
 </body>

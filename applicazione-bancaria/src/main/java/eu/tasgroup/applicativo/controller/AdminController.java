@@ -162,60 +162,52 @@ public class AdminController {
 
 			mv.addObject("importo_mese", importoPerMese);
 			
+			// Statistiche extra
+			
+			// Richieste Prestiti
+			long inAttesa = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.IN_ATTESA).size();
+			long approvate = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.APPROVATO).size();
+			long rifiutate = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.RIFIUTATO).size();
+			
+			mv.addObject("num_attesa", inAttesa);
+			mv.addObject("num_approvate", approvate);
+			mv.addObject("num_rifiutate", rifiutate);
+			
+			/*
+			 * String statistiche[] 
+			 * 1. numero prestiti
+			 * 2. somma prestiti
+			 * 3. numero transazioni
+			 * 4. transazioni media
+			 */
+			
+			clienti = clientiService.getClientiList();
+			List<Prestito> approvati = prestitoService.getAll();
+
+			Map<Cliente, String[]> statisticheClientiExtra = new HashMap<Cliente, String[]>();
+			
+			for(Cliente c : clienti) {
+				double somma = approvati.stream()
+						.filter((p) -> p.getCliente().getCodCliente() == c.getCodCliente())
+						.mapToDouble((p) -> p.getImporto()).sum();
+				
+				String[] statExtra = {
+						String.valueOf(c.getPrestiti().size()),
+						String.valueOf(somma),
+						String.valueOf(transazioniMongoService.findByCliente(c.getCodCliente()).size()),
+						String.valueOf(transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente())),
+				};
+				statisticheClientiExtra.put(c, statExtra);
+			}
+			
+			mv.addObject("statistiche_clienti_extra", statisticheClientiExtra);
 			
 			return mv;
 		} 
 		return new ModelAndView("redirect:/admin/admin-login");
 	}
 	
-	@GetMapping("/statistiche_extra")
-	public ModelAndView statisticheExtra(@AuthenticationPrincipal UserDetails userDetails) {
-		ModelAndView mv = new ModelAndView("admin-statistiche-extra");
-		String email = userDetails.getUsername();
-		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
-		if(admin.isPresent()) {
-			Amministratore ad = admin.get();
-			mv.addObject("admin", ad);
-			
-			long inAttesa = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.IN_ATTESA).size();
-			long approvate = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.APPROVATO).size();
-			long rifiutate = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.RIFIUTATO).size();
-			
-			mv.addObject("admin_num_attesa", inAttesa);
-			mv.addObject("admin_num_approvate", approvate);
-			mv.addObject("admin_num_rifiutate", rifiutate);
-			
-			List<Prestito> approvati = prestitoService.getAll();
-			List<Cliente> clienti = clientiService.getClientiList();
-			Map<Cliente, Double> sommaImportoPresititi = new HashMap<Cliente, Double>();
-			
-			for(Cliente c : clienti) {
-				double somma = approvati.stream()
-						.filter((p) -> p.getCliente().getCodCliente() == c.getCodCliente())
-						.mapToDouble((p) -> p.getImporto()).sum();
-				sommaImportoPresititi.put(c, somma);
-			}
-			mv.addObject("admin_somma_prestiti_clienti", sommaImportoPresititi);
-			
-			int accrediti = transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
-			int tot = transazioniMongoService.findAll().size();
-			
-			mv.addObject("admin_perc_accrediti", accrediti/tot);
-			Map<Cliente, List<TransazioniMongo>> tPerC = new HashMap<Cliente, List<TransazioniMongo>>();
-			Map<Cliente, Double> impMedioPerCliente = new HashMap<Cliente, Double>();
-			for(Cliente c : clienti) {
-				tPerC.put(c, transazioniMongoService.findByCliente(c.getCodCliente()));
-				impMedioPerCliente.put(c, 
-						transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()));
-			}
-			
-			mv.addObject("admin_t_per_cliente", tPerC);
-			mv.addObject("admin_importo_medio_cliente", impMedioPerCliente);
-			
-			return mv;
-		} 
-		return new ModelAndView("redirect:/admin/admin-login");
-	}
+	
 	
 	@GetMapping("/contizero")
 	public ModelAndView contiZeroSaldo(@AuthenticationPrincipal UserDetails userDetails) {
@@ -242,7 +234,6 @@ public class AdminController {
 		return new ModelAndView("redirect:/admin/contizero");
 	}
 	
-
 	@GetMapping("/riepilogoCliente/{id}") 
 	public ModelAndView riepilogo(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("admin-cliente-riepilogo");
