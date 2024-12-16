@@ -221,19 +221,19 @@ public class RestControllerCliente {
 			stat.setPercentualeTransazioniAccredito(percentualeTransazioniAccredito);
 			
 			//Questo considera la percentuale di accrediti sulla somma di acrediti e addebit (senzabtrasferimenti)
-			double rapportoAccreditoAddebito;
-			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null
-					&& transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO) != null) {
-				rapportoAccreditoAddebito= (100.00/(
-						transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO)
-						+transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO)))
-						*transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
-			} else if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
-				rapportoAccreditoAddebito = 100.00;
-			} else {
-				rapportoAccreditoAddebito = 0.00;			
-			}
-			stat.setPercentualeTransazioniAccredito(rapportoAccreditoAddebito);
+//			double rapportoAccreditoAddebito;
+//			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null
+//					&& transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO) != null) {
+//				rapportoAccreditoAddebito= (100.00/(
+//						transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO)
+//						+transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO)))
+//						*transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
+//			} else if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
+//				rapportoAccreditoAddebito = 100.00;
+//			} else {
+//				rapportoAccreditoAddebito = 0.00;			
+//			}
+//			stat.setPercentualeTransazioniAccredito(rapportoAccreditoAddebito);
 			
 			
 			
