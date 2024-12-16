@@ -29,6 +29,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
@@ -286,5 +287,68 @@ public class AdminController {
 			clientiService.createOrUpdate(c);
 		}
 		return new ModelAndView("redirect:/admin/");
+	}
+	
+	@GetMapping("/prestiti")
+	public ModelAndView prestiti(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("admin-prestiti");
+		String email = userDetails.getUsername();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+		if(admin.isPresent()) {
+			Amministratore ad = admin.get();
+			mv.addObject("admin", ad);
+			List<RichiestaPrestito> lista = richiestePrestitoService.findByStatus(StatoRichiestaPrestito.IN_ATTESA);
+			if(!lista.isEmpty()) {		
+				mv.addObject("richieste_prestiti", richiestePrestitoService.findByStatus(StatoRichiestaPrestito.IN_ATTESA));
+				return mv;
+			}
+		}
+		return new ModelAndView("redirect:/admin/admin-login");
+	}
+
+	@GetMapping("/rifiuta/{id}")
+	public ModelAndView rifiuta(@PathVariable long id) {
+		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
+		if (richiesta.isPresent()) {
+			RichiestaPrestito r = richiesta.get();
+			r.setStato(StatoRichiestaPrestito.RIFIUTATO);
+			richiestePrestitoService.createOrUpdate(r);
+		}
+		return new ModelAndView("redirect:/admin/prestiti");
+	}
+
+	@GetMapping("/accetta/{id}")
+	public ModelAndView accetta(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("admin-prestiti-form");
+		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
+		String email = userDetails.getUsername();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+		if(admin.isPresent()) {
+			Amministratore ad = admin.get();
+			mv.addObject("admin", ad);
+			if (richiesta.isPresent()) {
+				RichiestaPrestito r = richiesta.get();
+				mv.addObject("richiesta", r);
+				Prestito prestito = new Prestito();
+				prestito.setImporto(r.getImporto());
+				mv.addObject("prestito", prestito);
+				return mv;
+			}
+			return new ModelAndView("redirect:/admin");
+		}
+		return new ModelAndView("redirect:/user/user-login");
+	}
+	
+	@PostMapping("/accetta/{id}")
+	public ModelAndView accetta(@PathVariable long id,Prestito prestito) {
+		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
+		if (richiesta.isPresent()) {
+			RichiestaPrestito r = richiesta.get();
+			r.setStato(StatoRichiestaPrestito.APPROVATO);
+			richiestePrestitoService.createOrUpdate(r);
+			prestito.setCliente(r.getCliente());
+			prestitoService.createOrUpdate(prestito);
+		}
+		return new ModelAndView("redirect:/admin/prestiti");
 	}
 }

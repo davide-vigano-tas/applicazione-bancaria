@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('prestiti')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Prestiti</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${admin.nomeAdmin}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${admin.cognomeAdmin}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${admin.emailAdmin}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${admin.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${admin.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div>
+   					<form th:action="@{'/admin/accetta/'+${richiesta.codRichiesta}}" th:object="${prestito}"
+							method="post">
+   						<div>
+   							<label for="importo" class="form-label">Importo</label>
+   							<input id="tipoConto" th:value="${richiesta.importo}" disabled>
+   						</div>
+   						<div>
+   							<label for="tassoInteresse" class="form-label">Tasso Interesse</label>
+   							<input type="number" th:field="*{tassoInteresse}" id="tassoInteresse" required>
+   						</div>
+   						<div>
+   							<label for="durataMesi" class="form-label">Durata in mesi</label>
+   							<input type="number" th:field="*{durataMesi}" id="durataMesi" required>
+   						</div>
+   						<input type="hidden" th:field="*{cliente}" th:value="${user}">
+   						<button class="btn btn-success">Accetta</button>
+   					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

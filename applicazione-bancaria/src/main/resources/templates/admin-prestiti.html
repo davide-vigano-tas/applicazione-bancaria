@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('prestiti')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Prestiti</h4>
+            </div>
+            <div class="card-body">
+                 <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${admin.nomeAdmin}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${admin.cognomeAdmin}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${admin.emailAdmin}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${admin.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${admin.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                	<table class="table table-striped">
+                		<thead>
+                			<tr>
+                				<th>Codice Prestito</th>
+                				<th>Importo</th>
+                				<th>Data</th>
+                				<th>Accetta</th>
+                				<th>Rifiuta</th>
+                			</tr>
+                		</thead>
+                		<tbody>
+                			<tr th:each="richiesta : ${richieste_prestiti}">
+                				<td th:text="${richiesta.codRichiesta}"></td>
+                				<td th:text="${richiesta.importo}"></td>
+                				<td th:text="${richiesta.dataRichiesta}"></td>
+                				<td>
+                					<a th:href="@{'/admin/accetta/'+${richiesta.codRichiesta}}" class="btn btn-success">Accetta</a>
+                				</td>
+                				<td>
+                					<a th:href="@{'/admin/rifiuta/'+${richiesta.codRichiesta}}" class="btn btn-danger">Rifiuta</a>
+                				</td>
+                			</tr>
+                		</tbody>
+                	</table>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
