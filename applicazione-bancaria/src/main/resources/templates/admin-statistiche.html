@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Admin Statistiche')}">
+    <title>Statistiche Amministratore</title>
+</head>
+<body>
+    <!-- Navbar -->
+    <div th:insert="~{fragments/nav :: navbar}"></div>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Statistiche Generali</h1>
+        
+        <!-- Dati Amministratore -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">Benvenuto</div>
+            <div class="card-body">
+                <p>Amministratore: <span th:text="${admin.nomeAdmin} + ' ' + ${admin.cognomeAdmin}"></span></p>
+                <p>Email: <span th:text="${admin.emailAdmin}"></span></p>
+            </div>
+        </div>
+
+        <!-- Sezione Statistiche Generali -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-info text-white">Numero Clienti</div>
+                    <div class="card-body">
+                        <h3 th:text="${numero_clienti}"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-info text-white">Totale Transazioni</div>
+                    <div class="card-body">
+                        <h3 th:text="${tot_transazioni}"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-info text-white">Somma Importi</div>
+                    <div class="card-body">
+                        <h3 th:text="${somma_importi} + ' €'"></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-3">
+                    <div class="card-header bg-info text-white">Saldo medio</div>
+                    <div class="card-body">
+                        <h3 th:text="${saldo_medio} + ' €'"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clienti con Saldo Massimo -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#saldoMaxSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		        <i class="fa-solid fa-wallet"></i>
+		        &nbsp;Clienti con Saldo Massimo
+		    </span>
+		    <i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+
+       	<div class="collapse" id="saldoMaxSection">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Saldo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${clienti_saldo_max}">
+                    <td th:text="${cliente.nomeCliente}"></td>
+                    <td th:text="${cliente.cognomeCliente}"></td>
+                    <td th:text="${cliente.saldoConto} + ' €'"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        
+        <!-- Sezione Transazioni -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#transazioniSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		        <i class="fa-regular fa-handshake"></i>
+		        &nbsp;Transazioni
+		    </span>
+		    <i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+        <div id="transazioniSection" class="collapse">
+	        <div class="row">
+	            <div class="col-md-4">
+				    <div class="card text-center mb-3">
+				        <div class="card-header bg-info text-white">
+				            Data ultima transazione
+				        </div>
+				        <div class="card-body">
+				            <h3 th:text="${data_ultima != null ? #dates.format(data_ultima, 'dd/MM/yyyy HH:mm:ss') : 'Nessuna transazione'}">
+				            </h3>
+				        </div>
+				    </div>
+				</div>
+	            <div class="col-md-4">
+	                <div class="card text-center mb-3">
+	                    <div class="card-header bg-info text-white">Totale transazioni</div>
+	                    <div class="card-body">
+	                        <h3 th:text="${tot_transazioni}"></h3>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-md-4">
+	                <div class="card text-center mb-3">
+	                    <div class="card-header bg-info text-white">Somma di tutte le transazioni</div>
+	                    <div class="card-body">
+	                        <h3 th:text="${somma_importi} + ' €'"></h3>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="row">
+	            <div class="col-md-4">
+				    <div class="card text-center mb-3">
+				        <div class="card-header bg-info text-white">
+				            Totale addebiti
+				        </div>
+				        <div class="card-body">
+				           <h3 th:text="${num_addebiti}"></h3>
+				        </div>
+				    </div>
+				</div>
+	            <div class="col-md-4">
+	                <div class="card text-center mb-3">
+	                    <div class="card-header bg-info text-white">Totale accrediti</div>
+	                    <div class="card-body">
+	                        <h3 th:text="${num_accrediti}"></h3>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-md-4">
+	                <div class="card text-center mb-3">
+	                    <div class="card-header bg-info text-white">Media transazioni per clienti</div>
+	                    <div class="card-body">
+	                        <h3 th:text="${numero_medio_t}"></h3>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+        <!-- Statistiche per Cliente -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#statisticheClientiSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		        <i class="fa-solid fa-chart-line"></i>
+		        &nbsp;Statistiche per cliente
+		    </span>
+	    	<i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+		<div class="collapse" id="statisticheClientiSection">
+	        <table class="table table-striped" id="tabellaStatisticheClienti">
+	            <thead>
+	                <tr>
+	                	<th>Codice cliente</th>
+	                    <th>Cliente</th>
+	                    <th>Numero di conti</th>
+	                    <th>Carte registrate</th>
+	                    <th>Importo prestiti</th>
+	                    <th>Importo medio transazioni</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr th:each="entry : ${statistiche_clienti}">
+	                	<td th:text="${entry.key.codCliente}"></td>
+	                    <td th:text="${entry.key.nomeCliente} + ' ' + ${entry.key.cognomeCliente}"></td>
+	                    <td th:text="${entry.value[0]}"></td>
+	                    <td th:text="${entry.value[1]}"></td>
+	                    <td th:text="${entry.value[2]} + ' €'"></td>
+	                    <td th:text="${entry.value[3]} + ' €'"></td>
+	                </tr>
+	            </tbody>
+	        </table>
+        </div>
+        <!-- Importo Totale per Mese -->
+        <a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+		   data-bs-toggle="collapse" 
+		   href="#mesiSection" role="button" 
+		   aria-expanded="false" 
+		   aria-controls="saldoMaxSection">
+		    <span class="me-2 fs-3"> 
+		        <i class="fa-solid fa-calendar-days"></i>
+		        &nbsp;Importo Totale delle Transazioni per Mese
+		    </span>
+	    	<i class="fas fa-chevron-down fa-lg"></i>
+		</a>
+		<div id="mesiSection" class="collapse">
+	        <table class="table table-striped" id="tabellaImportoMese">
+	            <thead>
+	                <tr>
+	                    <th>Mese</th>
+	                    <th>Importo Totale</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr th:each="entry : ${importo_mese}">
+	                    <td th:text="${entry.key}"></td>
+	                    <td th:text="${entry.value} + ' €'"></td>
+	                </tr>
+	            </tbody>
+	        </table>
+		</div>
+	</div>
+    <!-- Footer -->
+    <footer th:insert="~{fragments/footer :: footer}"></footer>
+    
+    <script>
+    $(document).ready(function() {
+        $('#tabellaStatisticheClienti').DataTable();
+    });
+</script>
+</body>
+</html>

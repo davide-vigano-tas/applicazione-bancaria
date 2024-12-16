@@ -1,10 +1,13 @@
 package eu.tasgroup.applicativo.controller;
 
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,8 +29,6 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
-import eu.tasgroup.applicativo.repository.TransazioneMongoRepository;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
@@ -116,26 +117,30 @@ public class AdminController {
 			double saldoMedio = contiService.saldoMedio();
 			mv.addObject("saldo_medio", saldoMedio);
 			
-			Map<Cliente, Integer> numeroContiPerCliente = new HashMap<Cliente, Integer>();
-			for(Cliente c : clienti) {
-				numeroContiPerCliente.put(c, clientiService.numeroConti(c.getCodCliente()));
+			/*
+			 * String statistiche[] 
+			 * 1. conti per cliente
+			 * 2. carte per cliente
+			 * 3. importo prestiti per cliente
+			 * 4. importo medio transazione
+			 */
+			
+			Map<Cliente, String[]> statisticheClienti = new HashMap<Cliente, String[]>();
+			
+			for(Cliente c: clienti) {
+				
+				String[] stat = {
+					String.valueOf(clientiService.numeroConti(c.getCodCliente())),
+					String.valueOf(clientiService.numeroCarte(c.getCodCliente())),
+					String.valueOf(prestitoService.sumPrestitiByCliente(c.getCodCliente())),
+					String.valueOf(transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()))
+				};
+				
+				statisticheClienti.put(c, stat);
 			}
 			
-			mv.addObject("numero_conti", numeroContiPerCliente);
+			mv.addObject("statistiche_clienti", statisticheClienti);
 			
-			
-			Map<Cliente, Integer> numeroCartePerCliente = new HashMap<Cliente, Integer>();
-			for(Cliente c : clienti) {
-				numeroCartePerCliente.put(c, clientiService.numeroCarte(c.getCodCliente()));
-			}
-			
-			mv.addObject("numero_carte", numeroCartePerCliente);
-			
-			Map<Cliente, Double> importoTotalePrestitiCliente = new HashMap<Cliente, Double>();
-			for(Cliente c : clienti) {
-				importoTotalePrestitiCliente.put(c, prestitoService.sumPrestitiByCliente(c.getCodCliente()));
-			}
-			mv.addObject("clienti_importo_prestiti", importoTotalePrestitiCliente);
 			
 			long numTransazioniAddebito= transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO);
 			mv.addObject("num_addebiti", numTransazioniAddebito);
@@ -143,23 +148,18 @@ public class AdminController {
 			long numTransazioniAccredito= transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
 			mv.addObject("num_accrediti", numTransazioniAccredito);
 			
-			
 			double numeroMedioTransazioniPerCliente = transazioniMongoService.numeroMedioTransazioniPerCliente();
 			mv.addObject("numero_medio_t", numeroMedioTransazioniPerCliente);
 			
-			Map<Cliente, Double> importoMedioTransazioniPerCliente = new HashMap<Cliente, Double>();
-			for(Cliente c : clienti) {
-				importoMedioTransazioniPerCliente.put(c, 
-						transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()));
-			}
 			
-			mv.addObject("importo_medio_t", importoMedioTransazioniPerCliente);
-			
-			Map<Integer, Double> importoPerMese= new HashMap<Integer, Double>();
-			for(int i = 1; i<13; i++) {
-				importoPerMese.put(i, 
-						transazioniMongoService.totaleImportoPerMese(i));
+			Map<String, Double> importoPerMese = new LinkedHashMap<>();
+
+			for (int i = 1; i <= 12; i++) {
+				String nomeMese = Month.of(i).getDisplayName(TextStyle.FULL, Locale.ITALIAN);
+			    nomeMese = nomeMese.substring(0, 1).toUpperCase() + nomeMese.substring(1).toLowerCase();
+			    importoPerMese.put(nomeMese, transazioniMongoService.totaleImportoPerMese(i));
 			}
+
 			mv.addObject("importo_mese", importoPerMese);
 			
 			
