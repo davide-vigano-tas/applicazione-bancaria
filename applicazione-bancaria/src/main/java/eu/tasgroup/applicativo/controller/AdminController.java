@@ -302,6 +302,7 @@ public class AdminController {
 				mv.addObject("richieste_prestiti", richiestePrestitoService.findByStatus(StatoRichiestaPrestito.IN_ATTESA));
 				return mv;
 			}
+			return new ModelAndView("redirect:/admin");
 		}
 		return new ModelAndView("redirect:/admin/admin-login");
 	}
@@ -347,6 +348,7 @@ public class AdminController {
 			r.setStato(StatoRichiestaPrestito.APPROVATO);
 			richiestePrestitoService.createOrUpdate(r);
 			prestito.setCliente(r.getCliente());
+			prestito.setImporto(r.getImporto());
 			prestitoService.createOrUpdate(prestito);
 		}
 		return new ModelAndView("redirect:/admin/prestiti");
