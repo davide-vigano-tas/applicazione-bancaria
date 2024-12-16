@@ -30,6 +30,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
+import eu.tasgroup.applicativo.security.AdminOnly;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;

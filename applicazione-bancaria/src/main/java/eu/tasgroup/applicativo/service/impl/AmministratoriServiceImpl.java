@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
+import eu.tasgroup.applicativo.security.AdminOnly;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 
 @Service
@@ -15,7 +16,8 @@ public class AmministratoriServiceImpl implements AmministratoriService {
 
 	@Autowired
 	private AmministratoriRepository amministratoriRepository;
-
+	
+	@AdminOnly
 	@Override
 	public Optional<Amministratore> findByEmailAdmin(String email) {
 		return amministratoriRepository.findByEmailAdmin(email);
