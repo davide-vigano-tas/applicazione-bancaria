@@ -29,7 +29,7 @@
                         <p><strong>Richiesta prestito:</strong> </p>
                     </div>
                     <div class="col-md-4 text-center">
-                        <form th:action="@{/user/richiestaPrestito}" th:object="${user_richiesta}" method="post"  class="form-horizontal" >
+                        <form th:action="@{/user/richiediPrestito}" th:object="${user_richiesta}" method="post"  class="form-horizontal" >
                         		<div class="form-group">
                         <input type="hidden" th:field="*{cliente}">
 						<label class="col-md-1 control-label">Importo</label>
