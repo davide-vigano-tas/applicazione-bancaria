@@ -38,11 +38,29 @@
                     </li>
                 </ul>
                 <div class="d-flex" sec:authorize="isAuthenticated()">
+                	<!-- Sezione per mostrare l'utente loggato -->
+				    <div class="d-flex align-items-center me-3" sec:authorize="hasRole('USER')">
+				        <i class="fas fa-user-circle text-light me-2"></i>
+				        <span class="text-light fw-bold">
+				            <span th:text="${user.getNomeCliente} + ' ' + ${user.getCognomeCliente}"></span>
+				        </span>
+				    </div>
+				    
+				    <!-- Sezione per mostrare amministratore loggato -->
+				    <div class="d-flex align-items-center me-3" sec:authorize="hasRole('ADMIN')">
+				        <i class="fas fa-user-circle text-light me-2"></i>
+				        <span class="text-light fw-bold">
+				            <span th:text="${admin.getNomeAdmin} + ' ' + ${admin.getCognomeAdmin}"></span>
+				        </span>
+				    </div>
+                	
+                	
                 	<button class="btn btn-outline-light" id="logoutButton" 
 				            th:data-logout-url="${#authentication.name eq 'admin' ? '/admin/admin-logout' : '/user/user-logout'}" 
 				            onclick="confirmLogout()">
 				        <i class="fas fa-sign-out-alt"></i> Logout
 				    </button>
+				    
                 </div>
             </div>
         </div>
