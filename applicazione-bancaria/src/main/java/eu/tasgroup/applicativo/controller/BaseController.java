@@ -3,6 +3,7 @@ package eu.tasgroup.applicativo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @Controller
 public class BaseController {
@@ -57,33 +59,42 @@ public class BaseController {
 	}
 
 	@PostMapping(value = "/user/user-form-registrazione")
-	public ModelAndView registrazioneUtenteForm(Cliente cliente) {
+	public ModelAndView registrazioneUtenteForm(@Valid Cliente cliente, BindingResult result,HttpServletRequest request) {
+		
+		request.getSession().removeAttribute("message");
 		ModelAndView mv = new ModelAndView();
 		
 		if (cs.findByEmailCliente(cliente.getEmailCliente()).isPresent()) {
-			
-			// TODO: Gestire errore email già registrata
-			
+			String message = "email_gia_utilizzata";
+			mv.addObject("message", message);
 			mv.setViewName("user-form-reg");
 			return mv;
 		}else {
-			cliente.setPasswordCliente(BCryptEncoder.encode(cliente.getPasswordCliente()));
-			cliente = cs.createOrUpdate(cliente);
+			if(result.hasErrors()) {
+				mv.addObject("cliente", cliente);
+				mv.setViewName("user-form-reg");
+				return mv;
+			} else {
+				
 			
-			// Aggiungo il cliente anche su MongoDB
-			ClienteMongo clienteMongo = new ClienteMongo();
-			clienteMongo.setAccountBloccato(cliente.isAccountBloccato());
-			clienteMongo.setCodCliente(cliente.getCodCliente());
-			clienteMongo.setCognomeCliente(cliente.getCognomeCliente());
-			clienteMongo.setEmailCliente(cliente.getEmailCliente());
-			clienteMongo.setNomeCliente(cliente.getNomeCliente());
-			clienteMongo.setPasswordCliente(cliente.getPasswordCliente());
-			clienteMongo.setSaldoConto(cliente.getSaldoConto());
-			clienteMongo.setTentativiErrati(cliente.getTentativiErrati());
-			
-			cms.createOrUpdate(clienteMongo);
-			
-			return new ModelAndView("redirect:/user/user-login");
+				cliente.setPasswordCliente(BCryptEncoder.encode(cliente.getPasswordCliente()));
+				cliente = cs.createOrUpdate(cliente);
+				
+				// Aggiungo il cliente anche su MongoDB
+				ClienteMongo clienteMongo = new ClienteMongo();
+				clienteMongo.setAccountBloccato(cliente.isAccountBloccato());
+				clienteMongo.setCodCliente(cliente.getCodCliente());
+				clienteMongo.setCognomeCliente(cliente.getCognomeCliente());
+				clienteMongo.setEmailCliente(cliente.getEmailCliente());
+				clienteMongo.setNomeCliente(cliente.getNomeCliente());
+				clienteMongo.setPasswordCliente(cliente.getPasswordCliente());
+				clienteMongo.setSaldoConto(cliente.getSaldoConto());
+				clienteMongo.setTentativiErrati(cliente.getTentativiErrati());
+				
+				cms.createOrUpdate(clienteMongo);
+				
+				return new ModelAndView("redirect:/user/user-login");
+			}
 		}
 	}
 

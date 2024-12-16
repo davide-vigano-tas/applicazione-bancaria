@@ -15,6 +15,11 @@
 						</h4>
 					</div>
 					<div class="card-body">
+						<div class="alert alert-danger" th:if="${message == 'email_gia_utilizzata'}" role="alert">
+							<span >
+								<i class="fas fa-exclamation-circle"></i> L'email inserita è gia utilizzata.
+							</span>
+						</div>
 						<form th:action="@{/user/user-form-registrazione}" method="post" th:object="${cliente}" id="userForm">
 							<div class="mb-3">
 								<label for="nomeCliente" class="form-label">
@@ -22,6 +27,8 @@
 								</label>
 								<input type="text" class="form-control" id="nomeCliente" name="nomeCliente"
 									placeholder="Inserisci il tuo nome" required th:field="*{nomeCliente}">
+								<p th:if="${#fields.hasErrors('nomeCliente')}" th:errors="*{nomeCliente}"
+									style="color: red;"></p>
 							</div>
 							<div class="mb-3">
 								<label for="cognomeCliente" class="form-label">
@@ -29,6 +36,8 @@
 								</label>
 								<input type="text" class="form-control" id="cognomeCliente" name="cognomeCliente"
 									placeholder="Inserisci il tuo cognome" required th:field="*{cognomeCliente}">
+								<p th:if="${#fields.hasErrors('cognomeCliente')}" th:errors="*{cognomeCliente}"
+									style="color: red;"></p>
 							</div>
 							<div class="mb-3">
 								<label for="emailCliente" class="form-label">
@@ -36,6 +45,8 @@
 								</label>
 								<input type="email" class="form-control" id="emailCliente" name="emailCliente"
 									placeholder="Inserisci la tua email" required th:field="*{emailCliente}">
+								<p th:if="${#fields.hasErrors('emailCliente')}" th:errors="*{emailCliente}"
+									style="color: red;"></p>
 							</div>
 							<div class="mb-3">
 								<label for="passwordCliente" class="form-label">
@@ -43,6 +54,8 @@
 								</label>
 								<input type="password" class="form-control" id="passwordCliente" name="passwordCliente"
 									placeholder="Inserisci la tua password" required th:field="*{passwordCliente}">
+								<p th:if="${#fields.hasErrors('passwordCliente')}" th:errors="*{passwordCliente}"
+									style="color: red;"></p>
 							</div>
 							<div class="d-grid">
 								<button type="submit" class="btn btn-success">

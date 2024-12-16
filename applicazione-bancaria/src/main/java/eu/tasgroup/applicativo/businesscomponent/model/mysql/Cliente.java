@@ -16,6 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Clienti")
@@ -28,15 +30,19 @@ public class Cliente implements Serializable {
     @Column(name = "cod_cliente")
     private long codCliente;
 
+    @Pattern(regexp = "^[a-zA-Z ,.'-]{2,30}$", message = "max 30 caratteri, no numeri")
     @Column(name = "nome_cliente", nullable = false, length = 50)
     private String nomeCliente;
 
+    @Pattern(regexp = "^[a-zA-Z ,.'-]{2,30}$", message = "max 30 caratteri, no numeri")
     @Column(name = "cognome_cliente", nullable = false, length = 50)
     private String cognomeCliente;
 
+    @Pattern(regexp = "^[\\w.%+-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$", message = "email non valida")
     @Column(name = "email_cliente", nullable = false, unique = true, length = 100)
     private String emailCliente;
 
+    @Size(min = 4, message = "minimo 8 caratteri")
     @Column(name = "password_cliente", nullable = false, length = 100)
     private String passwordCliente;
 
