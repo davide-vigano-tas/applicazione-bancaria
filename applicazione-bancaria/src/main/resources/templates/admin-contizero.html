@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Admin</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${admin.nomeAdmin}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${admin.cognomeAdmin}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${admin.emailAdmin}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${admin.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${admin.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row my-4">
+                    <div class="col-md-4 text-center">
+                    	<a href="/admin/statistiche">
+	                        <i class="fas fa-square-poll-vertical"></i><br>
+	                        <strong>Statistiche</strong> 
+                    	</a>
+                    </div>
+                 
+              
+                </div>
+                <div class="row my-4">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Codice</th>
+           						<th style="width: 200px;">Tipo</th>
+           						<th style="width: 200px;">Cliente</th>
+           						<th style="width: 200px;">Elimina</th>
+           					
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="c : ${admin_contizero}">
+           					
+           						<td id="codice" th:text="${c.codConto}"></td>
+           						<td th:text="${c.tipoConto}"></td>
+           						<td th:text="${c.cliente.emailCliente}"></td>
+           						<td>
+           							<button class="btn btn-danger btn-sm"
+           							 onclick="confermaEliminazione()">
+           								<i class="fas fa-trash"></i>
+           							</button>
+           						</td>
+           					
+           					</tr>
+           				</tbody>
+           			</table>
+           			
+           			<script>
+           			function confermaEliminazione() {
+
+           				const codice = $('#codice').text();
+           				console.log(codice)
+           		        Swal.fire({
+           		            title: 'Sei sicuro di voler eliminare il conto?',
+           		            text: "Perderalo le informazioni legate ad esso",
+           		            icon: 'warning',
+           		            showCancelButton: true,
+           		            confirmButtonColor: '#3085d6',
+           		            cancelButtonColor: '#d33',
+           		            confirmButtonText: 'Sì, esci',
+           		            cancelButtonText: 'Annulla'
+           		        }).then((result) => {
+           		            if (result.isConfirmed) {
+           		                window.location.href = "/admin/eliminaConto/"+codice;
+           		            }
+           		        });
+           		    }
+           			</script>
+           			
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
