@@ -76,6 +76,7 @@ public class GestioneTransazioni {
 				tmongo.setDataTransazione(t.getDataTransazione());
 				tmongo.setImporto(t.getImporto());
 				tmongo.setTipoTransazione(t.getTipoTransazione());
+				transazioniMongoService.createOrUpdate(tmongo);
 				
 				Conto conto = t.getConto();
 				contiService.createOrUpdate(conto);
@@ -128,6 +129,7 @@ public class GestioneTransazioni {
 				tmongo.setDataTransazione(t.getDataTransazione());
 				tmongo.setImporto(t.getImporto());
 				tmongo.setTipoTransazione(t.getTipoTransazione());
+				transazioniMongoService.createOrUpdate(tmongo);
 				
 				Conto conto = t.getConto();
 				contiService.createOrUpdate(conto);
