@@ -3,8 +3,6 @@ package eu.tasgroup.applicativo.businesscomponent.model.mysql;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;

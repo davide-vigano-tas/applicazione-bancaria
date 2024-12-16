@@ -1,8 +1,6 @@
 package eu.tasgroup.applicativo.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.util.Date;
 import java.util.List;
 

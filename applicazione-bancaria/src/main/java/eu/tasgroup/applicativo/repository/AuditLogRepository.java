@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.AuditLog;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.LogAccessi;
 
 @Repository
 public interface AuditLogRepository extends JpaRepository<AuditLog, Long>{
