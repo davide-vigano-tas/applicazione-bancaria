@@ -142,7 +142,7 @@ public class ClientController {
 	}
 
 	// Pagina del form per creare una nuova carta
-	@GetMapping("/nuovoCarta")
+	@GetMapping("/nuovaCarta")
 	public ModelAndView cartaForm(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-cartaform");
 		String email = userDetails.getUsername();
