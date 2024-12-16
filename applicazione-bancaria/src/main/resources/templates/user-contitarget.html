@@ -25,21 +25,21 @@
                 <hr>
                 <div>
                 <div><h3>Scegli conto per il trasferimento</h3></div>
-                	<table>
+                	<table  class="table table-striped">
                 		<thead>
                 			<tr>
-                				<td>Codice Conto</td>
-                				<td>Tipo Conto</td>
-                				<td></td>
+                				<th>Codice Conto</td>
+                				<th>Tipo Conto</td>
+                				<th></td>
                 			</tr>
                 		</thead>
                 		<tbody>
-                			<tr th:each="conto : ${user_conti}">
+                			<tr th:each="conto : ${user_contitarget}">
                 				<td th:text="${conto.codConto}"></td>
                 				<td th:text="${conto.tipoConto}"></td>
                 				<td> 
-                					<a class="btn btn-primary btn-lg w-100" 
-                					role="button" th:href="@{|/user/formtransazionebancaria/${conto.codConto}|}" ></a>
+                					<a class="btn btn-primary w-100" 
+                					role="button" th:href="@{|/user/formtransazionebancaria/${conto.codConto}|}" >Trasferisci</a>
                 				</td>
                 			</tr>
                 			
