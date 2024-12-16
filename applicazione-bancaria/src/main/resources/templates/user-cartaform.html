@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Crea Carta')}">
+</head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+	<div class="container py-5">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-primary text-white">
+						<h4 class="text-center">
+							<i class="fas fa-university"></i> Insersci dati carta
+						</h4>
+					</div>
+					<div class="card-body">
+						<form th:action="@{nuovaCarta}" th:object="${user_carta}"
+							method="post">
+							<div class="mb-3">
+								<div>
+									<input type="hidden" th:field="*{cliente}" th:value="${user}">
+								</div>
+								<div class="row mb-2 ms-2">
+									<label for="numeroCarta" class="form-label col-md-3">Numero Carta:</label> 
+									<input class="col-md-6 " type="number" th:field="*{numeroCarta}" id="numeroCarta" required>
+								</div>
+								<div class="row mb-2 ms-2">
+									<label for="dataScadenza" class="form-label col-md-3">Data Scadenza:</label> 
+									<input class="col-md-4" type="date" th:field="*{dataScadenza}" id="dataScadenza" required>
+								</div>
+								<div class="row mb-2 ms-2">
+									<label for="cvv" class="form-label col-md-3">cvv:</label> 
+									<input class="col-md-4" type="number" th:field="*{cvv}" id="cvv" min=0 max=999 required>
+								</div>
+							</div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-primary">
+									<i class="fas fa-plus"></i> Crea
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

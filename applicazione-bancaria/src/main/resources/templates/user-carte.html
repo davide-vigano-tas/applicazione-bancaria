@@ -29,14 +29,20 @@
                 			<tr>
                 				<th>Codice Carta</th>
                 				<th>Numero Carta</th>
+                				<th>CVV</th>
                 				<th>Data Scadenza</th>
+                				<th>Elimina Carta</th>
                 			</tr>
                 		</thead>
                 		<tbody>
                 			<tr th:each="carta : ${user_carte}">
                 				<td th:text="${carta.codCarta}"></td>
                 				<td th:text="${carta.numeroCarta}"></td>
-                				<td th:text="${carta.dataScadenza}"></td>
+                				<td th:text="${carta.cvv}"></td>
+                				<td th:text="${#dates.format(carta.dataScadenza, 'dd/MM/yyyy')}"></td>
+                				<td>
+                					<a class="btn btn-danger" th:href="@{'eliminaCarta/'+${carta.codCarta}}">elimina</a>
+                				<td>
                 			</tr>
                 		</tbody>
                 	</table>

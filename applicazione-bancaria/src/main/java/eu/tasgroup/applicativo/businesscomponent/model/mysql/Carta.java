@@ -31,7 +31,7 @@ public class Carta implements Serializable {
 	private String numeroCarta;
 
 	@Column(name = "data_scadenza", nullable = false)
-	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dataScadenza;
 	
 	@Column(name = "cvv", nullable = false)

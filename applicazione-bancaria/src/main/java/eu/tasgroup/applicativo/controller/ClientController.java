@@ -162,7 +162,15 @@ public class ClientController {
 	public ModelAndView cartaForm(Carta carta) {
 		cartaService.createOrUpdate(carta);
 
-		return new ModelAndView("redirect:/user/conti");
+		return new ModelAndView("redirect:/user/carte");
+	}
+	
+	// 
+	@GetMapping("/eliminaCarta/{id}")
+	public ModelAndView cartaForm(@PathVariable long id) {
+		cartaService.deleteCartaById(id);
+		
+		return new ModelAndView("redirect:/user/carte");
 	}
 
 	// Transazioni legate a un conto
