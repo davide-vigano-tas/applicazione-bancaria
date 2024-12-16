@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('transazione')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Transazione</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${user.emailCliente}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span></p>
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h5><i class="fa-regular fa-building-columns"></i></h5>
+                        <p>
+	                        <strong>Trasferimento dal Conto:</strong> 
+	                        <span th:text="${user_transazionebancaria.contoOrigine.codConto}"></span>
+	                        <strong>al Conto:</strong> 
+	                        <span th:text="${user_transazionebancaria.contoDestinazione.codConto}"></span>
+                        </p>
+                    </div>
+                </div>     
+            	<div class="row">
+                        <form th:action="@{/user/transazionebancaria}" th:object="${user_transazionebancaria}" method="post"  class="form-horizontal" >
+                        	<div class="form-group">
+                        		<div class="mb-3 col-md-5">
+	                        		<label for="metodoPagamento" class="form-label">Metodo di Pagamento:</label>
+			                        <select class="form-select" id="metodoPagamento" name="metodoPagamento" required>
+			                            <option value="" disabled selected>Seleziona un metodo</option>
+			                            <option value="BONIFICO">Bonifico</option>
+			                            <option value="CARTA">Carta</option>
+			                            <option value="CONTANTI">Contanti</option>
+			                        </select>
+                        		</div>
+                        
+								<div class="mb-3 col-md-5">
+			                        <label for="importo" class="form-label">Importo:</label>
+			                        <input type="number" class="form-control" id="importo" name="importo"
+			                               placeholder="Inserisci l'importo" th:field="*{importo}" required>
+                    			</div>
+                    			<input type="hidden" th:field="*{contoOrigine}" th:value="${user_transazionebancaria.contoOrigine}">
+                    			<input type="hidden" th:field="*{contoDestinazione}" th:value="${user_transazionebancaria.contoDestinazione}">
+								<div class="d-grid">
+									<button type="submit" class="btn btn-primary">
+										<i class="fas fa-plus"></i> Traseferisci
+									</button>
+								</div>
+							</div>
+                        </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
