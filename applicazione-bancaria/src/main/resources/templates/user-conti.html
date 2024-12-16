@@ -31,6 +31,7 @@
                 				<th>Codice Conto</th>
                 				<th>Tipo Conto</th>
                 				<th>Saldo</th>
+                				<th>Transazioni</th>
                 			</tr>
                 		</thead>
                 		<tbody>
@@ -38,6 +39,9 @@
                 				<td th:text="${conto.codConto}"></td>
                 				<td th:text="${conto.tipoConto}"></td>
                 				<td th:text="${conto.saldo}"></td>
+                				<td>
+                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-primary">Vedi transazioni</a>
+                				</td>
                 			</tr>
                 		</tbody>
                 	</table>
