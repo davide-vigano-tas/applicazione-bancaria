@@ -198,7 +198,7 @@
            						<td th:text="${t.codTransazione}"></td>
            						<td th:text="${#numbers.formatCurrency(t.importo)}"></td>
            						<td th:text="${#dates.format(t.dataTransazione, 'dd/MM/yyyy HH:mm:ss')}"></td>
-           						<td th:text="${p.tipoTransazione}"></td>
+           						<td th:text="${t.tipoTransazione}"></td>
            					</tr>
            				</tbody>
            			</table>
