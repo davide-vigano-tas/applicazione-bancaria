@@ -67,8 +67,9 @@ public class ClientController {
 
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
-
-	GestioneTransazioni gc = new GestioneTransazioni();
+	
+	@Autowired
+	GestioneTransazioni gc;
 
 	// Homepage user
 	@GetMapping({ "", "/" })
@@ -340,7 +341,7 @@ public class ClientController {
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 
-			if (transazione.getImporto() < 0) {
+			if (transazione.getImporto() <= 0) {
 				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
 			} else if (!gc.deposito(transazione, c)) {
 				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
@@ -395,6 +396,7 @@ public class ClientController {
 			Conto conto = contiService.findById(id).get();
 			session.setAttribute("user_conto", conto);
 			List<Conto> conti = contiService.getAll();
+			conti.remove(conto);
 			mv.addObject("user_contitarget", conti);
 			return mv;
 		} else
