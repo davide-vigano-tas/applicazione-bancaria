@@ -32,6 +32,10 @@
                 				<th>Tipo Conto</th>
                 				<th>Saldo</th>
                 				<th>Transazioni</th>
+                				<th>Movimenti</th>
+                				<th>Prelievo</th>
+                				<th>Deposito</th>
+                				<th>Trasferimento</th>
                 			</tr>
                 		</thead>
                 		<tbody>
@@ -40,7 +44,19 @@
                 				<td th:text="${conto.tipoConto}"></td>
                 				<td th:text="${conto.saldo}"></td>
                 				<td>
-                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-primary">Vedi transazioni</a>
+                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi transazioni</a>
+                				</td>
+                				<td>
+                					<a th:href="@{'movimentiConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi moviementi</a>
+                				</td>
+                				<td>
+                					<a th:href="@{'preleva/'+${conto.codConto}}" class="btn btn-sm btn-primary">preleva</a>
+                				</td>
+                				<td>
+                					<a th:href="@{'deposita/'+${conto.codConto}}" class="btn btn-sm btn-primary">deposita</a>
+                				</td>
+                				<td>
+                					<a th:href="@{'contitarget/'+${conto.codConto}}" class="btn btn-sm btn-primary">trasferimento</a>
                 				</td>
                 			</tr>
                 		</tbody>
