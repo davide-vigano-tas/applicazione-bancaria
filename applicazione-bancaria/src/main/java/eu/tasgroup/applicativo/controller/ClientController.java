@@ -290,7 +290,7 @@ public class ClientController {
 	// Prelievo
 	@PostMapping("/preleva")
 	public ModelAndView preleva(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
-		ModelAndView mv = new ModelAndView("user-conti");
+		ModelAndView mv = new ModelAndView("redirect:/user/conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
@@ -335,7 +335,7 @@ public class ClientController {
 	// Prelievo
 	@PostMapping("/deposita")
 	public ModelAndView deposita(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
-		ModelAndView mv = new ModelAndView("user-conti");
+		ModelAndView mv = new ModelAndView("redirect:/user/conti");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
