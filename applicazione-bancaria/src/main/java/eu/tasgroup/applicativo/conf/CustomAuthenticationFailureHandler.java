@@ -28,19 +28,23 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException exception) throws IOException, ServletException {
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+	                                    AuthenticationException exception) throws IOException, ServletException {
+	    String email = request.getParameter("email");
+	    String password = request.getParameter("password");
 
-		if (email.endsWith("@tasgroup.eu")) {
-			ar.findByEmailAdmin(email).ifPresent(admin -> aggiornaTentativiLoginAdmin(admin));
-			response.sendRedirect("/admin/admin-login?error=true&message=" 
-			+ determinaMessaggioErroreAdmin(email,password) + "&tentativi=" + tentativiRimastiAdmin(email));
-		} else {
-			cr.findByEmailCliente(email).ifPresent(cliente -> aggiornaTentativiLogin(cliente));
-			response.sendRedirect("/user/user-login?error=true&message=" 
-			+ determinaMessaggioErrore(email, password) + "&tentativi=" + tentativiRimasti(email));
-		}
+	    if (email.endsWith("@tasgroup.eu")) {
+	        ar.findByEmailAdmin(email).ifPresent(admin -> aggiornaTentativiLoginAdmin(admin));
+	        request.getSession().setAttribute("error", true);
+	        request.getSession().setAttribute("message", determinaMessaggioErroreAdmin(email, password));
+	        request.getSession().setAttribute("tentativi", tentativiRimastiAdmin(email));
+	        response.sendRedirect("/admin/admin-login");
+	    } else {
+	        cr.findByEmailCliente(email).ifPresent(cliente -> aggiornaTentativiLogin(cliente));
+	        request.getSession().setAttribute("error", true);
+	        request.getSession().setAttribute("message", determinaMessaggioErrore(email, password));
+	        request.getSession().setAttribute("tentativi", tentativiRimasti(email));
+	        response.sendRedirect("/user/user-login");
+	    }
 	}
 
 	private String tentativiRimastiAdmin(String email) {

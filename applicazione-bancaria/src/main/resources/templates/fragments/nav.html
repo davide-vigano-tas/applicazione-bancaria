@@ -1,15 +1,23 @@
 <header th:fragment="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
     <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Applicazione Bancaria</a>
+            <a class="navbar-brand" href="#">Applicazione Bancaria</a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                   		<button class="nav-link active" id="logoutButtonHome" 
+				            th:data-logout-url="${#authentication.name eq 'admin' ? '/admin/admin-logout' : '/user/user-logout'}" 
+				            onclick="confirmLogoutHome()">
+				       		Home
+				       	 </button>
                     </li>
+                   	 <li class="nav-item" sec:authorize="!isAuthenticated()">
+			          <a class="nav-link active" aria-current="page" href="/">Home</a>
+			        </li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
                         <ul class="dropdown-menu" role="menu">
@@ -47,6 +55,25 @@
         Swal.fire({
             title: 'Sei sicuro?',
             text: "Se effettui il logout tutte le modifiche che non hai salvato verranno perse",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, esci',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = logoutUrl;
+            }
+        });
+    }
+    function confirmLogoutHome() {
+        const logoutButton = document.getElementById('logoutButtonHome');
+        const logoutUrl = logoutButton.getAttribute('data-logout-url');
+
+        Swal.fire({
+            title: 'Sei sicuro?',
+            text: "Per tornare alla home verrà eseguito il logout dell'utente",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

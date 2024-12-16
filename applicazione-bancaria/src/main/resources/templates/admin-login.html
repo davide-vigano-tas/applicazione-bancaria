@@ -17,17 +17,17 @@
 					<div class="card-body">
 						
 						<!-- Sezione messaggi di errore -->
-						<div class="alert alert-danger" th:if="${param.error}" role="alert">
-							<span th:if="${param.message == 'email_non_esistente'}">
+						<div class="alert alert-danger" th:if="${error}" role="alert">
+							<span th:if="${message == 'email_non_esistente'}">
 								<i class="fas fa-exclamation-circle"></i> L'email inserita non esiste.
 							</span>
-							<span th:if="${param.message == 'password_errata'}">
+							<span th:if="${message == 'password_errata'}">
 								<i class="fas fa-exclamation-circle"></i> La password è errata.
 							</span>
-							<span th:if="${param.message == 'account_bloccato'}">
+							<span th:if="${message == 'account_bloccato'}">
 								<i class="fas fa-lock"></i> L'account è bloccato. Contatta il supporto per assistenza.
 							</span>
-							<span th:if="${param.message == 'tentativi_rimasti'}">
+							<span th:if="${tentativi == 'tentativi_rimasti'}">
 								<i class="fas fa-exclamation-triangle"></i> Tentativi di accesso falliti: <b th:text="${param.tentativi}"></b>/5.
 							</span>
 						</div>
