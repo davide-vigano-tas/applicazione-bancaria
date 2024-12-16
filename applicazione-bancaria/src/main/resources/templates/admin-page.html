@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Admin</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Nome:</strong> <span th:text="${admin.nomeAdmin}"></span></p>
+                        <p><strong>Cognome:</strong> <span th:text="${admin.cognomeAdmin}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${admin.emailAdmin}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tentativi Errati:</strong> <span th:text="${admin.tentativiErrati}"></span></p>
+                        <p><strong>Account Bloccato:</strong> <span th:text="${admin.accountBloccato ? 'Sì' : 'No'}"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row my-4">
+                    <div class="col-md-4 text-center">
+                    	<a href="/admin/statistiche">
+	                        <i class="fas fa-square-poll-vertical"></i><br>
+	                        <strong>Statistiche</strong> 
+                    	</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+	                    <a href="/admin/contizero">
+	                        <i class="fas fa-file-invoice-dollar"></i><br>
+	                        <strong>Conti con Saldo zero</strong> 
+	                    </a>
+                    </div>
+              
+                </div>
+                <div class="row my-4">
+           			<table class="table table-hover">
+           				<thead>
+           					<tr>
+           						<th style="width: 200px;">Nome</th>
+           						<th style="width: 200px;">Cognome</th>
+           						<th style="width: 200px;">Email</th>
+           						<th style="width: 200px;">Tentativi Errati</th>
+           						<th style="width: 200px;">Bloccato</th>
+           						<th style="width: 200px;">Saldo Conto</th>
+           					</tr>
+           				</thead>
+           				<tbody>
+           					<tr th:each="cliente : ${clienti}">
+           						<td>
+           							<a  th:text="${cliente.nomeCliente}" 
+           							th:href="@{|/admin/riepilogoCliente/${cliente.codCliente}|}"></a>
+           						</td>
+           						<td th:text="${cliente.cognomeCliente}"></td>
+           						<td th:text="${cliente.emailCliente}"></td>
+           						<td th:text="${cliente.tentativiErrati}"></td>
+           						<td th:text="${cliente.accountBloccato}"></td>
+           						<td th:text="${cliente.saldoConto}"></td>
+           					</tr>
+           				</tbody>
+           			</table>
+           			<div class="row-my-4" style="width: 500px; ">
+           				<form class="form-horizontal" method="post" th:object="${nuovocliente}"
+           				  th:action="@{/nuovoCliente}">
+           					<div class="mb-3">
+								<label for="nomeCliente" class="form-label">
+									<i class="fas fa-user"></i> Nome
+								</label>
+								<input type="text" class="form-control" id="nomeCliente" name="nomeCliente"
+									placeholder="Inserisci il  nome" required th:field="*{nomeCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="cognomeCliente" class="form-label">
+									<i class="fas fa-user"></i> Cognome
+								</label>
+								<input type="text" class="form-control" id="cognomeCliente" name="cognomeCliente"
+									placeholder="Inserisci il cognome" required th:field="*{cognomeCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="emailCliente" class="form-label">
+									<i class="fas fa-envelope"></i> Email
+								</label>
+								<input type="email" class="form-control" id="emailCliente" name="emailCliente"
+									placeholder="Inserisci l'email" required th:field="*{emailCliente}">
+							</div>
+							<div class="mb-3">
+								<label for="passwordCliente" class="form-label">
+									<i class="fas fa-lock"></i> Password
+								</label>
+								<input type="password" class="form-control" id="passwordCliente" name="passwordCliente"
+									placeholder="Inserisci la password" required th:field="*{passwordCliente}">
+							</div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-success btn-md">
+									<i class="fas fa-user-plus"></i> Registra Cliente
+								</button>
+							</div>
+           				
+           				</form>
+           			</div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
