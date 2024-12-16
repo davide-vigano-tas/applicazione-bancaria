@@ -273,4 +273,27 @@ public class AdminController {
 		} 
 		return new ModelAndView("redirect:/admin/admin-login");
 	}
+	
+	@GetMapping("/sospendi/{id}") 
+	public ModelAndView sospendi(@PathVariable long id) {
+		Optional<Cliente> cliente = clientiService.findById(id);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			c.setAccountBloccato(true);
+			clientiService.createOrUpdate(c);
+		}
+		return new ModelAndView("redirect:/admin/");
+	}
+	
+	@GetMapping("/abilita/{id}") 
+	public ModelAndView abilita(@PathVariable long id) {
+		Optional<Cliente> cliente = clientiService.findById(id);
+		if(cliente.isPresent()) {
+			Cliente c = cliente.get();
+			c.setTentativiErrati(0);
+			c.setAccountBloccato(false);
+			clientiService.createOrUpdate(c);
+		}
+		return new ModelAndView("redirect:/admin/");
+	}
 }

@@ -58,7 +58,20 @@
            						<td th:text="${cliente.cognomeCliente}"></td>
            						<td th:text="${cliente.emailCliente}"></td>
            						<td th:text="${cliente.tentativiErrati}"></td>
-           						<td th:text="${cliente.accountBloccato}"></td>
+           						<td>
+           						<div th:if="${cliente.accountBloccato}">
+           								<i class="fa-solid fa-circle" style="color: red"></i>
+           							<button class="btn btn-info btn-sm">
+           								&nbsp;Abilita
+           							</button>
+           						</div>
+           							<div th:if="${!cliente.accountBloccato}">
+           							<i class="fa-solid fa-circle" style="color: green"></i>
+           							<button class="btn btn-danger btn-sm">
+           								&nbsp;Disabilita
+           							</button>
+           						</div>
+           						</td>
            						<td th:text="${cliente.saldoConto}"></td>
            					</tr>
            				</tbody>
