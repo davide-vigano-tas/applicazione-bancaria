@@ -27,7 +27,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		String email = request.getParameter("email");
-		
+		System.err.println("Success");
 		if (email.endsWith("@tasgroup.eu")) {
 			ar.findByEmailAdmin(email).ifPresent(admin -> {
 				if (admin.getTentativiErrati() > 0) {

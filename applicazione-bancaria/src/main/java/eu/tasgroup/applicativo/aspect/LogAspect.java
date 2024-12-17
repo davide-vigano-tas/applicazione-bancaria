@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +14,13 @@ import java.util.logging.SimpleFormatter;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,26 +28,35 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.LogAccessi;
+import eu.tasgroup.applicativo.service.AmministratoriService;
+import eu.tasgroup.applicativo.service.LogAccessiService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE) 
 public class LogAspect {
 	
 	
 	private Logger logger = Logger.getLogger("log1");
 	private FileHandler fileHandler;
 	
+	@Autowired
+	LogAccessiService  logAccessiService;
+	@Autowired
+	AmministratoriService amministratoriService;
 
 
 	@After("execution(* eu.tasgroup.applicativo.controller..*(..) )")
 	public void log(JoinPoint jp) {
 		 // Recupera il contesto di sicurezza
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Entrato");
+    
         try {
 			Path path = Paths.get("C:\\logAspectAppBancaria");
-			 System.out.println("Entrato");
+		
 			if(Files.notExists(path)) {
 				Files.createDirectory(path);
 		
@@ -107,6 +124,25 @@ public class LogAspect {
 		}
         
         fileHandler.close();
+	}
+	
+	@Before("execution( * eu.tasgroup.applicativo.conf.CustomAuthenticationSuccessHandler.onAuthenticationSuccess*(..))")
+	public void logAccesso() {
+		System.out.println("LoginAdmin");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+		UserDetails userDetails = (UserDetails) principal;
+		LogAccessi lg = new LogAccessi();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(userDetails.getUsername());
+		if(admin.isPresent()) {
+			lg.setAdmin(admin.get());
+			lg.setDataLog(new Date());
+			lg.setOperazione("LOGIN");
+			logAccessiService.createOrUpdate(lg);
+		}
+			
+		
+
 	}
 
 }

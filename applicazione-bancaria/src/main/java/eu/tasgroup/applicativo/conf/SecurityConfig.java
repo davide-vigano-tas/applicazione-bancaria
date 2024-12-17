@@ -44,7 +44,6 @@ public class SecurityConfig {
 	                        .failureHandler(failureHandler)
 	        	            .successHandler(successHandler)
 	                        .usernameParameter("email")
-	                        .defaultSuccessUrl("/admin/", true)
 	                        .permitAll()
 	        )
 	        .logout((logout) -> logout
@@ -75,7 +74,6 @@ public class SecurityConfig {
 	            .usernameParameter("email")
 	            .failureHandler(failureHandler)
 	            .successHandler(successHandler)
-	            .defaultSuccessUrl("/user/", true)
 	            .permitAll()
 	        )
 	        .logout(logout -> logout
