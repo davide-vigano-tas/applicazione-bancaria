@@ -112,5 +112,7 @@ public class ClientiServiceImpl implements ClientiService{
 		}else {
 			c.setAccountBloccato(true);
 		}
+		
+		clientiRepository.save(c);
 	}
 }
