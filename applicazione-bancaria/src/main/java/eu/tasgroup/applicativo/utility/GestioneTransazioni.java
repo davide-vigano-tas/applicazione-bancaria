@@ -17,12 +17,14 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
+import eu.tasgroup.applicativo.service.EmailService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
 import eu.tasgroup.applicativo.service.OperazioniBancarieMongoService;
 import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.TransazioneBancariaService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import jakarta.validation.constraints.Email;
 @Component
 public class GestioneTransazioni {
 	
@@ -49,6 +51,9 @@ public class GestioneTransazioni {
 	
 	@Autowired
 	PagamentoService pagamentoService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	
 	
@@ -93,6 +98,10 @@ public class GestioneTransazioni {
 
 				System.err.println(contiService.findById(conto.getCodConto()).get());
 				System.err.println(clientiService.findById(c.getCodCliente()).get());
+				
+				if(mvc.getImporto() > 100) {
+					emailService.movimentoEffettuato(c.getEmailCliente(), mvc);
+				}
 				
 				return true;
 				
@@ -147,6 +156,10 @@ public class GestioneTransazioni {
 
 				System.err.println(contiService.findById(conto.getCodConto()).get());
 				System.err.println(clientiService.findById(c.getCodCliente()).get());
+				
+				if(mvc.getImporto() > 100) {
+					emailService.movimentoEffettuato(c.getEmailCliente(), mvc);
+				}
 				
 				return true;
 				

@@ -1,6 +1,7 @@
 package eu.tasgroup.applicativo.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,6 +12,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.EmailService;
@@ -72,15 +75,52 @@ public class EmailServiceImpl implements EmailService {
 
 	}
 
+
 	@Override
-	public void movimentoEffettuato(String email) {
+	public void modificaCredenziali(String email) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void modificaCredenziali(String email) {
-		// TODO Auto-generated method stub
+	public void movimentoEffettuato(String email, MovimentoConto mc) {
+        Context context = new Context();
+        
+
+        try {
+        	
+        	Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+        	
+        	if(cliente.isPresent()) {
+        		Cliente c = cliente.get();
+        		context.setVariable("user", c.getNomeCliente()+"  "+c.getCognomeCliente());
+             	context.setVariable("email", email);
+             	context.setVariable("movimento", mc);
+
+                String processHtml = templateEngine.process("movimento-importante-effettuato", context);
+  	      		
+  	      	    MimeMessage mimeMessage = mailSender.createMimeMessage();
+  	      	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+  	            helper.setText(processHtml, true); // true indicates HTML
+  	            helper.setTo(c.getEmailCliente());
+  	            
+  	            helper.setFrom("samuelmastro66@gmail.com");
+  	        	if(clientiService.findByEmailCliente(email).isPresent()) {
+  	        			
+  	        		helper.setSubject("Movimento di "+
+  	        		mc.getImporto()+" sul conto "+mc.getConto().getCodConto());
+  	    		} else {
+  	    			
+  	    			return;
+  	    		}
+  	        		mailSender.send(mimeMessage);
+        	}
+           	  
+	        
+   
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 	}
 
