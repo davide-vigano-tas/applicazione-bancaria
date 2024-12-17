@@ -32,14 +32,13 @@ import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import eu.tasgroup.applicativo.service.impl.JwtService;
 import eu.tasgroup.applicativo.utility.DettTrans;
 import eu.tasgroup.applicativo.utility.Statistiche;
 import eu.tasgroup.applicativo.utility.StatisticheExtra;
 
-@RestController
-@RequestMapping("/api")
-@CrossOrigin("")
-public class RestControllerCliente {
+
+public class RestControllerVecchio {
 
 	@Autowired
 	ClientiService clientiService;
@@ -58,9 +57,12 @@ public class RestControllerCliente {
 
 	@Autowired
 	PagamentoService pagamentoService;
-	
+
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
+
+	@Autowired
+	JwtService jwtService;
 
 	@GetMapping("/clienti")
 	public List<Cliente> getClienti() {
@@ -69,28 +71,28 @@ public class RestControllerCliente {
 
 	// Creazione cliente
 	@PostMapping("/clienti")
-	public  ResponseEntity<Cliente> postCliente(@RequestBody Cliente clienteMySQL) {
+	public ResponseEntity<Cliente> postCliente(@RequestBody Cliente clienteMySQL) {
 
 		System.out.println("Cliente ricevuto: " + clienteMySQL);
-	    try {
-	        Cliente savedCliente = clientiService.createOrUpdate(clienteMySQL);
-	        ClienteMongo clienteMongo = new ClienteMongo();
-	        
-	        clienteMongo.setCodCliente((int) clienteMySQL.getCodCliente());
-	        clienteMongo.setNomeCliente(clienteMySQL.getNomeCliente());
-	        clienteMongo.setCognomeCliente(clienteMySQL.getCognomeCliente());
-	        clienteMongo.setEmailCliente(clienteMySQL.getEmailCliente());
-	        clienteMongo.setPasswordCliente(clienteMySQL.getPasswordCliente());
-	        clienteMongo.setTentativiErrati(clienteMySQL.getTentativiErrati());
-	        clienteMongo.setAccountBloccato(clienteMySQL.isAccountBloccato());
-	        clienteMongo.setSaldoConto(clienteMySQL.getSaldoConto());
-	        
-	        clientiMongoService.createOrUpdate(clienteMongo);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	    }
+		try {
+			Cliente savedCliente = clientiService.createOrUpdate(clienteMySQL);
+			ClienteMongo clienteMongo = new ClienteMongo();
+
+			clienteMongo.setCodCliente((int) clienteMySQL.getCodCliente());
+			clienteMongo.setNomeCliente(clienteMySQL.getNomeCliente());
+			clienteMongo.setCognomeCliente(clienteMySQL.getCognomeCliente());
+			clienteMongo.setEmailCliente(clienteMySQL.getEmailCliente());
+			clienteMongo.setPasswordCliente(clienteMySQL.getPasswordCliente());
+			clienteMongo.setTentativiErrati(clienteMySQL.getTentativiErrati());
+			clienteMongo.setAccountBloccato(clienteMySQL.isAccountBloccato());
+			clienteMongo.setSaldoConto(clienteMySQL.getSaldoConto());
+
+			clientiMongoService.createOrUpdate(clienteMongo);
+			return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
 
 	}
 
@@ -174,53 +176,52 @@ public class RestControllerCliente {
 
 		return statistiche;
 	}
-	
-	//statistiche extra
-		@GetMapping("/statistiche-extra")
-		public StatisticheExtra statisticheExtra() {
-			StatisticheExtra stat = new StatisticheExtra();
-			
-			//Stato delle Richieste di Prestito: Numero di richieste in attesa, approvate e rifiutate.
-			Map<StatoRichiestaPrestito, Integer> prestitiRichiestiPerStato = Arrays.stream(StatoRichiestaPrestito.values())
-					.collect(Collectors.toMap(
-							tipo -> tipo, 
-							tipo -> richiestePrestitoService.findByStatus(tipo).size()
-							));	
-			stat.setPrestitiRichiestiPerStato(prestitiRichiestiPerStato);
-			
-			
-			//Importo Totale dei Prestiti Approvati: Somma degli importi dei prestiti approvati per ogni cliente.
-			Map<Long,Double> sommaPrestitiApprovatiPerCliente = new HashMap<Long,Double>();
-			for(Cliente c : clientiService.getClientiList()) {
-				Double somma = 0.00;
-				if(!c.getRichiestePrestiti().isEmpty()) {
-					for(RichiestaPrestito p : c.getRichiestePrestiti()) {
-						if(p.getStato().equals(StatoRichiestaPrestito.APPROVATO)) {
-							somma += p.getImporto();
-						}
+
+	// statistiche extra
+	@GetMapping("/statistiche-extra")
+	public StatisticheExtra statisticheExtra() {
+		StatisticheExtra stat = new StatisticheExtra();
+
+		// Stato delle Richieste di Prestito: Numero di richieste in attesa, approvate e
+		// rifiutate.
+		Map<StatoRichiestaPrestito, Integer> prestitiRichiestiPerStato = Arrays.stream(StatoRichiestaPrestito.values())
+				.collect(Collectors.toMap(tipo -> tipo, tipo -> richiestePrestitoService.findByStatus(tipo).size()));
+		stat.setPrestitiRichiestiPerStato(prestitiRichiestiPerStato);
+
+		// Importo Totale dei Prestiti Approvati: Somma degli importi dei prestiti
+		// approvati per ogni cliente.
+		Map<Long, Double> sommaPrestitiApprovatiPerCliente = new HashMap<Long, Double>();
+		for (Cliente c : clientiService.getClientiList()) {
+			Double somma = 0.00;
+			if (!c.getRichiestePrestiti().isEmpty()) {
+				for (RichiestaPrestito p : c.getRichiestePrestiti()) {
+					if (p.getStato().equals(StatoRichiestaPrestito.APPROVATO)) {
+						somma += p.getImporto();
 					}
-					//LA LISTA PRESTITI è FATTA DA QUELLI APPROVATI?
+				}
+				// LA LISTA PRESTITI è FATTA DA QUELLI APPROVATI?
 //					for(Prestito p : c.getPrestiti()) {
 //							somma += p.getImporto();
 //					}
-					sommaPrestitiApprovatiPerCliente.put(c.getCodCliente(), somma);
-				}
+				sommaPrestitiApprovatiPerCliente.put(c.getCodCliente(), somma);
 			}
-			stat.setSommaPrestitiApprovatiPerCliente(sommaPrestitiApprovatiPerCliente);
-			
-			
-			//Rapporto Transazioni ACCREDITO/ADDEBITO: Percentuale di transazioni di tipo ACCREDITO rispetto al totale.
-			//conta anche sul totale (include i trasferimenti)
-			double percentualeTransazioniAccredito;
-			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
-				percentualeTransazioniAccredito= (100.00/transazioniMongoService.findAll().size())
-						*transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
-			} else {
-				percentualeTransazioniAccredito = 0.00;
-			}
-			stat.setPercentualeTransazioniAccredito(percentualeTransazioniAccredito);
-			
-			//Questo considera la percentuale di accrediti sulla somma di acrediti e addebit (senzabtrasferimenti)
+		}
+		stat.setSommaPrestitiApprovatiPerCliente(sommaPrestitiApprovatiPerCliente);
+
+		// Rapporto Transazioni ACCREDITO/ADDEBITO: Percentuale di transazioni di tipo
+		// ACCREDITO rispetto al totale.
+		// conta anche sul totale (include i trasferimenti)
+		double percentualeTransazioniAccredito;
+		if (transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null) {
+			percentualeTransazioniAccredito = (100.00 / transazioniMongoService.findAll().size())
+					* transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO);
+		} else {
+			percentualeTransazioniAccredito = 0.00;
+		}
+		stat.setPercentualeTransazioniAccredito(percentualeTransazioniAccredito);
+
+		// Questo considera la percentuale di accrediti sulla somma di acrediti e
+		// addebit (senzabtrasferimenti)
 //			double rapportoAccreditoAddebito;
 //			if(transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ACCREDITO) != null
 //					&& transazioniMongoService.numeroTransazioniPerTipo(TipoTransazione.ADDEBITO) != null) {
@@ -234,34 +235,23 @@ public class RestControllerCliente {
 //				rapportoAccreditoAddebito = 0.00;			
 //			}
 //			stat.setPercentualeTransazioniAccredito(rapportoAccreditoAddebito);
-			
-			
-			
-			//Dettagli Transazioni per Cliente: Visualizzazione dettagliata delle transazioni per ogni
-			//cliente, includendo importo medio, numero totale e tipologia.
-			Map<Long,DettTrans> dettagliTransazioniPerCliente = new HashMap<Long, DettTrans>();
-			for(Cliente c : clientiService.getClientiList()) {
-				if(!transazioniMongoService.findByCliente(c.getCodCliente()).isEmpty()) {
-					dettagliTransazioniPerCliente.put(c.getCodCliente(),
-							new DettTrans(
-									transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()), 
-									transazioniMongoService.findByCliente(c.getCodCliente()).size(), 
-									Arrays
-									.stream(TipoTransazione.values())
-									.collect(Collectors.toMap(
-											tipo -> tipo, 
-											tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)
-											))
-									)
-							);
-				}
-			}
-			stat.setDettagliTransazioniPerCliente(dettagliTransazioniPerCliente);
-			
-			return stat;
-		}
-		
 
-		
+		// Dettagli Transazioni per Cliente: Visualizzazione dettagliata delle
+		// transazioni per ogni
+		// cliente, includendo importo medio, numero totale e tipologia.
+		Map<Long, DettTrans> dettagliTransazioniPerCliente = new HashMap<Long, DettTrans>();
+		for (Cliente c : clientiService.getClientiList()) {
+			if (!transazioniMongoService.findByCliente(c.getCodCliente()).isEmpty()) {
+				dettagliTransazioniPerCliente.put(c.getCodCliente(),
+						new DettTrans(transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()),
+								transazioniMongoService.findByCliente(c.getCodCliente()).size(),
+								Arrays.stream(TipoTransazione.values()).collect(Collectors.toMap(tipo -> tipo,
+										tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)))));
+			}
+		}
+		stat.setDettagliTransazioniPerCliente(dettagliTransazioniPerCliente);
+
+		return stat;
+	}
 
 }
