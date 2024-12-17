@@ -30,6 +30,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
+import eu.tasgroup.applicativo.security.AdminOnly;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
@@ -300,6 +301,7 @@ public class AdminController {
 		return new ModelAndView("redirect:/admin/admin-login");
 	}
 
+	@AdminOnly
 	@GetMapping("/rifiuta/{id}")
 	public ModelAndView rifiuta(@PathVariable long id) {
 		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
@@ -311,6 +313,7 @@ public class AdminController {
 		return new ModelAndView("redirect:/admin/prestiti");
 	}
 
+	
 	@GetMapping("/accetta/{id}")
 	public ModelAndView accetta(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("admin-prestiti-form");
@@ -332,7 +335,7 @@ public class AdminController {
 		}
 		return new ModelAndView("redirect:/user/user-login");
 	}
-	
+	@AdminOnly
 	@PostMapping("/accetta/{id}")
 	public ModelAndView accetta(@PathVariable long id,Prestito prestito) {
 		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
