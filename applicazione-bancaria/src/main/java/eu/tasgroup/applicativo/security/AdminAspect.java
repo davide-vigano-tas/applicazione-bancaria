@@ -2,6 +2,10 @@ package eu.tasgroup.applicativo.security;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+
+
+import org.springframework.stereotype.Component;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,8 +23,7 @@ public class AdminAspect {
         }
 
         // Verifica il ruolo dell'utente
-        Authentication a = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = a.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        String email = ((UserDetails)authentication.getPrincipal()).getUsername();
         
         if (!isAdmin) {
         	System.err.println("Accesso negato: Solo gli amministratori possono accedere a questa funzionalità.");
