@@ -2,13 +2,9 @@ package eu.tasgroup.applicativo.security;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.stereotype.Component;
-
-import eu.tasgroup.applicativo.conf.CostumerUserDetailsService;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
@@ -23,11 +19,10 @@ public class AdminAspect {
         }
 
         // Verifica il ruolo dell'utente
-        String email = ((UserDetails)authentication.getPrincipal()).getUsername();
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = a.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         
-        System.err.println("Email: " + email);
-        
-        if (!email.endsWith("@tasgroup.eu")) {
+        if (!isAdmin) {
         	System.err.println("Accesso negato: Solo gli amministratori possono accedere a questa funzionalità.");
             throw new SecurityException("Accesso negato: Solo gli amministratori possono accedere a questa funzionalità.");
         }
