@@ -11,6 +11,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
+import eu.tasgroup.applicativo.service.EmailService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,10 +21,13 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
 	private final AmministratoriRepository ar;
 	private final ClientiRepository cr;
+	private final EmailService emailService;
 
-	public CustomAuthenticationFailureHandler(AmministratoriRepository ar, ClientiRepository cr) {
+	public CustomAuthenticationFailureHandler(AmministratoriRepository ar, ClientiRepository cr,
+			EmailService emailService) {
 		this.ar = ar;
 		this.cr = cr;
+		this.emailService = emailService;
 	}
 
 	@Override
@@ -31,20 +35,27 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 	                                    AuthenticationException exception) throws IOException, ServletException {
 	    String email = request.getParameter("email");
 	    String password = request.getParameter("password");
+	    String tentativiRimasti = "";
 
 	    if (email.endsWith("@tasgroup.eu")) {
 	        ar.findByEmailAdmin(email).ifPresent(admin -> aggiornaTentativiLoginAdmin(admin));
 	        request.getSession().setAttribute("error", true);
 	        request.getSession().setAttribute("message", determinaMessaggioErroreAdmin(email, password));
-	        request.getSession().setAttribute("tentativi", tentativiRimastiAdmin(email));
+	        tentativiRimasti = tentativiRimastiAdmin(email);
+	        request.getSession().setAttribute("tentativi", tentativiRimasti);
 	        response.sendRedirect("/admin/admin-login");
 	    } else {
 	        cr.findByEmailCliente(email).ifPresent(cliente -> aggiornaTentativiLogin(cliente));
 	        request.getSession().setAttribute("error", true);
 	        request.getSession().setAttribute("message", determinaMessaggioErrore(email, password));
-	        request.getSession().setAttribute("tentativi", tentativiRimasti(email));
+	        tentativiRimasti = tentativiRimasti(email);
+	        request.getSession().setAttribute("tentativi", tentativiRimasti);
 	        response.sendRedirect("/user/user-login");
 	    }
+	    
+	   if(tentativiRimasti.equals("0")) {
+		   emailService.tooManyTries(email);
+	   }
 	}
 
 	private String tentativiRimastiAdmin(String email) {
