@@ -42,7 +42,7 @@
                 			<tr th:each="conto : ${user_conti}">
                 				<td th:text="${conto.codConto}"></td>
                 				<td th:text="${conto.tipoConto}"></td>
-                				<td th:text="${conto.saldo}"></td>
+                				<td th:text="|${#numbers.formatDecimal(conto.saldo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
                 				<td>
                 					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi transazioni</a>
                 				</td>

@@ -37,7 +37,7 @@
                 		<tbody>
                 			<tr th:each="movimento : ${user_movimenti}">
                 				<td th:text="${movimento.codMovimento}"></td>
-                				<td th:text="${#numbers.formatCurrency(movimento.importo)}"></td>
+                				<td th:text="|${#numbers.formatDecimal(movimento.importo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
                 				<td th:text="${#dates.format(movimento.dataMovimento, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 				<td th:text="${movimento.tipoMovimento}"></td>
                 			</tr>

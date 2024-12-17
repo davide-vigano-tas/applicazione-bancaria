@@ -34,7 +34,7 @@
                 		<tbody>
                 			<tr th:each="pagamento : ${user_pagamenti}">
                 				<td th:text="${pagamento.codPagamento}"></td>
-                				<td th:text="${pagamento.importo}"></td>
+                				<td th:text="|${#numbers.formatDecimal(pagamento.importo,1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
                 				<td th:text="${pagamento.dataPagamento}"></td>
                 				<td th:text="${pagamento.metodoPagamento}"></td>
                 			</tr>
