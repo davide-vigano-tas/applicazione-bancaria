@@ -11,6 +11,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
+import eu.tasgroup.applicativo.security.AdminOnly;
 import eu.tasgroup.applicativo.service.ClientiService;
 import jakarta.transaction.Transactional;
 
@@ -95,5 +96,21 @@ public class ClientiServiceImpl implements ClientiService{
 		return clientiRepository.findByEmailCliente(email);
 	}
 
-
+	@AdminOnly
+	@Override
+	public void changeStatusCliente(long id) {
+		Optional<Cliente> clienteOpt = clientiRepository.findById(id);
+		
+		if(clienteOpt.isEmpty())
+			return;
+		
+		Cliente c = clienteOpt.get();
+		
+		if(c.isAccountBloccato()) {
+			c.setAccountBloccato(false);
+			c.setTentativiErrati(0);
+		}else {
+			c.setAccountBloccato(true);
+		}
+	}
 }
