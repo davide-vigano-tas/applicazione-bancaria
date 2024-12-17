@@ -80,8 +80,28 @@ public class ClientController {
 		return new ModelAndView("redirect:/user/user-login");
 
 	}
+	
+	@GetMapping("/account_info")
+	public ModelAndView accountInfo(@AuthenticationPrincipal UserDetails userDetails) {
+		String email = userDetails.getUsername();
+		ModelAndView mv = new ModelAndView("user-account-info");
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		System.err.println(cliente);
+		if(cliente.isPresent()) {
+			
+			mv.addObject("user", cliente.get());
+			return mv;
+		}
+		return new ModelAndView("redirect:/user/user-login");
+	}
+	
+	@PostMapping("/accountmodifica")
+	public ModelAndView accountModifica(Cliente cliente) {
+		clientiService.createOrUpdate(cliente);
+		return new ModelAndView("redirect:/user/");
+	}
 
-	// Eleco conti user
+	// Elenco conti user
 	@GetMapping("/conti")
 	public ModelAndView userConti(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-conti");
