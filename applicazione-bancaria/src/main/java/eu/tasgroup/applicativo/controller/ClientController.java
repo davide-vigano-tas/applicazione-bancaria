@@ -36,6 +36,7 @@ import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import eu.tasgroup.applicativo.utility.GestioneTransazioni;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -262,7 +263,11 @@ public class ClientController {
 
 	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/preleva/{id}")
-	public ModelAndView prelevaPage(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView prelevaPage(HttpServletRequest request,@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
+				@RequestParam(required = false) String message) {
+	   
+	    //Rimuovo messaggi 
+		
 		ModelAndView mv = new ModelAndView("user-addebito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -275,6 +280,7 @@ public class ClientController {
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
 				mv.addObject("transazione", tr);
+				mv.addObject("message",message);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
@@ -284,20 +290,28 @@ public class ClientController {
 
 	// Prelievo
 	@PostMapping("/preleva")
-	public ModelAndView preleva(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
-		ModelAndView mv = new ModelAndView("redirect:/user/conti");
+	public ModelAndView preleva(HttpServletRequest request, Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
+		
+		request.getSession().removeAttribute("message");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
 
-			if (transazione.getImporto() < 0) {
-				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+			if (transazione.getImporto() <= 0) {
+				String message ="importo_negativo";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
+				mv.addObject("message",message);
+				return mv;
 			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
-				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+				String message ="importo_troppo_alto";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
+				mv.addObject("message",message);
+				return mv;
 			} else if (!gc.prelievo(transazione, c)) {
 				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
 			}
+			ModelAndView mv = new ModelAndView("redirect:/user/conti");
 			mv.addObject("user",c);
 			return mv;
 
