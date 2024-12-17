@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.AuditLog;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.LogAccessi;
 
 public interface AuditLogService {
 	AuditLog createOrUpdate(AuditLog log);

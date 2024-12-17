@@ -1,13 +1,11 @@
 package eu.tasgroup.applicativo.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -21,9 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
-import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
-import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
-import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;

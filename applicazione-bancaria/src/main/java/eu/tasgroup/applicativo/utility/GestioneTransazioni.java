@@ -1,14 +1,9 @@
 package eu.tasgroup.applicativo.utility;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
-
-import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMovimento;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoOperazione;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
@@ -25,7 +20,6 @@ import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
 import eu.tasgroup.applicativo.service.OperazioniBancarieMongoService;
 import eu.tasgroup.applicativo.service.PagamentoService;
-import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneBancariaService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;

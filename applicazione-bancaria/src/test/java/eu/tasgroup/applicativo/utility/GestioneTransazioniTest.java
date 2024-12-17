@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
-import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.OperazioniBancarieMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;

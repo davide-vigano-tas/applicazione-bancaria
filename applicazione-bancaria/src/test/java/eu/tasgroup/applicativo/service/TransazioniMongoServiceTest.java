@@ -2,7 +2,6 @@ package eu.tasgroup.applicativo.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.GregorianCalendar;
 

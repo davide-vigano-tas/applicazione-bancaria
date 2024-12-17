@@ -7,11 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.AuditLog;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.LogAccessi;
 import eu.tasgroup.applicativo.repository.AuditLogRepository;
-import eu.tasgroup.applicativo.repository.LogAccessiRepository;
 import eu.tasgroup.applicativo.service.AuditLogService;
-import eu.tasgroup.applicativo.service.LogAccessiService;
 @Service
 public class AuditLogServiceImpl implements AuditLogService {
 	@Autowired

@@ -44,13 +44,13 @@ public class LogAspect {
 				Files.createDirectory(path);
 		
 			}
-			if(logger.getHandlers().length == 0) {
+	
 				fileHandler=new FileHandler("C:\\logAspectAppBancaria\\logfile.log", true);
 				logger.addHandler(fileHandler);
 				logger.setLevel(Level.ALL);
 				SimpleFormatter formato = new SimpleFormatter();
 				fileHandler.setFormatter(formato);
-			}
+			
 			logger.log(Level.INFO, "-------------------------------------");
 			 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -105,6 +105,8 @@ public class LogAspect {
 		} catch(Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
+        
+        fileHandler.close();
 	}
 
 }
