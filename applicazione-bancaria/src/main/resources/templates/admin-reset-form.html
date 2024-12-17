@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Account info')}">
+</head>
+<body>
+	
+
+	<div class="container py-5">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="card shadow-sm">
+			
+				
+					<div class="card-body text-black">
+						
+						<!-- Form di login -->
+						<form th:action="@{/admin/resetpassword}" method="post" >
+						
+							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+							<input type="hidden" th:value="${token}" name="token">
+				
+							<div class="mb-3">
+								<label for="newPass" class="form-label">
+									<i class="fa-solid fa-lock"></i> Nuova Password
+								</label>
+								<input type="password" class="form-control" id="newPass" name="newPass"
+									 required>
+							</div>
+							<div class="mb-3">
+								<label for="confirm" class="form-label">
+									<i class="fa-regular fa-lock"></i> Conferma Password
+								</label>
+								<input type="password" class="form-control" id="confirm" name="confirm"
+									 required>
+							</div>
+							<div class="d-grid">
+								<button type="submit" class="btn btn-primary">
+									<i class="fas fa-sign-in-alt"></i> Cambia password
+								</button>
+							</div>
+						
+						</form>
+		
+						</div>
+				
+					</div>
+					
+		
+				</div>
+			</div>
+		</div>
+
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

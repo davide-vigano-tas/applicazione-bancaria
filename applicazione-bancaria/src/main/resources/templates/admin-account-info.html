@@ -30,21 +30,21 @@
 								<label for="nome" class="form-label">
 									<i class="fa-regular fa-user"></i> Nome
 								</label>
-								<input type="text" class="form-control" id="text" name="text"
+								<input type="text" class="form-control" id="nome" name="nome"
 									th:field="*{nomeAdmin}" required>
 							</div>
 							<div class="mb-3">
 								<label for="cognome" class="form-label">
 									<i class="fas fa-user"></i> Cognome
 								</label>
-								<input type="text" class="form-control" id="text" name="text"
+								<input type="text" class="form-control" id="cognome" name="cognome"
 									 th:field="*{cognomeAdmin}" required>
 							</div>
 							<div class="mb-3">
 								<label for="email" class="form-label">
 									<i class="fas fa-envelope"></i> Email
 								</label>
-								<input type="text" class="form-control" id="text" name="text"
+								<input type="text" class="form-control" id="email" name="email"
 									 th:field="*{emailAdmin}" readonly>
 							</div>
 							<div class="d-grid">
@@ -53,6 +53,12 @@
 								</button>
 							</div>
 						</form>
+		
+						</div>
+						<div class="card-body text-black">
+						<a class="btn btn-outline-black" th:href="@{/admin/resetpage}">
+							Cambia password
+						</a>
 						</div>
 					</div>
 					

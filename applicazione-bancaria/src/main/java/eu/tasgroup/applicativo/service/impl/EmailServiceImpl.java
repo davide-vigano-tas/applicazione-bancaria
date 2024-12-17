@@ -124,4 +124,43 @@ public class EmailServiceImpl implements EmailService {
 
 	}
 
+
+	@Override
+	public void sendResetLink(String url, String email) {
+        Context context = new Context();
+        
+
+        try {
+        	
+        
+        	Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+        	if(admin.isPresent()) {
+        		context.setVariable("admin", admin.get());
+        		context.setVariable("resetUrl", url);
+                
+
+                String processHtml = templateEngine.process("admin-reset-mail", context);
+  	      		
+  	      	    MimeMessage mimeMessage = mailSender.createMimeMessage();
+  	      	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+  	            helper.setText(processHtml, true); // true indicates HTML
+  	            helper.setTo(email);
+  	            
+  	            helper.setFrom("samuelmastro66@gmail.com");
+  	            if(amministratoriService.findByEmailAdmin(email).isPresent()) {
+  	    			helper.setSubject("Email di reset password");
+  	    		} else {
+  	    			
+  	    			return;
+  	    		}
+  	        		mailSender.send(mimeMessage);
+        	}
+           	  
+	        	
+   
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+
 }

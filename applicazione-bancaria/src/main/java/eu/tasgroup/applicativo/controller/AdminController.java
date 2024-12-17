@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,25 +20,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
+import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.security.AdminOnly;
+import eu.tasgroup.applicativo.service.AdminResetTokenService;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
+import eu.tasgroup.applicativo.service.EmailService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
@@ -63,6 +71,15 @@ public class AdminController {
 	
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
+	
+	@Autowired
+	EmailService emailService;
+	
+	@Autowired
+	AdminResetTokenService adminResetTokenService;
+	
+	
+	
 	
 	@GetMapping({"", "/"})
 	public ModelAndView adminPage(@AuthenticationPrincipal UserDetails userDetails) {
@@ -100,6 +117,80 @@ public class AdminController {
 	public ModelAndView accountModifica(Amministratore amministratore) {
 		amministratoriService.createOrUpdate(amministratore);
 		return new ModelAndView("redirect:/admin/");
+	}
+	
+	@GetMapping("/resetpage") 
+	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("admin-reset");
+		String email = userDetails.getUsername();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+		if(admin.isPresent()) {
+			
+			mv.addObject("admin", admin.get());
+			return mv;
+		}
+		return new ModelAndView("redirect:/admin/admin-login");
+		
+	}
+	
+	@PostMapping("/sendresetlink")
+	public ModelAndView sendResetLink(@RequestParam String email, HttpServletRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		String emailAdmin = userDetails.getUsername();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+		if(admin.isPresent() && emailAdmin.equals(email)) {
+			ModelAndView mv = new ModelAndView("admin-reset-sent");
+			mv.addObject("admin", admin.get());
+			Optional<AdminResetToken> optoken = adminResetTokenService.findByAdminEmail(emailAdmin);
+			if(optoken.isPresent()) {
+				adminResetTokenService.delete(optoken.get());
+			}
+			String token = UUID.randomUUID().toString();
+			AdminResetToken adt = new AdminResetToken();
+			adt.setAdmin(admin.get());
+			adt.setExpiryDate(new Date(System.currentTimeMillis()+AdminResetToken.getExpiration()));
+			adt.setToken(token);
+			adminResetTokenService.create(adt);
+			String url = request.getRequestURL()
+					.toString().replace("sendresetlink", "changepassword")+"?token="+token;
+			emailService.sendResetLink(url, email);
+			return mv;
+		} 
+		return new ModelAndView("redirect:/admin/admin-login");
+	}
+	
+	@GetMapping("/changepassword")
+	public ModelAndView changePassword(@RequestParam String token) {
+		Optional<AdminResetToken> optoken = adminResetTokenService.findByToken(token);
+		if(optoken.isPresent()) {
+			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+				ModelAndView mv = new ModelAndView("admin-reset-form");
+				mv.addObject("token", optoken.get().getToken());
+				return mv;
+			} else {
+				return new ModelAndView("redirect:/admin/resetpage");
+			}
+		} return new ModelAndView("redirect:/admin/admin-login");
+	}
+	
+	@PostMapping("/resetpassword")
+	public ModelAndView saveNewPassword(@RequestParam String newPass, HttpSession session,
+			@RequestParam String confirm, @RequestParam String token) {
+		Optional<AdminResetToken> optoken = adminResetTokenService.findByToken(token);
+		if(newPass.equals(confirm)) {
+			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+				Amministratore admin = adminResetTokenService.getAdminByToken(token).get();
+				admin.setPasswordAdmin(BCryptEncoder.encode(newPass));
+				amministratoriService.createOrUpdate(admin);
+				session.invalidate();
+				return new ModelAndView("redirect:/admin/admin/login");
+				
+			} else {
+				return new ModelAndView("redirect:/admin/resetpage");
+			}
+		}  else {
+			return new ModelAndView("redirect:/admin/changepassword?token="+token);
+		}
 	}
 	
 	@PostMapping("/nuovoCliente")
