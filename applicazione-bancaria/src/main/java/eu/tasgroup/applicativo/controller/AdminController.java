@@ -81,6 +81,27 @@ public class AdminController {
 		return new ModelAndView("redirect:/admin/admin-login");
 		
 	}
+	
+	@GetMapping("/account_info")
+	public ModelAndView accountInfo(@AuthenticationPrincipal UserDetails userDetails) {
+		String email = userDetails.getUsername();
+		ModelAndView mv = new ModelAndView("admin-account-info");
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+
+		if(admin.isPresent()) {
+			
+			mv.addObject("admin", admin.get());
+			return mv;
+		}
+		return new ModelAndView("redirect:/admin/admin-login");
+	}
+	
+	@PostMapping("/accountmodifica")
+	public ModelAndView accountModifica(Amministratore amministratore) {
+		amministratoriService.createOrUpdate(amministratore);
+		return new ModelAndView("redirect:/admin/");
+	}
+	
 	@PostMapping("/nuovoCliente")
 	public ModelAndView nuovoClienteForm(Cliente cliente) {
 	

@@ -51,7 +51,9 @@
 				    
 				    <!-- Sezione per mostrare amministratore loggato -->
 				    <div class="d-flex align-items-center me-3" sec:authorize="hasRole('ADMIN')">
-				        <i class="fas fa-user-circle text-light me-2"></i>
+				      	     <a class="btn btn-outline-dark" th:href="@{/admin/account_info}">
+				        <i class="fas fa-user-circle text-light"></i>	        
+				    </a>
 				        <span class="text-light fw-bold">
 				            <span th:text="${admin.getNomeAdmin} + ' ' + ${admin.getCognomeAdmin}"></span>
 				        </span>

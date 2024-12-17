@@ -86,7 +86,7 @@ public class ClientController {
 		String email = userDetails.getUsername();
 		ModelAndView mv = new ModelAndView("user-account-info");
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		System.err.println(cliente);
+
 		if(cliente.isPresent()) {
 			
 			mv.addObject("user", cliente.get());
