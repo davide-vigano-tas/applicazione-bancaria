@@ -427,6 +427,7 @@ public class ClientController {
 			List<Conto> conti = contiService.getAll();
 			conti.remove(conto);
 			mv.addObject("user_contitarget", conti);
+			mv.addObject("conto_partenza", conto);
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");

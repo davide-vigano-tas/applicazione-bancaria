@@ -25,12 +25,14 @@
                 <hr>
                 <div>
                 <div><h3>Scegli conto per il trasferimento</h3></div>
-                	<table  class="table table-striped">
+                <div><h4>Codice conto: <span th:text="${conto_partenza.codConto}"></span></h4></div>
+                <div><h4>Saldo conto: <span th:text="${conto_partenza.saldo}"></span></h4></div>
+                	<table  class="table table-striped" id="tabella">
                 		<thead>
                 			<tr>
                 				<th>Codice Conto</th>
                 				<th>Tipo Conto</th>
-                				<th></th>
+                				<th>Trasferisci</th>
                 			</tr>
                 		</thead>
                 		<tbody>
@@ -50,5 +52,14 @@
         </div>
     </div>
 	<footer th:insert="~{fragments/footer :: footer}"></footer>
+	<script type="text/javascript">
+	$(document).ready(function() {
+        $('#tabella').DataTable({
+        	columnDefs: [
+        		{orderable: false, target: 2}
+        	]
+        });
+    });
+	</script>
 </body>
 </html>
