@@ -140,6 +140,26 @@ public class LogAspect {
 			lg.setOperazione("LOGIN");
 			logAccessiService.createOrUpdate(lg);
 		}
+
+	}
+	
+	@Before("@annotation(eu.tasgroup.applicativo.security.AdminOnly)")
+	public void logOperazione(JoinPoint jp) {
+		System.out.println("Operazione");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = authentication.getPrincipal();
+		UserDetails userDetails = (UserDetails) principal;
+		LogAccessi lg = new LogAccessi();
+		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(userDetails.getUsername());
+		if(admin.isPresent()) {
+			lg.setAdmin(admin.get());
+			lg.setDataLog(new Date());
+			
+			String operazione = jp.getSignature().getName();
+			
+			lg.setOperazione(operazione);
+			logAccessiService.createOrUpdate(lg);
+		}
 			
 		
 

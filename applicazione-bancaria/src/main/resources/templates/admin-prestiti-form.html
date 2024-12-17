@@ -27,18 +27,18 @@
 							method="post">
    						<div>
    							<label for="importo" class="form-label">Importo</label>
-   							<input id="tipoConto" th:value="${richiesta.importo}" disabled>
+   							<input id="tipoConto" th:value="${richiesta.importo}" disabled class="form-control">
    						</div>
    						<div>
    							<label for="tassoInteresse" class="form-label">Tasso Interesse</label>
-   							<input type="number" th:field="*{tassoInteresse}" id="tassoInteresse" required>
+   							<input type="number" step="0.1" th:field="*{tassoInteresse}" class="form-control" id="tassoInteresse" required>
    						</div>
    						<div>
    							<label for="durataMesi" class="form-label">Durata in mesi</label>
-   							<input type="number" th:field="*{durataMesi}" id="durataMesi" required>
+   							<input type="number" th:field="*{durataMesi}" class="form-control mb-2" id="durataMesi" required>
    						</div>
    						<input type="hidden" th:field="*{cliente}" th:value="${user}">
-   						<button class="btn btn-success">Accetta</button>
+   						<button class="btn btn-success btn-md">Accetta</button>
    					</form>
                 </div>
             </div>
