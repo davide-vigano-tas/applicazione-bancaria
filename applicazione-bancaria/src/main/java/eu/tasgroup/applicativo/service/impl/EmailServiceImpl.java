@@ -126,7 +126,7 @@ public class EmailServiceImpl implements EmailService {
 
 
 	@Override
-	public void sendResetLink(String url, String email) {
+	public void sendResetLinkAdmin(String url, String email) {
         Context context = new Context();
         
 
@@ -161,6 +161,44 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+	}
+
+
+	@Override
+	public void sendPasswordConfirmationAdmin(String email) {
+		  Context context = new Context();
+	        
+
+	        try {
+	        	
+	        
+	        	Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+	        	if(admin.isPresent()) {
+	        		context.setVariable("admin", admin.get());
+
+	                String processHtml = templateEngine.process("admin-reset-confirmation", context);
+	  	      		
+	  	      	    MimeMessage mimeMessage = mailSender.createMimeMessage();
+	  	      	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+	  	            helper.setText(processHtml, true); // true indicates HTML
+	  	            helper.setTo(email);
+	  	            
+	  	            helper.setFrom("samuelmastro66@gmail.com");
+	  	            if(amministratoriService.findByEmailAdmin(email).isPresent()) {
+	  	    			helper.setSubject("Password reset");
+	  	    		} else {
+	  	    			
+	  	    			return;
+	  	    		}
+	  	        		mailSender.send(mimeMessage);
+	        	}
+	           	  
+		        	
+	   
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+		
 	}
 
 }

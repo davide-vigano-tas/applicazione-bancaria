@@ -153,7 +153,7 @@ public class AdminController {
 			adminResetTokenService.create(adt);
 			String url = request.getRequestURL()
 					.toString().replace("sendresetlink", "changepassword")+"?token="+token;
-			emailService.sendResetLink(url, email);
+			emailService.sendResetLinkAdmin(url, email);
 			return mv;
 		} 
 		return new ModelAndView("redirect:/admin/admin-login");
@@ -183,6 +183,9 @@ public class AdminController {
 				admin.setPasswordAdmin(BCryptEncoder.encode(newPass));
 				amministratoriService.createOrUpdate(admin);
 				session.invalidate();
+				
+				
+				emailService.sendPasswordConfirmationAdmin(admin.getEmailAdmin());
 				return new ModelAndView("redirect:/admin/admin/login");
 				
 			} else {
