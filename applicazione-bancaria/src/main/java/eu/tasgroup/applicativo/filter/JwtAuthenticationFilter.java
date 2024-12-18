@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.filet;
+package eu.tasgroup.applicativo.filter;
 
 import java.io.IOException;
 

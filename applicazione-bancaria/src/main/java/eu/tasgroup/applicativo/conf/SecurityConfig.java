@@ -17,7 +17,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import eu.tasgroup.applicativo.filet.JwtAuthenticationFilter;
+import eu.tasgroup.applicativo.filter.JwtAuthenticationFilter;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
