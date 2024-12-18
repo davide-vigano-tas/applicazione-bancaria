@@ -10,7 +10,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 
 public interface AdminResetTokenRepository extends JpaRepository<AdminResetToken, Long> {
 
-	@Query("Select r from AdminResetToken r where r.admin.id = ?1")
+	@Query("Select r from AdminResetToken r where r.admin.codAdmin = ?1")
 	Optional<AdminResetToken> findByAdminId(long id);
 	
 	@Query("Select r from AdminResetToken r where r.admin.emailAdmin = ?1")
