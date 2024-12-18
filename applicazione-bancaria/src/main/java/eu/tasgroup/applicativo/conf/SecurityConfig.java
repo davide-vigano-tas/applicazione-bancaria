@@ -114,14 +114,14 @@ public class SecurityConfig {
 	@Bean
 	UrlBasedCorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*"); // Consenti tutte le origini
-		config.addAllowedHeader("*"); // Consenti tutte le intestazioni
-		config.addAllowedMethod("*"); // Consenti tutti i metodi (GET, POST, ecc.)
+	    config.setAllowCredentials(true);
+	    config.addAllowedOriginPattern("http://localhost:4200");  // Uso di pattern
+	    config.addAllowedHeader("*");
+	    config.addAllowedMethod("*");
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return source;
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", config);
+	    return source;
 	}
 
 }

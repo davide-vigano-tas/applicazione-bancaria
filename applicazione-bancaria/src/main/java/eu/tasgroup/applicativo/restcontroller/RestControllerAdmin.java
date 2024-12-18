@@ -104,6 +104,7 @@ public class RestControllerAdmin {
 	public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 		try {
 			LoginResponse response = authService.login(request);
+			System.out.println("Risposta inviata: " + response);
 			return ResponseEntity.ok(response);
 		}catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Credenziali non valide");
