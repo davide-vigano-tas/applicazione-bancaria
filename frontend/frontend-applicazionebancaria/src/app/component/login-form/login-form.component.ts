@@ -12,37 +12,44 @@ import { AuthService } from '../../service/auth.service';
 })
 export class LoginFormComponent {
   loginForm: FormGroup;
-  loading = false;
-  error = '';
+  loading: boolean = false;
+  error: string | null = null;
+  token!: string;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.loginForm = this.formBuilder.group({
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+    this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]]
+      password: ['', [Validators.required, Validators.minLength(4)]],
     });
   }
 
-  // Metodo per il login
   onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.authService.login(this.loginForm.get("email")?.value, this.loginForm.get("password")?.value).pipe(
-      first() // Ottieni solo la prima risposta
-    ).subscribe({
-      next: (data) => {
-        this.router.navigate(['/statistiche']); // Reindirizza alla pagina delle statistiche
-      },
-      error: (error) => {
-        this.error = 'Credenziali errate o problema con il server.';
+    this.error = null;
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
         this.loading = false;
+        // Salvare il token nel localStorage
+        if (response && response.token) {
+          console.log(response.token)
+          this.token = response.token;
+          localStorage.setItem('jwtToken', this.token); // Salva il token
+          this.router.navigate(['/statistiche']);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Credenziali non valide. Per favore riprova.';
+        console.error('Login failed', err);
       }
     });
   }
 }
+

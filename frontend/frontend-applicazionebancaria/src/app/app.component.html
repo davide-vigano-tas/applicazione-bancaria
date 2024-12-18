@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Applicazione Bancaria</a>
+    <a class="navbar-brand">Applicazione Bancaria</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,10 +8,11 @@
       <ul class="navbar-nav">
         <!-- Link di Login visibile solo se non autenticato -->
         <li class="nav-item">
-          <a *ngIf="!isAuthenticated" class="nav-link active" aria-current="page" [routerLink]="['/login']">Login</a>
+          <a *ngIf="!isAuthenticated" class="nav-link active" aria-current="page" [routerLink]="['/']">Login</a>
         </li>
 
         <!-- solo se autenticato -->
+        
         <li class="nav-item">
           <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/statistiche']">Statistiche</a>
         </li>
