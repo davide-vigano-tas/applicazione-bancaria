@@ -4,6 +4,7 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,10 @@ public class AuthService {
 		
 		// Carica dettagli utente
 		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+		boolean isAdmin = userDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 		
+		if(!isAdmin)
+			throw new AuthorizationDeniedException("Il ruolo del tuo utente non ha i permessi adeguati");
 		// Genera Token
 		String token = jwtService.generateToken(userDetails);
 		
