@@ -24,8 +24,8 @@ public class AuditLog implements Serializable {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "cod_accessi")
-    private long codAccessi;
+    @Column(name = "cod_audit")
+    private long codAudit;
     
     @Column(name = "data_log", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -54,13 +54,15 @@ public class AuditLog implements Serializable {
 	}
 
 
-	public long getCodAccessi() {
-		return codAccessi;
+
+
+	public long getCodAudit() {
+		return codAudit;
 	}
 
 
-	public void setCodAccessi(long codAccessi) {
-		this.codAccessi = codAccessi;
+	public void setCodAudit(long codAudit) {
+		this.codAudit = codAudit;
 	}
 
 
@@ -86,7 +88,7 @@ public class AuditLog implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codAccessi, dataLog, dettagli);
+		return Objects.hash(codAudit, dataLog, dettagli);
 	}
 
 
@@ -99,14 +101,14 @@ public class AuditLog implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		AuditLog other = (AuditLog) obj;
-		return codAccessi == other.codAccessi && Objects.equals(dataLog, other.dataLog)
+		return codAudit == other.codAudit && Objects.equals(dataLog, other.dataLog)
 				&& Objects.equals(dettagli, other.dettagli);
 	}
 
 
 	@Override
 	public String toString() {
-		return "AuditLog [codAccessi=" + codAccessi + ", dataLog=" + dataLog + ", dettagli=" + dettagli + "]";
+		return "AuditLog [codAccessi=" + codAudit + ", dataLog=" + dataLog + ", dettagli=" + dettagli + "]";
 	}
 
 

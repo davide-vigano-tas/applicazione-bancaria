@@ -27,9 +27,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.AuditLog;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.LogAccessi;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.service.AmministratoriService;
+import eu.tasgroup.applicativo.service.AuditLogService;
 import eu.tasgroup.applicativo.service.LogAccessiService;
+import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
@@ -45,6 +49,11 @@ public class LogAspect {
 	LogAccessiService  logAccessiService;
 	@Autowired
 	AmministratoriService amministratoriService;
+	
+	@Autowired
+	AuditLogService auditLogService;
+	@Autowired
+	RichiestePrestitoService richiestePrestitoService;
 
 
 	@After("execution(* eu.tasgroup.applicativo.controller..*(..) )")
@@ -150,10 +159,34 @@ public class LogAspect {
 		LogAccessi lg = new LogAccessi();
 		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(userDetails.getUsername());
 		if(admin.isPresent()) {
+			 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 			lg.setAdmin(admin.get());
 			lg.setDataLog(new Date());
 			
 			String operazione = jp.getSignature().getName();
+			if(attributes != null ) {
+				HttpServletRequest request = attributes.getRequest();
+				String[] uri = request.getRequestURL().toString().split("/");
+				String id = uri[uri.length - 1];
+				
+				RichiestaPrestito rc = richiestePrestitoService.findById(Long.parseLong(id)).get();
+				
+				if(operazione.equals("accetta")) {
+					
+					AuditLog aud = new AuditLog();
+					aud.setAdmin(admin.get());
+					aud.setDataLog(new Date());
+					aud.setDettagli("Accettato prestito dello user :"+rc.getCliente().getCodCliente());
+					auditLogService.createOrUpdate(aud);
+				} else if (operazione.equals("rifiuta")) {
+					AuditLog aud = new AuditLog();
+					aud.setAdmin(admin.get());
+					aud.setDataLog(new Date());
+					aud.setDettagli("Rifiutato prestito dello user :"+rc.getCliente().getCodCliente());
+					auditLogService.createOrUpdate(aud);
+				}
+			}
+
 			
 			lg.setOperazione(operazione);
 			logAccessiService.createOrUpdate(lg);
