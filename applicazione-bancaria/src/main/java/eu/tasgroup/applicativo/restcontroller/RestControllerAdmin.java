@@ -12,7 +12,6 @@ import javax.naming.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,8 +79,6 @@ public class RestControllerAdmin {
 		try {
 			LoginResponse response = authService.login(request);
 			return ResponseEntity.ok(response);
-		}catch (AuthorizationDeniedException e) {
-			return ResponseEntity.status(401).body(e);
 		}catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Credenziali non valide");
 		}
