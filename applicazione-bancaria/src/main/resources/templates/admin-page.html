@@ -22,6 +22,9 @@
                     </div>
                 </div>
                 <hr>
+                <div class="alert alert-danger" role="alert" th:if="${message != null}">
+                	<p style="color: red" th:text="${message}"></p>
+                </div>
                 <div class="row my-4">
                     <div class="col-md-4 text-center">
                     	<a href="/admin/statistiche">

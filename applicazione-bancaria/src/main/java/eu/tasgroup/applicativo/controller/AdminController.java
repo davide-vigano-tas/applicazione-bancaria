@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
+import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
@@ -37,6 +39,7 @@ import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.security.AdminOnly;
 import eu.tasgroup.applicativo.service.AdminResetTokenService;
 import eu.tasgroup.applicativo.service.AmministratoriService;
+import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.EmailService;
@@ -46,6 +49,7 @@ import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin")
@@ -56,6 +60,9 @@ public class AdminController {
 	
 	@Autowired
 	ClientiService clientiService;
+	
+	@Autowired
+	ClientiMongoService clientiMongoService;
 	
 	@Autowired
 	TransazioniMongoService transazioniMongoService;
@@ -82,7 +89,8 @@ public class AdminController {
 	
 	
 	@GetMapping({"", "/"})
-	public ModelAndView adminPage(@AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView adminPage(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestParam(required = false) String message) {
 		ModelAndView mv = new ModelAndView("admin-page");
 		String email = userDetails.getUsername();
 		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
@@ -92,6 +100,7 @@ public class AdminController {
 			List<Cliente> clienti = clientiService.getClientiList();
 			mv.addObject("clienti", clienti);
 			mv.addObject("nuovocliente", new Cliente());
+			mv.addObject("message",message);
 			return mv;
 			
 		} 
@@ -120,8 +129,12 @@ public class AdminController {
 	}
 	
 	@GetMapping("/resetpage") 
-	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails,
+			HttpSession session) {
 		ModelAndView mv = new ModelAndView("admin-reset");
+		String token_expired=(String) session.getAttribute("token_expired");
+		mv.addObject("error", token_expired);
+		session.removeAttribute("token_expired");
 		String email = userDetails.getUsername();
 		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
 		if(admin.isPresent()) {
@@ -160,7 +173,8 @@ public class AdminController {
 	}
 	
 	@GetMapping("/changepassword")
-	public ModelAndView changePassword(@RequestParam String token) {
+	public ModelAndView changePassword(@RequestParam String token,
+			 HttpSession session) {
 		Optional<AdminResetToken> optoken = adminResetTokenService.findByToken(token);
 		if(optoken.isPresent()) {
 			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
@@ -168,6 +182,7 @@ public class AdminController {
 				mv.addObject("token", optoken.get().getToken());
 				return mv;
 			} else {
+				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/admin/resetpage");
 			}
 		} return new ModelAndView("redirect:/admin/admin-login");
@@ -189,6 +204,7 @@ public class AdminController {
 				return new ModelAndView("redirect:/admin/admin-login");
 				
 			} else {
+				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/admin/resetpage");
 			}
 		}  else {
@@ -197,12 +213,45 @@ public class AdminController {
 	}
 	
 	@PostMapping("/nuovoCliente")
-	public ModelAndView nuovoClienteForm(Cliente cliente) {
+	public ModelAndView nuovoClienteForm(@Valid Cliente cliente, BindingResult result,HttpServletRequest request) {
 	
-
-			clientiService.createOrUpdate(cliente);
+		request.getSession().removeAttribute("message");
+		ModelAndView mv = new ModelAndView();
+		
+		if (clientiService.findByEmailCliente(cliente.getEmailCliente()).isPresent()) {
+			String message = "email_gia_utilizzata";
+			mv.addObject("message", message);
+			mv.setViewName("redirect:/admin/");
+			return mv;
+		}else {
+			if(result.hasErrors()) {
+				mv.addObject("cliente", cliente);
+				mv.setViewName("redirect:/admin/");
+				mv.addObject("message", "Campi non validi");
+				return mv;
+			} else {
+				
 			
-			return new ModelAndView("redirect:/admin/");
+				cliente.setPasswordCliente(BCryptEncoder.encode(cliente.getPasswordCliente()));
+				cliente = clientiService.createOrUpdate(cliente);
+				
+				// Aggiungo il cliente anche su MongoDB
+				ClienteMongo clienteMongo = new ClienteMongo();
+				clienteMongo.setAccountBloccato(cliente.isAccountBloccato());
+				clienteMongo.setCodCliente(cliente.getCodCliente());
+				clienteMongo.setCognomeCliente(cliente.getCognomeCliente());
+				clienteMongo.setEmailCliente(cliente.getEmailCliente());
+				clienteMongo.setNomeCliente(cliente.getNomeCliente());
+				clienteMongo.setPasswordCliente(cliente.getPasswordCliente());
+				clienteMongo.setSaldoConto(cliente.getSaldoConto());
+				clienteMongo.setTentativiErrati(cliente.getTentativiErrati());
+				
+				clientiMongoService.createOrUpdate(clienteMongo);
+				
+				return new ModelAndView("redirect:/admin/");
+			}
+		}
+			
 		
 	}
 	
@@ -352,7 +401,9 @@ public class AdminController {
 	}
 	
 	@GetMapping("/riepilogoCliente/{id}") 
-	public ModelAndView riepilogo(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView riepilogo(@PathVariable long id,
+			HttpSession session,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("admin-cliente-riepilogo");
 		String email = userDetails.getUsername();
 		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
@@ -376,6 +427,7 @@ public class AdminController {
 
 				return mv;
 			}
+			session.setAttribute("message", "Cliente non trovato");
 			return new ModelAndView("redirect:/admin/");
 			
 		} 
