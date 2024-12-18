@@ -48,6 +48,11 @@ import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import eu.tasgroup.applicativo.utility.DettTrans;
 import eu.tasgroup.applicativo.utility.Statistiche;
 import eu.tasgroup.applicativo.utility.StatisticheExtra;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api")
@@ -82,7 +87,19 @@ public class RestControllerAdmin {
 	private AuthService authService;
 
 	/* ============== LOGIN ============= */
-
+	@Operation(summary = "Login per token", description = "Permette di loggarsi per ottenere il token JWT per autenticarsi")
+	@ApiResponses(value = {
+			@ApiResponse(
+					responseCode = "200", 
+					description = "Autenticazione riuscita",
+					content = @Content(
+							mediaType = "application/json",
+							schema = @Schema(example = "{\"token\": \"valore del token\"}")
+							)
+					),
+			@ApiResponse(responseCode = "400", description = "Richiesta non valida"),
+			@ApiResponse(responseCode = "401", description = "Credenziali non valide"),
+	})
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 		try {
@@ -94,12 +111,13 @@ public class RestControllerAdmin {
 	}
 
 	/* ============= CLIENTI ============= */
-
+	@Operation(summary = "Lista di tutti i clienti", description = "Ritorna una lista di clienti")
 	@GetMapping("/clienti")
 	public ResponseEntity<List<Cliente>> getClienti() {
 		return ResponseEntity.ok(clientiService.getClientiList());
 	}
 
+	@Operation(summary = "Cliente by Id", description = "Ritorna il cliente specifico con determinato id")
 	@GetMapping("/clienti/{id}")
 	public ResponseEntity<?> getClienteById(@PathVariable long id) {
 
@@ -110,6 +128,7 @@ public class RestControllerAdmin {
 		return ResponseEntity.ok(cliente.get());
 	}
 
+	@Operation(summary = "Create del cliente", description = "crea un cliente")
 	@PostMapping("/clienti")
 	public ResponseEntity<?> createClientes(@RequestBody Cliente clienteMySQL) {
 
@@ -138,12 +157,13 @@ public class RestControllerAdmin {
 	}
 
 	/* ============== CONTI ============= */
-
+	@Operation(summary = "Lista di tutti i conti", description = "Ritorna una lista contente tutti i conti")
 	@GetMapping("/conti")
 	public ResponseEntity<List<Conto>> getConti() {
 		return ResponseEntity.ok(contiService.getAll());
 	}
 
+	@Operation(summary = "Conto by id", description = "Ritorna il conto specifico con determinato id")
 	@GetMapping("/conti/{id}")
 	public ResponseEntity<?> getContiById(@PathVariable long id) {
 
@@ -154,6 +174,7 @@ public class RestControllerAdmin {
 		return ResponseEntity.ok(contoOpt.get());
 	}
 
+	@Operation(summary = "Elimina Conto by id", description = "Elimina il conto specifico con determinato id")
 	@DeleteMapping("/conti/{id}")
 	public ResponseEntity<String> eliminaConto(@PathVariable long id) {
 		try {
@@ -167,6 +188,7 @@ public class RestControllerAdmin {
 
 	/* =========== STATISTICHE =========== */
 
+	@Operation(summary = "Statistiche", description = "Ottieni varie statistiche")
 	@GetMapping("/statistiche")
 	public ResponseEntity<?> getStatistiche() {
 		Statistiche statistiche = new Statistiche();
@@ -254,6 +276,7 @@ public class RestControllerAdmin {
 		return ResponseEntity.ok(statistiche);
 	}
 
+	@Operation(summary = "Statistiche extra", description = "Ottieni varie statistiche aggiuntive")
 	@GetMapping("/statistiche-extra")
 	public ResponseEntity<StatisticheExtra> statisticheExtra() {
 		StatisticheExtra stat = new StatisticheExtra();
