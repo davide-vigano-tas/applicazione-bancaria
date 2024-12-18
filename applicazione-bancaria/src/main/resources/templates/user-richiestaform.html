@@ -10,18 +10,7 @@
                 <h4>Informazioni Utente</h4>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span></p>
-                        <p><strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span></p>
-                        <p><strong>Email:</strong> <span th:text="${user.emailCliente}"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span></p>
-                        <p><strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span></p>
-                        <p><strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span></p>
-                    </div>
-                </div>
+                <div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
                 <hr>
                   <div class="alert alert-danger" th:if="${message !=null}" role="alert">
                 	<p style="color: red" th:text="${message}"></p>

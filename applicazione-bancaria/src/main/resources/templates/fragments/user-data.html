@@ -1,0 +1,31 @@
+
+<div th:fragment="user-data" xmlns:th="http://www.w3.org/1999/xhtml"
+	xmlns:sec="http://thymeleaf.org/extras/spring-security">
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<p>
+				<strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span>
+			</p>
+			<p>
+				<strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span>
+			</p>
+			<p>
+				<strong>Email:</strong> <span th:text="${user.emailCliente}"></span>
+			</p>
+		</div>
+		<div class="col-md-6">
+			<p>
+				<strong>Saldo Conto:</strong> &euro;<span
+					th:text="|${#numbers.formatDecimal(user.saldoConto, 1, 'WHITESPACE', 2, 'COMMA')} €|"></span>
+			</p>
+			<p>
+				<strong>Tentativi Errati:</strong> <span
+					th:text="${user.tentativiErrati}"></span>
+			</p>
+			<p>
+				<strong>Account Bloccato:</strong> <span
+					th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span>
+			</p>
+		</div>
+	</div>
+</div>

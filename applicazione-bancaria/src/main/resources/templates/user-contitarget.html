@@ -7,26 +7,15 @@
 <div class="container py-5">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h4>Informazioni Utente</h4>
+                <h4>Trasferimento</h4>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span></p>
-                        <p><strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span></p>
-                        <p><strong>Email:</strong> <span th:text="${user.emailCliente}"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span></p>
-                        <p><strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span></p>
-                        <p><strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span></p>
-                    </div>
-                </div>
+                <div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
                 <hr>
-                <div>
+                <div class="row justify-content-center">
                 <div><h3>Scegli conto per il trasferimento</h3></div>
                 <div><h4>Codice conto: <span th:text="${conto_partenza.codConto}"></span></h4></div>
-                <div><h4>Saldo conto: <span th:text="${conto_partenza.saldo}"></span></h4></div>
+                <div><h4>Saldo conto: <span th:text="|${#numbers.formatDecimal(conto_partenza.saldo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></span></h4></div>
                 	<table  class="table table-striped" id="tabella">
                 		<thead>
                 			<tr>
@@ -47,6 +36,9 @@
                 			
                 		</tbody>
                 	</table>
+					<div class="col-md-2">
+	                	<a class="btn btn-primary w-100" role="button" href="/user/conti">Torna ai conti</a>
+                	</div>	
                 </div>
             </div>
         </div>
