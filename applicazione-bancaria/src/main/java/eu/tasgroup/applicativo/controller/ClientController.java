@@ -21,7 +21,6 @@ import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPresti
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.ClientResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;

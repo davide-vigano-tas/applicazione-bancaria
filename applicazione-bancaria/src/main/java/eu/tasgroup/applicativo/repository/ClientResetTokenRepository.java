@@ -5,8 +5,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.ClientResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 

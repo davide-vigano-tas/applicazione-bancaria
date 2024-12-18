@@ -2,8 +2,6 @@ package eu.tasgroup.applicativo.service;
 
 import java.util.Optional;
 
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.ClientResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 
