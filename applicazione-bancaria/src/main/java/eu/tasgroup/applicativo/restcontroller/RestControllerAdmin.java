@@ -67,10 +67,10 @@ public class RestControllerAdmin {
 
 	@Autowired
 	TransazioniMongoService transazioniMongoService;
-	
+
 	@Autowired
 	OperazioniBancarieMongoService operazioniBancarieMongoService;
-	
+
 	@Autowired
 	ContiService contiService;
 
@@ -89,24 +89,16 @@ public class RestControllerAdmin {
 	/* ============== LOGIN ============= */
 	@Operation(summary = "Login per token", description = "Permette di loggarsi per ottenere il token JWT per autenticarsi")
 	@ApiResponses(value = {
-			@ApiResponse(
-					responseCode = "200", 
-					description = "Autenticazione riuscita",
-					content = @Content(
-							mediaType = "application/json",
-							schema = @Schema(example = "{\"token\": \"valore del token\"}")
-							)
-					),
+			@ApiResponse(responseCode = "200", description = "Autenticazione riuscita", content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"token\": \"valore del token\"}"))),
 			@ApiResponse(responseCode = "400", description = "Richiesta non valida"),
-			@ApiResponse(responseCode = "401", description = "Credenziali non valide"),
-	})
+			@ApiResponse(responseCode = "401", description = "Credenziali non valide"), })
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 		try {
 			LoginResponse response = authService.login(request);
 			System.out.println("Risposta inviata: " + response);
 			return ResponseEntity.ok(response);
-		}catch (AuthenticationException e) {
+		} catch (AuthenticationException e) {
 			return ResponseEntity.status(401).body("Credenziali non valide");
 		}
 	}
@@ -190,12 +182,32 @@ public class RestControllerAdmin {
 	/* =========== STATISTICHE =========== */
 
 	@Operation(summary = "Statistiche", description = "Ottieni varie statistiche")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Autenticazione riuscita", content = @Content(mediaType = "application/json", schema = @Schema(example = "{"
+					+ "\"numeroTotaleCliente\": 1," + "\"clienteSaldoMaggiore\": [" + "    {"
+					+ "      \"codCliente\": 3," + "      \"nomeCliente\": \"Marco\","
+					+ "      \"cognomeCliente\": \"Polo\"," + "      \"emailCliente\": \"marcoPolo@gmail.com\","
+					+ "      \"passwordCliente\": \"$2a$10$b6LuAFzrdif76yUDY.PC7ux0zpUXQ.7BrYeVMgg6TzZnOzW/QhV9i\","
+					+ "      \"tentativiErrati\": 0," + "      \"accountBloccato\": false,"
+					+ "      \"saldoConto\": 3259.05" + "    }" + "  ],"
+					+ "\"dataUltimaTransazione\": \"2024-12-18T11:14:43.360+00:00\","
+					+ "\"numeroTotaleTransazioni\": 28," + "\"sommaTotaleTransazioni\": 12541.05,"
+					+ "\"saldoMedioConti\": 651.81," + "\"contiPerCliente\": {" + "    \"0\": 3" + "  },"
+					+ "\"cartePerCliente\": {" + "    \"0\": 1" + "  }," + "\"importoTotPrestitiPerCliente\": {"
+					+ "    \"0\": 5000" + "  }," + "\"importoTotPagamentiPerCliente\": {" + "    \"1752\": 4000"
+					+ "  }," + "\"numeroTransazioniPerTipo\": {" + "    \"ADDEBITO\": 16," + "    \"TRASFERIMENTO\": 0,"
+					+ "    \"ACCREDITO\": 12" + "  }," + "\"mediaTransazioniPerCliente\": 28,"
+					+ "\"totaleImportoTranszioniPerMese\": {" + "    \"Gennaio\": 0," + "    \"Febbraio\": 0,"
+					+ "    \"Marzo\": 0," + "    \"Aprile\": 0," + "    \"Maggio\": 0," + "    \"Giugno\": 0,"
+					+ "    \"Luglio\": 0," + "    \"Agosto\": 0," + "    \"Settembre\": 0," + "    \"Ottobre\": 0,"
+					+ "    \"Novembre\": 0," + "    \"Dicembre\": 12541.05" + "  }" + "}"))) })
+
 	@GetMapping("/statistiche")
 	public ResponseEntity<?> getStatistiche() {
 		Statistiche statistiche = new Statistiche();
 
 		try {
-			
+
 			// Numero totale di clienti
 			statistiche.setNumeroTotaleCliente(clientiService.totaleClienti());
 
@@ -238,19 +250,12 @@ public class RestControllerAdmin {
 							cliente -> prestitoService.sumPrestitiByCliente(cliente.getCodCliente())));
 			statistiche.setImportoTotPrestitiPerCliente(mappaImportoTotPrestitiPerCliente);
 
-			
-			
-			
-			
 			// Importo totale dei pagamenti per cliente
 			Map<Long, Double> mappaImportoTotPagamentiPerCliente = clientiService.getClientiList().stream()
 					.collect(Collectors.toMap(Cliente::getCodCliente,
 							cliente -> pagamentoService.sumPagamentiByCliente(cliente.getCodCliente())));
 			statistiche.setImportoTotPagamentiPerCliente(mappaImportoTotPagamentiPerCliente);
 
-			
-			
-			
 			// Numero totale di transazioni per tipo
 			Map<TipoTransazione, Integer> mappaNumeroTransazioniPerTipo = Arrays.stream(TipoTransazione.values())
 					.collect(Collectors.toMap(tipo -> tipo,
@@ -264,8 +269,8 @@ public class RestControllerAdmin {
 			Map<String, Double> totaleImportoTranszioniPerMese = new LinkedHashMap<>();
 			for (int i = 1; i <= 12; i++) {
 				String nomeMese = Month.of(i).getDisplayName(TextStyle.FULL, Locale.ITALIAN);
-			    nomeMese = nomeMese.substring(0, 1).toUpperCase() + nomeMese.substring(1).toLowerCase();
-			    totaleImportoTranszioniPerMese.put(nomeMese, transazioniMongoService.totaleImportoPerMese(i));
+				nomeMese = nomeMese.substring(0, 1).toUpperCase() + nomeMese.substring(1).toLowerCase();
+				totaleImportoTranszioniPerMese.put(nomeMese, transazioniMongoService.totaleImportoPerMese(i));
 			}
 			statistiche.setTotaleImportoTranszioniPerMese(totaleImportoTranszioniPerMese);
 
@@ -320,16 +325,12 @@ public class RestControllerAdmin {
 			for (Cliente c : clientiService.getClientiList()) {
 				if (!transazioniMongoService.findByCliente(c.getCodCliente()).isEmpty()) {
 					dettagliTransazioniPerCliente.put(c.getCodCliente(),
-							new DettTrans(
-									transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()),
+							new DettTrans(transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()),
 									transazioniMongoService.findByCliente(c.getCodCliente()).size(),
-									Arrays.stream(TipoTransazione.values())
-									.collect(Collectors.toMap(
-											tipo -> tipo,
+									Arrays.stream(TipoTransazione.values()).collect(Collectors.toMap(tipo -> tipo,
 											tipo -> tipo.equals(TipoTransazione.TRASFERIMENTO)
-												? operazioniBancarieMongoService.findAll().size()
-												: transazioniMongoService.numeroTransazioniPerTipo(tipo))))
-							);
+													? operazioniBancarieMongoService.findAll().size()
+													: transazioniMongoService.numeroTransazioniPerTipo(tipo)))));
 				}
 			}
 			stat.setDettagliTransazioniPerCliente(dettagliTransazioniPerCliente);

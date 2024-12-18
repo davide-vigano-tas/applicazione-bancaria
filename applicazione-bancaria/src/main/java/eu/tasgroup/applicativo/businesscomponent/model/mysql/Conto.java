@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,17 +25,21 @@ public class Conto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "cod_conto")
+    @Schema(description = "codice identificativo del conto", example = "0")
     private long codConto;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_conto", nullable = false)
+    @Schema(description = "tipologia del conto", example = "RISPARMIO")
     private TipoConto tipoConto;
     
     @Column(nullable = false)
+    @Schema(description = "saldo del conto", example = "100")
     private double saldo = 0.0;
     
     @ManyToOne
     @JoinColumn(name = "cod_cliente", nullable = false)
+    @Schema(description = "cliente propietario del conto")
     private Cliente cliente;
 
 	public long getCodConto() {
