@@ -10,30 +10,9 @@
 				<h4>Deposito</h4>
 			</div>
 			<div class="card-body">
+				<div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
+				<hr>
 				<div class="row mb-3">
-					<div class="col-md-6">
-						<p>
-							<strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span>
-						</p>
-						<p>
-							<strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span>
-						</p>
-						<p>
-							<strong>Email:</strong> <span th:text="${user.emailCliente}"></span>
-						</p>
-					</div>
-					<div class="col-md-6">
-						<p>
-							<strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span>
-						</p>
-						<p>
-							<strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span>
-						</p>
-						<p>
-							<strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span>
-						</p>
-					</div>
-					<hr>
 					<div class="alert alert-danger" th:if="${message == 'errore_deposito'}">
 						<p style="color: red">Errore durante il deposito</p>
 					</div>
@@ -47,7 +26,7 @@
 					</div>
 					<div class="col-md-4 text-center mb-2">
 						<p>
-							<strong>Saldo:</strong> <span th:text="${user_conto.saldo}"></span>
+							<strong>Saldo:</strong> <span th:text="|${#numbers.formatDecimal(user_conto.saldo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></span>
 						</p>
 					</div>
 				</div>
@@ -72,7 +51,7 @@
 				</form>
 				<div class="row justify-content-center mt-3">
 					<div class="col-md-2">
-	                	<a class="btn btn-primary btn-lg w-100" role="button" href="/user/conti">Torna ai conti</a>
+	                	<a class="btn btn-primary w-100" role="button" href="/user/conti">Torna ai conti</a>
                 	</div>	
                 </div>
 			</div>
