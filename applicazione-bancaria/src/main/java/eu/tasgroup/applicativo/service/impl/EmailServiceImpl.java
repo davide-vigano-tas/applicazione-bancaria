@@ -76,11 +76,6 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 
-	@Override
-	public void modificaCredenziali(String email) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void movimentoEffettuato(String email, MovimentoConto mc) {
@@ -199,6 +194,84 @@ public class EmailServiceImpl implements EmailService {
 	            e.printStackTrace();
 	        }
 		
+	}
+
+
+
+	@Override
+	public void sendResetLinkClient(String url, String email) {
+		 Context context = new Context();
+	        
+
+	        try {
+	        	
+	        
+	        	Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+	        	if(cliente.isPresent()) {
+	        		context.setVariable("user", cliente.get());
+	        		context.setVariable("resetUrl", url);
+	                
+
+	                String processHtml = templateEngine.process("cliente-reset-mail", context);
+	  	      		
+	  	      	    MimeMessage mimeMessage = mailSender.createMimeMessage();
+	  	      	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+	  	            helper.setText(processHtml, true); // true indicates HTML
+	  	            helper.setTo(email);
+	  	            
+	  	            helper.setFrom("samuelmastro66@gmail.com");
+	  	            if(clientiService.findByEmailCliente(email).isPresent()) {
+	  	    			helper.setSubject("Email di reset password");
+	  	    		} else {
+	  	    			
+	  	    			return;
+	  	    		}
+	  	        		mailSender.send(mimeMessage);
+	        	}
+	           	  
+		        	
+	   
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	}
+
+
+
+	@Override
+	public void sendPasswordConfirmationCliente(String emailCliente) {
+		  Context context = new Context();
+	        
+
+	        try {
+	        	
+	        
+	        	Optional<Cliente> cliente =clientiService.findByEmailCliente(emailCliente);
+	        	if(cliente.isPresent()) {
+	        		context.setVariable("user", cliente.get());
+
+	                String processHtml = templateEngine.process("cliente-reset-confirmation", context);
+	  	      		
+	  	      	    MimeMessage mimeMessage = mailSender.createMimeMessage();
+	  	      	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+	  	            helper.setText(processHtml, true); // true indicates HTMLemailCliente
+	  	            helper.setTo(emailCliente);
+	  	            
+	  	            helper.setFrom("samuelmastro66@gmail.com");
+	  	            if(clientiService.findByEmailCliente(emailCliente).isPresent()) {
+	  	    			helper.setSubject("Password reset");
+	  	    		} else {
+	  	    			
+	  	    			return;
+	  	    		}
+	  	        		mailSender.send(mimeMessage);
+	        	}
+	           	  
+		        	
+	   
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoConto;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoMetodo;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.AdminResetToken;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.ClientResetToken;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
@@ -28,9 +32,12 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
+import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.service.CartaService;
+import eu.tasgroup.applicativo.service.ClientResetTokenService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
+import eu.tasgroup.applicativo.service.EmailService;
 import eu.tasgroup.applicativo.service.MovimentoContoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
@@ -66,6 +73,13 @@ public class ClientController {
 	
 	@Autowired
 	GestioneTransazioni gc;
+	
+	@Autowired
+	ClientResetTokenService clientResetTokenService;
+	
+	@Autowired
+	
+	EmailService emailService;
 
 	// Homepage user
 	@GetMapping({ "", "/" })
@@ -99,6 +113,83 @@ public class ClientController {
 	public ModelAndView accountModifica(Cliente cliente) {
 		clientiService.createOrUpdate(cliente);
 		return new ModelAndView("redirect:/user/");
+	}
+	
+	@GetMapping("/resetpage") 
+	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mv = new ModelAndView("cliente-reset");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent()) {
+			
+			mv.addObject("user", cliente.get());
+			return mv;
+		}
+		return new ModelAndView("redirect:/user/user-login");
+		
+	}
+	
+	@PostMapping("/sendresetlink")
+	public ModelAndView sendResetLink(@RequestParam String email, HttpServletRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		String emailCliente = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		if(cliente.isPresent() && emailCliente.equals(email)) {
+			ModelAndView mv = new ModelAndView("cliente-reset-sent");
+			mv.addObject("user", cliente.get());
+			Optional<ClientResetToken> optoken = clientResetTokenService.findByClientEmail(emailCliente);
+			if(optoken.isPresent()) {
+				clientResetTokenService.delete(optoken.get());
+			}
+			String token = UUID.randomUUID().toString();
+			ClientResetToken cdt = new ClientResetToken();
+			cdt.setCliente(cliente.get());
+			cdt.setExpiryDate(new Date(System.currentTimeMillis()+AdminResetToken.getExpiration()));
+			cdt.setToken(token);
+			clientResetTokenService.create(cdt);
+			String url = request.getRequestURL()
+					.toString().replace("sendresetlink", "changepassword")+"?token="+token;
+			emailService.sendResetLinkClient(url, email);
+			return mv;
+		} 
+		return new ModelAndView("redirect:/user/user-login");
+	}
+	
+	@GetMapping("/changepassword")
+	public ModelAndView changePassword(@RequestParam String token) {
+		Optional<ClientResetToken> optoken = clientResetTokenService.findByToken(token);
+		if(optoken.isPresent()) {
+			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+				ModelAndView mv = new ModelAndView("cliente-reset-form");
+				mv.addObject("token", optoken.get().getToken());
+				return mv;
+			} else {
+				return new ModelAndView("redirect:/user/resetpage");
+			}
+		} return new ModelAndView("redirect:/user/user-login");
+	}
+	
+	@PostMapping("/resetpassword")
+	public ModelAndView saveNewPassword(@RequestParam String newPass, HttpSession session,
+			@RequestParam String confirm, @RequestParam String token) {
+		Optional<ClientResetToken> optoken = clientResetTokenService.findByToken(token);
+		if(newPass.equals(confirm)) {
+			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+				Cliente cliente = clientResetTokenService.getClientByToken(token).get();
+				cliente.setPasswordCliente(BCryptEncoder.encode(newPass));
+				clientiService.createOrUpdate(cliente);
+				session.invalidate();
+				
+				
+				emailService.sendPasswordConfirmationCliente(cliente.getEmailCliente());
+				return new ModelAndView("redirect:/user/user-login");
+				
+			} else {
+				return new ModelAndView("redirect:/user/resetpage");
+			}
+		}  else {
+			return new ModelAndView("redirect:/user/changepassword?token="+token);
+		}
 	}
 
 	// Elenco conti user

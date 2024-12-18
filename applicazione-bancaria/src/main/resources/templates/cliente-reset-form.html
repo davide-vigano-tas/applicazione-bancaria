@@ -14,7 +14,7 @@
 					<div class="card-body text-black">
 						
 						<!-- Form di login -->
-						<form th:action="@{/admin/resetpassword}" method="post" >
+						<form th:action="@{/user/resetpassword}" method="post" >
 						
 							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 							<input type="hidden" th:value="${token}" name="token">

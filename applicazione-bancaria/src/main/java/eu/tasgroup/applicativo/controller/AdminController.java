@@ -186,7 +186,7 @@ public class AdminController {
 				
 				
 				emailService.sendPasswordConfirmationAdmin(admin.getEmailAdmin());
-				return new ModelAndView("redirect:/admin/admin/login");
+				return new ModelAndView("redirect:/admin/admin-login");
 				
 			} else {
 				return new ModelAndView("redirect:/admin/resetpage");
