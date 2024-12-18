@@ -4,64 +4,80 @@
 <body>
 	<div th:insert="~{fragments/nav :: navbar}"></div>
 
-<div class="container py-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4>Informazioni Utente</h4>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span></p>
-                        <p><strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span></p>
-                        <p><strong>Email:</strong> <span th:text="${user.emailCliente}"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span></p>
-                        <p><strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span></p>
-                        <p><strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span></p>
-                    </div>
-                </div>
-                <hr>
-                      	 <div class="alert alert-danger" th:if="${message == 'errore_deposito'}">
-	                	<p style="color: red"> Errore durante il deposito</p>
-	                </div>
-	                <div class="alert alert-danger" th:if="${message == 'importo_negativo'}" role="alert">
-						<span >
-							<i class="fas fa-exclamation-circle"></i> Inserire un importo positivo
-						</span>
+	<div class="container py-5">
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h4>Deposito</h4>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<p>
+							<strong>Nome:</strong> <span th:text="${user.nomeCliente}"></span>
+						</p>
+						<p>
+							<strong>Cognome:</strong> <span th:text="${user.cognomeCliente}"></span>
+						</p>
+						<p>
+							<strong>Email:</strong> <span th:text="${user.emailCliente}"></span>
+						</p>
 					</div>
-                <div class="row">
-          
-                    <div class="col-md-4 text-center">
-                        <h5><i class="fa-regular fa-building-columns"></i></h5>
-                        <p><strong>Deposita sul Conto:</strong> <span th:text="${user_conto.codConto}"></span></p>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <form th:action="@{/user/deposita}" th:object="${transazione}" method="post"  class="form-horizontal" >
-                        		<div class="form-group">
-                        <input type="hidden" th:field="*{conto}">
-						<label class="col-md-1 control-label">Importo</label>
+					<div class="col-md-6">
+						<p>
+							<strong>Saldo Conto:</strong> &euro;<span th:text="${user.saldoConto}"></span>
+						</p>
+						<p>
+							<strong>Tentativi Errati:</strong> <span th:text="${user.tentativiErrati}"></span>
+						</p>
+						<p>
+							<strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span>
+						</p>
+					</div>
+					<hr>
+					<div class="alert alert-danger" th:if="${message == 'errore_deposito'}">
+						<p style="color: red">Errore durante il deposito</p>
+					</div>
+					<div class="alert alert-danger" th:if="${message == 'importo_negativo'}" role="alert">
+						<span> <i class="fas fa-exclamation-circle"></i> Inserire un importo positivo </span>
+					</div>
+					<div class="col-md-4 text-center mb-2">
+						<p>
+							<strong>Deposita sul Conto:</strong> <span th:text="${user_conto.codConto}"></span>
+						</p>
+					</div>
+					<div class="col-md-4 text-center mb-2">
+						<p>
+							<strong>Saldo:</strong> <span th:text="${user_conto.saldo}"></span>
+						</p>
+					</div>
+				</div>
+				<form th:action="@{/user/deposita}" th:object="${transazione}" method="post" class="form-horizontal">
+					<div class="form-group row">
+						<input type="hidden" th:field="*{conto}">
+						<div class="col-md-4 text-center">
+							<label for="importo" class="control-label">Importo:</label>
+						</div>
 						<div class="col-md-4">
 							<div class="input-group">
-								<span class="input-group-addon"> <i
-									class="fas fa-home"></i>
-								</span> <input type="number" step="0.01" name="importo" id="importo" th:field="*{importo}"
+								<input type="number" step="0.01" name="importo" id="importo" th:field="*{importo}"
 									placeholder="importo.." class="form-control" required>
 							</div>
 						</div>
-						
+						<div class="col-md-4">
+							<button type="submit" class="btn btn-primary">
+								<i class="fas fa-plus"></i> deposita
+							</button>
+						</div>
 					</div>
-					<button type="submit" class="btn btn-primary">
-										<i class="fas fa-plus"></i> deposita
-									</button>
-                        </form>
-                    </div>
-                   
+				</form>
+				<div class="row justify-content-center mt-3">
+					<div class="col-md-2">
+	                	<a class="btn btn-primary btn-lg w-100" role="button" href="/user/conti">Torna ai conti</a>
+                	</div>	
                 </div>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 	<footer th:insert="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
