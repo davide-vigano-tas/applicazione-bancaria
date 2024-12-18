@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.w3.org/1999/xhtml"  xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/cdn :: cdn('prestiti')}"></head>
 <body>
 	<div th:insert="~{fragments/nav :: navbar}"></div>
@@ -38,11 +38,15 @@
                 				<td th:text="${richiesta.codRichiesta}"></td>
                 				<td th:text="${richiesta.importo}"></td>
                 				<td th:text="${richiesta.dataRichiesta}"></td>
-                				<td>
+                				<td> 
+                				<div sec:authorize="hasAnyRole('SUPER_ADMIN', 'APPROVER')">
                 					<a th:href="@{'/admin/accetta/'+${richiesta.codRichiesta}}" class="btn btn-success">Accetta</a>
+                				</div>
                 				</td>
                 				<td>
+                				<div sec:authorize="hasAnyRole('SUPER_ADMIN', 'APPROVER')">
                 					<a th:href="@{'/admin/rifiuta/'+${richiesta.codRichiesta}}" class="btn btn-danger">Rifiuta</a>
+                					</div>
                 				</td>
                 			</tr>
                 		</tbody>

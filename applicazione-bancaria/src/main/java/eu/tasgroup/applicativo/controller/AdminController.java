@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.tasgroup.applicativo.businesscomponent.enumerated.Role;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
@@ -33,16 +34,20 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Carta;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.PermessiAmministratori;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Prestito;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
 import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.security.AdminOnly;
+import eu.tasgroup.applicativo.security.ApproverOnly;
+import eu.tasgroup.applicativo.security.CreatorOnly;
 import eu.tasgroup.applicativo.service.AdminResetTokenService;
 import eu.tasgroup.applicativo.service.AmministratoriService;
 import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.EmailService;
+import eu.tasgroup.applicativo.service.PermessiAmministratoriService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
@@ -85,7 +90,8 @@ public class AdminController {
 	@Autowired
 	AdminResetTokenService adminResetTokenService;
 	
-	
+	@Autowired
+	PermessiAmministratoriService permessiAmministratoriService;
 	
 	
 	@GetMapping({"", "/"})
@@ -97,6 +103,14 @@ public class AdminController {
 		if(admin.isPresent()) {
 			Amministratore ad = admin.get();
 			mv.addObject("admin", ad);
+		   List<PermessiAmministratori> permessi =
+	        		permessiAmministratoriService.getByAdminId(ad.getCodAdmin());
+	        
+	        if(!(permessi.stream().allMatch((p) -> p.getRuolo().equals(Role.CREATOR)
+	        		|| p.getRuolo().equals(Role.SUPER_ADMIN)))) {
+	    		mv.addObject("role", "CREATOR");
+	    	
+	        }
 			List<Cliente> clienti = clientiService.getClientiList();
 			mv.addObject("clienti", clienti);
 			mv.addObject("nuovocliente", new Cliente());
@@ -212,9 +226,14 @@ public class AdminController {
 		}
 	}
 	
+	@CreatorOnly
 	@PostMapping("/nuovoCliente")
-	public ModelAndView nuovoClienteForm(@Valid Cliente cliente, BindingResult result,HttpServletRequest request) {
+	public ModelAndView nuovoClienteForm(@Valid Cliente cliente,
+			@AuthenticationPrincipal UserDetails userDetails, BindingResult result,HttpServletRequest request) {
 	
+		Amministratore admin= amministratoriService.findByEmailAdmin(userDetails.getUsername()).get();
+		
+     
 		request.getSession().removeAttribute("message");
 		ModelAndView mv = new ModelAndView();
 		
@@ -455,6 +474,7 @@ public class AdminController {
 		ModelAndView mv = new ModelAndView("admin-prestiti");
 		String email = userDetails.getUsername();
 		Optional<Amministratore> admin = amministratoriService.findByEmailAdmin(email);
+		System.err.println(admin);
 		if(admin.isPresent()) {
 			Amministratore ad = admin.get();
 			mv.addObject("admin", ad);
@@ -469,6 +489,7 @@ public class AdminController {
 	}
 
 	@AdminOnly
+	@ApproverOnly
 	@GetMapping("/rifiuta/{id}")
 	public ModelAndView rifiuta(@PathVariable long id) {
 		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);
@@ -503,6 +524,7 @@ public class AdminController {
 		return new ModelAndView("redirect:/user/user-login");
 	}
 	@AdminOnly
+	@ApproverOnly
 	@PostMapping("/accetta/{id}")
 	public ModelAndView accetta(@PathVariable long id,Prestito prestito) {
 		Optional<RichiestaPrestito> richiesta = richiestePrestitoService.findById(id);

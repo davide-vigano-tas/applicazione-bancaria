@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import eu.tasgroup.applicativo.filter.JwtAuthenticationFilter;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
+import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
 
 @Configuration
@@ -30,11 +31,13 @@ public class SecurityConfig {
 	private final AmministratoriRepository ar;
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final PermessiAmministratoriRepository pr;
 
-	public SecurityConfig(ClientiRepository cr, AmministratoriRepository ar,
+	public SecurityConfig(ClientiRepository cr, AmministratoriRepository ar, PermessiAmministratoriRepository pr,
 			JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.cr = cr;
 		this.ar = ar;
+		this.pr = pr;
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
 	}
@@ -52,6 +55,7 @@ public class SecurityConfig {
 								.requestMatchers("/admin/**").hasRole("ADMIN"))
 				.formLogin((form) -> form.loginPage("/admin/admin-login").failureHandler(failureHandler)
 						.successHandler(successHandler).usernameParameter("email").permitAll())
+				
 				.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/admin/admin-logout"))
 						.logoutSuccessUrl("/").invalidateHttpSession(true).clearAuthentication(true).permitAll());
 		return http.build();
@@ -95,7 +99,7 @@ public class SecurityConfig {
 	@Bean
 	DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(new CostumerUserDetailsService(ar, cr));
+		authProvider.setUserDetailsService(new CostumerUserDetailsService(ar, cr, pr));
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 	}
