@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.service.impl;
+package eu.tasgroup.applicativo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

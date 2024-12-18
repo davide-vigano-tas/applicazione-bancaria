@@ -1,4 +1,4 @@
-package eu.tasgroup.applicativo.service.impl;
+package eu.tasgroup.applicativo.security;
 
 import javax.naming.AuthenticationException;
 
