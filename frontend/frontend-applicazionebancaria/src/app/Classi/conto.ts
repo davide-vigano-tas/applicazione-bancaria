@@ -1,9 +1,5 @@
+import { TipoConto } from '../enum/tipo-conto';
 import { Cliente } from './cliente';
-
-export enum TipoConto {
-    CORRENTE = 'CORRENTE',
-    RISPARMIO = 'RISPARMIO',
-}
 
 export class Conto {
   codConto!: number;

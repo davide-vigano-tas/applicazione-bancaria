@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Conto } from '../Classi/conto';
+import { Conto } from '../classi/conto';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
-import { AuthService } from './auth-service.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'

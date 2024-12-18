@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Cliente } from '../Classi/cliente';
+import { Cliente } from '../classi/cliente';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from './auth-service.service';
+import { AuthService } from './auth.service';
 import { catchError, Observable, of } from 'rxjs';
 
 @Injectable({
