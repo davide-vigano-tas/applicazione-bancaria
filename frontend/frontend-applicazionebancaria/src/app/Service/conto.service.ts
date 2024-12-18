@@ -32,13 +32,13 @@ export class ContoService {
     );
   }
 
-  getConto(id: string): Observable<any> {
+  getConto(id: number): Observable<any> {
     return this._http.get(`${this.baseUrl}/conto/${id}`, this.httpOptions).pipe(
       catchError(this.errorHandler<any>("Get Conto by id"))
     );
   }
 
-  deleteConto(id: string): Observable<any> {
+  deleteConto(id: number): Observable<any> {
     return this._http.delete(`${this.baseUrl}/delete/${id}`, this.httpOptions).pipe(
       catchError(this.errorHandler<any>("Delete Conto"))
     );

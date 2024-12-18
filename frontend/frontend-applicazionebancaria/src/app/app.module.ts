@@ -12,6 +12,7 @@ import { ContoService } from './service/conto.service';
 import { ClienteService } from './service/cliente.service';
 import { AuthService } from './service/auth.service';
 import { AuthGuard } from './classi/auth-guard';
+import { ContiComponent } from './component/conti/conti.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -25,7 +26,8 @@ const routes: Routes = [
     AppComponent,
     LoginFormComponent,
     ClienteFormComponent,
-    StatisticheComponent
+    StatisticheComponent,
+    ContiComponent
   ],
   imports: [
     BrowserModule,
