@@ -169,16 +169,17 @@ public class LogAspect {
 				String[] uri = request.getRequestURL().toString().split("/");
 				String id = uri[uri.length - 1];
 				
-				RichiestaPrestito rc = richiestePrestitoService.findById(Long.parseLong(id)).get();
+				
 				
 				if(operazione.equals("accetta")) {
-					
+					RichiestaPrestito rc = richiestePrestitoService.findById(Long.parseLong(id)).get();
 					AuditLog aud = new AuditLog();
 					aud.setAdmin(admin.get());
 					aud.setDataLog(new Date());
 					aud.setDettagli("Accettato prestito dello user :"+rc.getCliente().getCodCliente());
 					auditLogService.createOrUpdate(aud);
 				} else if (operazione.equals("rifiuta")) {
+					RichiestaPrestito rc = richiestePrestitoService.findById(Long.parseLong(id)).get();
 					AuditLog aud = new AuditLog();
 					aud.setAdmin(admin.get());
 					aud.setDataLog(new Date());
