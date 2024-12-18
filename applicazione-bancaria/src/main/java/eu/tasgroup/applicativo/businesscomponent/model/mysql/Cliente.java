@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,27 +33,34 @@ public class Cliente implements Serializable {
 
     @Pattern(regexp = "^[a-zA-Z ,.'-]{2,30}$", message = "max 30 caratteri, no numeri")
     @Column(name = "nome_cliente", nullable = false, length = 50)
+    @Schema(description = "nome dell'utente", example = "Mario")
     private String nomeCliente;
 
     @Pattern(regexp = "^[a-zA-Z ,.'-]{2,30}$", message = "max 30 caratteri, no numeri")
     @Column(name = "cognome_cliente", nullable = false, length = 50)
+    @Schema(description = "cognome dell'utente", example = "Rossi")
     private String cognomeCliente;
 
     @Pattern(regexp = "^[\\w.%+-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$", message = "email non valida")
     @Column(name = "email_cliente", nullable = false, unique = true, length = 100)
+    @Schema(description = "email dell'utente",example = "mario.rossi@example.com")
     private String emailCliente;
 
-    @Size(min = 4, message = "minimo 8 caratteri")
+    @Size(min = 8, message = "minimo 8 caratteri")
     @Column(name = "password_cliente", nullable = false, length = 100)
+    @Schema(description = "password criptata dell'utente",example = "stryugyudshfivrduidsdsdudsufhdsz")
     private String passwordCliente;
 
     @Column(name = "tentativi_errati")
+    @Schema(description = "tentativi errati prima che l'account vena bloccato" ,example = "0")
     private int tentativiErrati = 0;
 
     @Column(name = "account_bloccato", columnDefinition = "tinyint(1) default 0")
+    @Schema(description = "vslore che determina se l'utente è bloccato o meno",example = "false")
     private boolean accountBloccato = false;
 
     @Column(name = "saldo_conto", nullable = false)
+    @Schema(description = "somma del saldo di tutti i conti", example = "150")
     private double saldoConto = 0.0;
 
     @JsonIgnore
