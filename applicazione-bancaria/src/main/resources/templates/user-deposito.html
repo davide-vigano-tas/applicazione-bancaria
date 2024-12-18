@@ -23,7 +23,16 @@
                     </div>
                 </div>
                 <hr>
+                      	 <div class="alert alert-danger" th:if="${message == 'errore_deposito'}">
+	                	<p style="color: red"> Errore durante il deposito</p>
+	                </div>
+	                <div class="alert alert-danger" th:if="${message == 'importo_negativo'}" role="alert">
+						<span >
+							<i class="fas fa-exclamation-circle"></i> Inserire un importo positivo
+						</span>
+					</div>
                 <div class="row">
+          
                     <div class="col-md-4 text-center">
                         <h5><i class="fa-regular fa-building-columns"></i></h5>
                         <p><strong>Deposita sul Conto:</strong> <span th:text="${user_conto.codConto}"></span></p>

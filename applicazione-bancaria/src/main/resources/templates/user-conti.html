@@ -24,6 +24,10 @@
                 </div>
                 <hr>
                 <div>
+                
+                <div class="alert alert-danger my-2" th:if="${error != null}">
+                	<p style="color: red" th:text="${error}"></p>
+                </div>
                 	<div><h3>Conti</h3></div>
                 	<table class="table table-striped" id="tabellaConti">
                 		<thead>

@@ -23,6 +23,9 @@
                     </div>
                 </div>
                 <hr>
+                  <div class="alert alert-danger" th:if="${message !=null}" role="alert">
+                	<p style="color: red" th:text="${message}"></p>
+                </div>
                 <div class="row">
                     <div class="col-md-4 text-center">
                         <h5><i class="fa-regular fa-building-columns"></i></h5>

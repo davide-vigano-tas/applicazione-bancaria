@@ -115,8 +115,12 @@ public class ClientController {
 	}
 	
 	@GetMapping("/resetpage") 
-	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
+		String token_expired=(String) session.getAttribute("token_expired");
+		
 		ModelAndView mv = new ModelAndView("cliente-reset");
+		mv.addObject("error", token_expired);
+		session.removeAttribute("token_expired");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if(cliente.isPresent()) {
@@ -155,7 +159,7 @@ public class ClientController {
 	}
 	
 	@GetMapping("/changepassword")
-	public ModelAndView changePassword(@RequestParam String token) {
+	public ModelAndView changePassword(@RequestParam String token, HttpSession session) {
 		Optional<ClientResetToken> optoken = clientResetTokenService.findByToken(token);
 		if(optoken.isPresent()) {
 			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
@@ -163,6 +167,7 @@ public class ClientController {
 				mv.addObject("token", optoken.get().getToken());
 				return mv;
 			} else {
+				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/user/resetpage");
 			}
 		} return new ModelAndView("redirect:/user/user-login");
@@ -184,6 +189,7 @@ public class ClientController {
 				return new ModelAndView("redirect:/user/user-login");
 				
 			} else {
+				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/user/resetpage");
 			}
 		}  else {
@@ -209,8 +215,12 @@ public class ClientController {
 
 	// Pagina del form per aprire un nuovo conto
 	@GetMapping("/nuovoConto")
-	public ModelAndView contoForm(@AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView contoForm(@AuthenticationPrincipal UserDetails userDetails,
+			HttpSession session) {
+		String errore = (String) session.getAttribute("conto_error");
 		ModelAndView mv = new ModelAndView("user-contoform");
+		mv.addObject("error", errore);
+		session.removeAttribute("conto_error");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
@@ -227,8 +237,8 @@ public class ClientController {
 	// Inserimento nuovo conto
 	@PostMapping("/nuovoConto")
 	public ModelAndView contoForm(Conto conto) {
+	
 		contiService.createOrUpdate(conto);
-
 		return new ModelAndView("redirect:/user/conti");
 	}
 
@@ -282,7 +292,9 @@ public class ClientController {
 
 	// Transazioni legate a un conto
 	@GetMapping("/transazioniConto/{id}")
-	public ModelAndView transazioniConto(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView transazioniConto(@PathVariable long id, 
+			HttpSession session, 
+			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-transazioniconto");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -295,6 +307,7 @@ public class ClientController {
 				mv.addObject("user_transazioni", transazioni);
 				return mv;
 			}
+			session.setAttribute("conto_error", "Errore nel trovare il conto");
 			return new ModelAndView("redirect:/user/conti");
 
 		}
@@ -304,7 +317,9 @@ public class ClientController {
 
 	// Movimenti legate a un conto
 	@GetMapping("/movimentiConto/{id}")
-	public ModelAndView movimentiConto(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView movimentiConto(@PathVariable long id,
+			HttpSession session,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-movimenticonto");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -316,6 +331,7 @@ public class ClientController {
 				mv.addObject("user_movimenti", movimenti);
 				return mv;
 			}
+			session.setAttribute("conto_error", "Errore nel trovare il conto");
 			return new ModelAndView("redirect:/user/conti");
 
 		}
@@ -373,7 +389,9 @@ public class ClientController {
 
 	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/preleva/{id}")
-	public ModelAndView prelevaPage(HttpServletRequest request,@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
+	public ModelAndView prelevaPage(HttpServletRequest request,
+			HttpSession session,
+			@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 				@RequestParam(required = false) String message) {
 	   
 	    //Rimuovo messaggi 
@@ -393,6 +411,7 @@ public class ClientController {
 				mv.addObject("message",message);
 				return mv;
 			}
+			session.setAttribute("conto_error", "Errore nel trovare il conto");
 			return new ModelAndView("redirect:/user/conti");
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -419,7 +438,10 @@ public class ClientController {
 				mv.addObject("message",message);
 				return mv;
 			} else if (!gc.prelievo(transazione, c)) {
-				return new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+				String message ="errore_durante_il_prelievo";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
+				mv.addObject("message",message);
+				return mv;
 			}
 			ModelAndView mv = new ModelAndView("redirect:/user/conti");
 			mv.addObject("user",c);
@@ -431,7 +453,9 @@ public class ClientController {
 
 	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/deposita/{id}")
-	public ModelAndView depositaPage(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView depositaPage(@PathVariable long id,
+			@RequestParam(required = false) String message,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-deposito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -444,6 +468,7 @@ public class ClientController {
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
 				mv.addObject("transazione", tr);
+				mv.addObject("message",message);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
@@ -461,9 +486,15 @@ public class ClientController {
 			Cliente c = cliente.get();
 
 			if (transazione.getImporto() <= 0) {
-				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
+				String message ="importo_negativo";
+				mv = new ModelAndView("redirect:/user/deposita/"+ transazione.getConto().getCodConto());
+				mv.addObject("message",message);
+				return mv;
 			} else if (!gc.deposito(transazione, c)) {
-				return new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
+				String message ="errore_deposito";
+			    mv = new ModelAndView("redirect:/user/deposita/"+ transazione.getConto().getCodConto());
+				mv.addObject("message",message);
+				return mv;
 			}
 			mv.addObject("user",c);
 			return mv;
@@ -474,7 +505,8 @@ public class ClientController {
 
 	// Form richiesta prestito
 	@GetMapping("/richiediPrestito")
-	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails) {
+	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails, 
+			@RequestParam(required = false) String message) {
 		ModelAndView mv = new ModelAndView("user-richiestaform");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -484,6 +516,7 @@ public class ClientController {
 			RichiestaPrestito rp = new RichiestaPrestito();
 			rp.setCliente(c);
 			mv.addObject("user_richiesta", rp);
+			mv.addObject("message",message);
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -492,8 +525,13 @@ public class ClientController {
 	// Richiesta prrestito
 	@PostMapping("/richiediPrestito")
 	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
-		if (richiestaPrestito.getImporto() < 0)
-			return new ModelAndView("redirect:/user/richiediPrestito");
+		if (richiestaPrestito.getImporto() < 0) {
+			String message ="importo_negativo";
+			ModelAndView mv = new ModelAndView("redirect:/user/richiediPrestito/");
+			mv.addObject("message",message);
+			return mv;
+		}
+			
 		richiestaPrestito.setDataRichiesta(new Date());
 		richiestaPrestito.setStato(StatoRichiestaPrestito.IN_ATTESA);
 		richiestePrestitoService.createOrUpdate(richiestaPrestito);
@@ -505,8 +543,11 @@ public class ClientController {
 	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
 		ModelAndView mv = new ModelAndView("user-contitarget");
-		if (!contiService.findById(id).isPresent())
+		if (!contiService.findById(id).isPresent()) {
+			session.setAttribute("conto_error", "Errore nel trovare il conto");
 			return new ModelAndView("redirect:/user/conti");
+		}
+			
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
@@ -528,7 +569,9 @@ public class ClientController {
 	public ModelAndView formTBancaria(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
 		ModelAndView mv = new ModelAndView("user-tbancaria-form");
-
+		String errore = (String) session.getAttribute("error");
+		mv.addObject("error", errore);
+		session.removeAttribute("error");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
@@ -552,24 +595,33 @@ public class ClientController {
 	@PostMapping("/transazionebancaria")
 	public ModelAndView transazioneBancaria(@RequestParam String metodoPagamento, TransazioneBancaria tb,
 			HttpSession session) {
-		if (tb.getImporto() < 0)
+		if (tb.getImporto() < 0) {
+			session.setAttribute("error", "L'importo deve essere positivo");
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
-		if (tb.getImporto() > tb.getContoOrigine().getSaldo())
+		}
+		if (tb.getImporto() > tb.getContoOrigine().getSaldo()) {
+			session.setAttribute("error", "L'importo non deve superare il saldo del conto");
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
+		}
+			
 
 		Pagamento p = new Pagamento();
 		try {
 			p.setMetodoPagamento(TipoMetodo.valueOf(metodoPagamento.toUpperCase()));
 		} catch (IllegalArgumentException e) {
+			session.setAttribute("error", "Errore durante il pagamento");
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		}
 
-		if (!gc.transazioneBancaria(tb, p))
+		if (!gc.transazioneBancaria(tb, p)) {
+			session.setAttribute("error", "Transazione non andata a buon fine");
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
+		}
+			
 		session.removeAttribute("user_conto");
 		return new ModelAndView("redirect:/user/conti");
 	}

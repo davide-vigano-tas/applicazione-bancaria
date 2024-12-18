@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class OpenApiConfig {
 	@Bean
-	public OpenAPI CustomOpenAPI() {
+	 OpenAPI CustomOpenAPI() {
 		SecurityScheme bearerScheme = new SecurityScheme()
 				.type(SecurityScheme.Type.HTTP)
 				.scheme("bearer")

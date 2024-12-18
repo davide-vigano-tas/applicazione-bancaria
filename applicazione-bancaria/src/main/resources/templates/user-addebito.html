@@ -22,6 +22,9 @@
                         <p><strong>Account Bloccato:</strong> <span th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span></p>
                     </div>
 	                <hr>
+	                <div class="alert alert-danger" th:if="${message == 'errore-durante_il_prelievo'}">
+	                	<p style="color: red"> Errore durante il prelievo</p>
+	                </div>
 	                <div class="alert alert-danger" th:if="${message == 'importo_troppo_alto'}" role="alert">
 						<span >
 							<i class="fas fa-exclamation-circle"></i> Il prelievo supera il saldo del conto
