@@ -18,7 +18,8 @@ const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: LoginFormComponent },
   { path: 'crea-cliente', component: ClienteFormComponent, canActivate: [AuthGuard] },
-  { path: 'statistiche', component: StatisticheComponent, canActivate: [AuthGuard] }
+  { path: 'statistiche', component: StatisticheComponent, canActivate: [AuthGuard] },
+  { path: 'conti', component: ContiComponent, canActivate: [AuthGuard] }
 ]
 
 @NgModule({

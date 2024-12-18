@@ -19,6 +19,9 @@
         <li class="nav-item">
           <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/crea-cliente']">Modulo nuovo cliente</a>
         </li>
+        <li class="nav-item">
+          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/conti']">Modulo nuovo cliente</a>
+        </li>
 
         <li class="nav-item">
           <a *ngIf="isAuthenticated" class="nav-link" (click)="logout()">Logout</a>
