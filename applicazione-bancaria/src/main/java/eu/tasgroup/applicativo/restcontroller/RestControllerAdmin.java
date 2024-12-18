@@ -39,9 +39,11 @@ import eu.tasgroup.applicativo.security.AuthService;
 import eu.tasgroup.applicativo.service.ClientiMongoService;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
+import eu.tasgroup.applicativo.service.OperazioniBancarieMongoService;
 import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
+import eu.tasgroup.applicativo.service.TransazioneBancariaService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import eu.tasgroup.applicativo.utility.DettTrans;
 import eu.tasgroup.applicativo.utility.Statistiche;
@@ -60,7 +62,10 @@ public class RestControllerAdmin {
 
 	@Autowired
 	TransazioniMongoService transazioniMongoService;
-
+	
+	@Autowired
+	OperazioniBancarieMongoService operazioniBancarieMongoService;
+	
 	@Autowired
 	ContiService contiService;
 
@@ -291,10 +296,16 @@ public class RestControllerAdmin {
 			for (Cliente c : clientiService.getClientiList()) {
 				if (!transazioniMongoService.findByCliente(c.getCodCliente()).isEmpty()) {
 					dettagliTransazioniPerCliente.put(c.getCodCliente(),
-							new DettTrans(transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()),
+							new DettTrans(
+									transazioniMongoService.calcoloMediaTransazioniPerCliente(c.getCodCliente()),
 									transazioniMongoService.findByCliente(c.getCodCliente()).size(),
-									Arrays.stream(TipoTransazione.values()).collect(Collectors.toMap(tipo -> tipo,
-											tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)))));
+									Arrays.stream(TipoTransazione.values())
+									.collect(Collectors.toMap(
+											tipo -> tipo,
+											tipo -> tipo.equals(TipoTransazione.TRASFERIMENTO)
+												? operazioniBancarieMongoService.findAll().size()
+												: transazioniMongoService.numeroTransazioniPerTipo(tipo))))
+							);
 				}
 			}
 			stat.setDettagliTransazioniPerCliente(dettagliTransazioniPerCliente);
