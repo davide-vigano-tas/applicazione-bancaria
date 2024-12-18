@@ -1,8 +1,12 @@
 package eu.tasgroup.applicativo.restcontroller;
 
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -166,6 +170,7 @@ public class RestControllerAdmin {
 		Statistiche statistiche = new Statistiche();
 
 		try {
+			
 			// Numero totale di clienti
 			statistiche.setNumeroTotaleCliente(clientiService.totaleClienti());
 
@@ -208,12 +213,19 @@ public class RestControllerAdmin {
 							cliente -> prestitoService.sumPrestitiByCliente(cliente.getCodCliente())));
 			statistiche.setImportoTotPrestitiPerCliente(mappaImportoTotPrestitiPerCliente);
 
+			
+			
+			
+			
 			// Importo totale dei pagamenti per cliente
 			Map<Long, Double> mappaImportoTotPagamentiPerCliente = clientiService.getClientiList().stream()
 					.collect(Collectors.toMap(Cliente::getCodCliente,
 							cliente -> pagamentoService.sumPagamentiByCliente(cliente.getCodCliente())));
 			statistiche.setImportoTotPagamentiPerCliente(mappaImportoTotPagamentiPerCliente);
 
+			
+			
+			
 			// Numero totale di transazioni per tipo
 			Map<TipoTransazione, Integer> mappaNumeroTransazioniPerTipo = Arrays.stream(TipoTransazione.values())
 					.collect(Collectors.toMap(tipo -> tipo,
@@ -224,11 +236,12 @@ public class RestControllerAdmin {
 			statistiche.setMediaTransazioniPerCliente(transazioniMongoService.numeroMedioTransazioniPerCliente());
 
 			// Totale importo transazioni per mese
-			Map<String, Double> totaleImportoTranszioniPerMese = Arrays.stream(Mese.values())
-					.collect(Collectors.toMap(mese -> {
-						System.err.println("Mese: " + mese.name() + ", Ordinal: " + mese.ordinal());
-						return mese.name();
-					}, mese -> transazioniMongoService.totaleImportoPerMese(mese.ordinal())));
+			Map<String, Double> totaleImportoTranszioniPerMese = new LinkedHashMap<>();
+			for (int i = 1; i <= 12; i++) {
+				String nomeMese = Month.of(i).getDisplayName(TextStyle.FULL, Locale.ITALIAN);
+			    nomeMese = nomeMese.substring(0, 1).toUpperCase() + nomeMese.substring(1).toLowerCase();
+			    totaleImportoTranszioniPerMese.put(nomeMese, transazioniMongoService.totaleImportoPerMese(i));
+			}
 			statistiche.setTotaleImportoTranszioniPerMese(totaleImportoTranszioniPerMese);
 
 		} catch (Exception e) {

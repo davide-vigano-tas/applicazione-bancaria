@@ -38,7 +38,11 @@ public class PagamentoServiceImpl implements PagamentoService {
 
 	@Override
 	public Double sumPagamentiByCliente(long id) {
-		return pagamentoRepository.sumPagamentiByCliente(id);
+		if(pagamentoRepository.sumPagamentiByCliente(id)!= null) {
+			
+			return pagamentoRepository.sumPagamentiByCliente(id);
+		}
+		return 0.00;
 	}
 	
 	
