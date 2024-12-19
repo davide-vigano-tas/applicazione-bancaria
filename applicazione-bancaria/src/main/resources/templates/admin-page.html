@@ -100,16 +100,16 @@
 					
 					<div>
 						<button type="button" class="btn btn-lg btn-success"
-							data-bs-toggle="modal" data-bs-target="#createCliente">
+							data-bs-toggle="modal" data-bs-target="#createCliente" sec:authorize="hasAnyRole('CREATOR', 'SUPER_ADMIN')">
 							Crea nuovo cliente <span class="fas fa-plus"></span> </button>
 					</div>
 
 
 					<div class="modal" id="createCliente"
-						aria-labelledby="exampleModalLabel" aria-hidden="true">
+						aria-labelledby="exampleModalLabel" aria-hidden="true" >
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header" >
 									<h3 class="modal-title">Nuovo cliente</h3>
 									<button type="button" class="btn-close" data-bs-dismiss="modal"
 										aria-label="Close"></button>
