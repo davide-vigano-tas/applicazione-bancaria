@@ -26,7 +26,6 @@ export class AuthService {
 
   constructor(private http: HttpClient, private _localStorage: LocalStorageService) {
    this.isAuthenticatedSubject.next(this._localStorage.getItem(this.tokenKey) != null);
-   console.log(this.isAuthenticated$)
   }
 
   login(email: string, password: string): Observable<any> {
@@ -38,11 +37,10 @@ export class AuthService {
       this._localStorage.setItem(this.tokenKey, token);
       this.isAuthenticatedSubject.next(true);
     }else
-      console.log("set non andato")
+      console.error("errore nel salvare il token")
   }
 
   getToken(): string | null {
-    console.log(this._localStorage, this._localStorage == null)
     return this._localStorage ? this._localStorage.getItem(this.tokenKey) : null;
   }
 

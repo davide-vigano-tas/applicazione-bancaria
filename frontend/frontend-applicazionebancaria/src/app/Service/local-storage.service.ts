@@ -13,7 +13,6 @@ export class LocalStorageService {
   }
 
   getItem(key: string): string | null {
-    console.log(this.localStorage)
     return this.localStorage ? this.localStorage.getItem(key) : null;
   }
 

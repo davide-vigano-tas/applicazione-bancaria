@@ -18,7 +18,7 @@ export class ClientiComponent implements OnInit{
   }
   ngOnInit(): void {
     this._clienteService.getClienti().subscribe(
-      { //Operazione da eseguire subito dopo
+      {
         next: (clienti) => this.clienti = clienti,
         error: (e) => console.error(e),
         complete: () => console.info('getClienti chiamato correttamente')

@@ -3,6 +3,7 @@ import { Conto } from '../../classi/conto';
 import { ContoService } from '../../service/conto.service';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-conti',
   templateUrl: './conti.component.html',
@@ -18,7 +19,7 @@ export class ContiComponent {
     }
     ngOnInit(): void {
       this._contiService.getConti().subscribe(
-        { //Operazione da eseguire subito dopo
+        {
           next: (conti) => this.conti = conti,
           error: (e) => console.error(e),
           complete: () => console.info('getConti chiamato correttamente')
@@ -26,7 +27,10 @@ export class ContiComponent {
       );
     }
 
-    deleteConto(c: Conto) {
-
+    deleteConto(conto: Conto){
+      console.log("Conto: ",conto)
+      this._contiService.deleteConto(conto.codConto).subscribe(() => {
+        this.conti.splice(this.conti.indexOf(conto), 1);
+      })
     }
 }
