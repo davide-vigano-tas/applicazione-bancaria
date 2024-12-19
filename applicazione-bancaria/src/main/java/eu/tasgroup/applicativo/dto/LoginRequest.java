@@ -3,6 +3,7 @@ package eu.tasgroup.applicativo.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+//Login request per API
 public class LoginRequest implements Serializable{
 
 	private static final long serialVersionUID = -5746757732766487774L;

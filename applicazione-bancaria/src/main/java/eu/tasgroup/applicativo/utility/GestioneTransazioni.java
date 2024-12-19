@@ -96,8 +96,6 @@ public class GestioneTransazioni {
 				conto = contiService.createOrUpdate(conto);
 				c =clientiService.createOrUpdate(c);
 
-				System.err.println(contiService.findById(conto.getCodConto()).get());
-				System.err.println(clientiService.findById(c.getCodCliente()).get());
 				
 				if(mvc.getImporto() > 100) {
 					emailService.movimentoEffettuato(c.getEmailCliente(), mvc);
@@ -154,8 +152,6 @@ public class GestioneTransazioni {
 				conto = contiService.createOrUpdate(conto);
 				c = clientiService.createOrUpdate(c);
 
-				System.err.println(contiService.findById(conto.getCodConto()).get());
-				System.err.println(clientiService.findById(c.getCodCliente()).get());
 				
 				if(mvc.getImporto() > 100) {
 					emailService.movimentoEffettuato(c.getEmailCliente(), mvc);
@@ -172,6 +168,8 @@ public class GestioneTransazioni {
 			
 		
 	}
+	
+	//Quando viene creata una transazione bancaria, creo due transazioni rispettivamente di debito e accredito
 	
 	public boolean transazioneBancaria(TransazioneBancaria tb, Pagamento pagamento) {
 		if(tb.getImporto() < 0) return false;
@@ -208,7 +206,6 @@ public class GestioneTransazioni {
 			opmongo.setImporto(tb.getImporto());
 			opmongo.setTipoOperazione(TipoOperazione.TRASFERIMENTO);
 			opmongo.setCodOperazione(tb.getCodTransazioneBancaria());
-			System.err.println(opmongo);
 			opmongo = operazioniBancarieMongoService.createOrUpdate(opmongo);
 			
 			or = clientiService.findById(or.getCodCliente()).get();
@@ -218,7 +215,7 @@ public class GestioneTransazioni {
 			
 			pagamento = pagamentoService.createOrUpdate(pagamento);
 
-			System.err.println(or);
+
 			
 			return true;
 			

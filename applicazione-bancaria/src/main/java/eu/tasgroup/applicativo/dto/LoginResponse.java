@@ -3,6 +3,7 @@ package eu.tasgroup.applicativo.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+//Login response per API
 public class LoginResponse implements Serializable {
 
 	private static final long serialVersionUID = 985076557615963785L;

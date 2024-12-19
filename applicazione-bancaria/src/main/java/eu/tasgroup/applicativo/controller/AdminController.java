@@ -230,10 +230,6 @@ public class AdminController {
 	@PostMapping("/nuovoCliente")
 	public ModelAndView nuovoClienteForm(@Valid Cliente cliente,
 			@AuthenticationPrincipal UserDetails userDetails, BindingResult result,HttpServletRequest request) {
-	
-		Amministratore admin= amministratoriService.findByEmailAdmin(userDetails.getUsername()).get();
-		
-     
 		request.getSession().removeAttribute("message");
 		ModelAndView mv = new ModelAndView();
 		

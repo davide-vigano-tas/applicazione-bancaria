@@ -1,7 +1,6 @@
 package eu.tasgroup.applicativo.conf;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +47,6 @@ public class CostumerUserDetailsService implements UserDetailsService {
 				     roles.add("ADMIN");
 				     for(PermessiAmministratori prm : pr.getByAdminId(admin.getCodAdmin())) {
 				    	 roles.add(prm.getRuolo().name());
-				    	 System.err.println(roles);
 				     }
 				  
 				    String[] rolesArray = new String[roles.size()];
@@ -56,7 +54,6 @@ public class CostumerUserDetailsService implements UserDetailsService {
 				
 				    for(int i = 0; i<rolesArray.length; i++) {
 				    	rolesArray[i] = roles.get(i);
-				    	System.err.println(rolesArray[i]);
 				    }
 					return User.withUsername(admin.getEmailAdmin())
 							.accountLocked(admin.isAccountBloccato())

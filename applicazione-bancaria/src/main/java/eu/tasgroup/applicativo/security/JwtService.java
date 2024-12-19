@@ -33,7 +33,6 @@ public class JwtService {
 	}
 
 	public String generateToken(UserDetails userDetails) {
-		System.err.println("DETTAGLI USER: " +userDetails);
 		return generateToken(new HashMap<>(), userDetails);
 	}
 
@@ -47,7 +46,7 @@ public class JwtService {
 
 	private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
 		
-		System.err.println("USERNAME per genarare TOKEN: " + userDetails.getUsername());
+	
 		
 		return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
@@ -57,7 +56,6 @@ public class JwtService {
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
-		System.err.println("Username estratto: " + username);
 		return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 	}
 
@@ -72,7 +70,6 @@ public class JwtService {
 	// TODO: qua si verifica l'errore !!
 	private Claims extractAllClaims(String token) {
 
-		System.err.println("Questo è il token che ho mandato: " + token);
 		
 		return Jwts.parserBuilder()
 				.setSigningKey(getSignInKey())
