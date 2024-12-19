@@ -1,1 +1,52 @@
-<p>cliente-form works!</p>
+<div class="row-my-4" style="width: 500px;">
+
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+
+    <form class="form-horizontal" method="post" (ngSubmit)="onSubmit()" [formGroup]="createClienteForm">
+
+        <div class="mb-3">
+            <label for="nomeCliente" class="form-label"><i class="fas fa-user"></i>Nome</label>
+            <input type="text" class="form-control" id="nomeCliente" name="nomeCliente" formControlName="nome"
+                placeholder="Inserisci il  nome" required>
+            <div *ngIf="createClienteForm.controls['nome'].invalid && createClienteForm.controls['nome'].touched" class="text-danger">
+                <i class="fas fa-exclamation-triangle"></i> nome non valida
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="cognomeCliente" class="form-label"><i class="fas fa-user"></i>Cognome</label>
+            <input type="text" class="form-control" id="cognomeCliente" name="cognomeCliente" formControlName="cognome"
+                placeholder="Inserisci il cognome" required>
+            <div *ngIf="createClienteForm.controls['cognome'].invalid && createClienteForm.controls['cognome'].touched" class="text-danger">
+                <i class="fas fa-exclamation-triangle"></i> cognome non valida
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="emailCliente" class="form-label"><i class="fas fa-envelope"></i>Email</label>
+            <input type="email" class="form-control" id="emailCliente" name="emailCliente" formControlName="email"
+                placeholder="Inserisci l'email" required>
+            <div *ngIf="createClienteForm.controls['email'].invalid && createClienteForm.controls['email'].touched" class="text-danger">
+                <i class="fas fa-exclamation-triangle"></i> Email non valida
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="passwordCliente" class="form-label"><i class="fas fa-lock"></i>Password</label>
+            <input type="password" class="form-control" id="passwordCliente" name="passwordCliente"
+                formControlName="password" placeholder="Inserisci la password" required>
+            <div *ngIf="createClienteForm.controls['password'].invalid && createClienteForm.controls['password'].touched" class="text-danger">
+                <i class="fas fa-exclamation-triangle"></i> password non valida
+            </div>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-md" [disabled]="loading">
+                <i class="fas fa-user-plus"></i>
+                Registra Cliente
+            </button>
+        </div>
+
+    </form>
+</div>

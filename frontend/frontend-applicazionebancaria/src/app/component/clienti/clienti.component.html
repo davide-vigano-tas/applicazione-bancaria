@@ -11,9 +11,7 @@
                 <th style="width: 200px;">Nome</th>
                 <th style="width: 200px;">Cognome</th>
                 <th style="width: 200px;">Email</th>
-                <th style="width: 200px;">Tentativi Errati</th>
-                <th style="width: 200px;">Bloccato</th>
-                <th style="width: 200px;">Saldo Conto</th>
+                <th style="width: 200px;">Dettagli</th>
             </tr>
         </thead>
         <tbody>
@@ -21,12 +19,33 @@
                 <td>{{c.nomeCliente}}</td>
                 <td>{{c.cognomeCliente}}</td>
                 <td>{{c.emailCliente}}</td>
-                <td>{{c.tentativiErrati}}</td>
-                <td>{{c.accountBloccato}}</td>
-                <td>{{c.saldoConto | currency:'EUR'}}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" (click)="getCliente(c)">
+                        <i class="fa-solid fa-user"></i>
+                    </button>
+
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
+</div>
+
+<div class="card my-4" *ngIf="cliente">
+    <div class="card-header" style="background-color: white;">
+        Cliente:&nbsp;
+        <strong>{{cliente.codCliente}}</strong> 
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Nome</strong>:&nbsp;{{cliente.nomeCliente}}</li>
+            <li class="list-group-item"><strong>Cognome</strong>:&nbsp;{{cliente.cognomeCliente}}</li>
+            <li class="list-group-item"><strong>Email</strong>:&nbsp;{{cliente.emailCliente}}</li>
+            <li class="list-group-item"><strong>Tentativi Errati</strong>:&nbsp;{{cliente.tentativiErrati}}</li>
+            <li class="list-group-item"><strong>Account bloccato</strong>:&nbsp;{{cliente.accountBloccato}}</li>
+            <li class="list-group-item"><strong>Saldo conto</strong>:&nbsp;{{cliente.saldoConto | currency:'EUR'}}</li>
+          </ul>
+
+    </div>
 </div>
 </div>
