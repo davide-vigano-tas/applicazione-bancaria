@@ -19,7 +19,7 @@ export class StatisticheComponent {
       ngOnInit(): void {
         this._statService.getStatistiche().subscribe(
           { //Operazione da eseguire subito dopo
-            next: (statistiche) => this.statistiche = statistiche,
+            next: (statistiche) => this.statistiche = statistiche ,
             error: (e) => console.error(e),
             complete: () => console.info('getStatiche chiamato')
           }
