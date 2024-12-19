@@ -7,7 +7,7 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <h5 class="card-title mt-2">Numero Clienti</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleCliente }}</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleCliente}}</p>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <h5 class="card-title mt-2">Ultima Transazione</h5>
-                <p class="card-text fs-5 text-dark">{{ statistiche.dataUltimaTransazione }}</p>
+                <p class="card-text fs-5 text-dark">{{ statistiche.dataUltimaTransazione | date:'yyyy-MM-dd HH:mm:ss' }}</p>
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@
                     <i class="fas fa-coins"></i>
                 </div>
                 <h5 class="card-title mt-2">Somma Totale Transazioni</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.sommaTotaleTransazioni }} €</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.sommaTotaleTransazioni | currency:'EUR':true:'1.2-2'  }}</p>
             </div>
         </div>
     </div>
@@ -72,7 +72,7 @@
                     <i class="fas fa-wallet"></i>
                 </div>
                 <h5 class="card-title mt-2">Saldo Medio</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti }} €</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti | currency:'EUR':true:'1.2-2' }}</p>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                 <td>{{cli.nomeCliente}}</td>
                 <td>{{cli.cognomeCliente}}</td>
                 <td>{{cli.emailCliente}}</td>
-                <td>{{cli.saldoConto}}</td>
+                <td>{{cli.saldoConto | currency:'EUR':true:'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -139,8 +139,8 @@
                 <td>{{cli.key}}</td>
                 <td>{{cli.value}}</td>
                 <td>{{statistiche.cartePerCliente[cli.key]}}</td>
-                <td>{{statistiche.importoTotPrestitiPerCliente[cli.key]}}</td>
-                <td>{{statistiche.importoTotPagamentiPerCliente[cli.key]}}</td>
+                <td>{{statistiche.importoTotPrestitiPerCliente[cli.key] | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{statistiche.importoTotPagamentiPerCliente[cli.key] | currency:'EUR':true:'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -167,7 +167,7 @@
         <tbody>
             <tr *ngFor="let tipo of statistiche.numeroTransazioniPerTipo | keyvalue">
                 <td>{{tipo.key}}</td>
-                <td>{{tipo.value}}</td>
+                <td>{{tipo.value | currency:'EUR':true:'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -194,7 +194,7 @@
         <tbody>
             <tr *ngFor="let mese of statistiche.totaleImportoTranszioniPerMese | keyvalue">
                 <td>{{mese.key}}</td>
-                <td>{{mese.value}}</td>
+                <td>{{mese.value | currency:'EUR':true:'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
