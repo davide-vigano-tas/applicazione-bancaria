@@ -64,6 +64,13 @@ public class BaseController {
 		request.getSession().removeAttribute("message");
 		ModelAndView mv = new ModelAndView();
 		
+		if(cliente.getEmailCliente().endsWith("@tasgroup.eu")) {
+			String message = "email_non_valida";
+			mv.addObject("message", message);
+			mv.setViewName("user-form-reg");
+			return mv;
+		}
+		
 		if (cs.findByEmailCliente(cliente.getEmailCliente()).isPresent()) {
 			String message = "email_gia_utilizzata";
 			mv.addObject("message", message);
