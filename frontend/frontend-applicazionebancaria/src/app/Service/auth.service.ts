@@ -2,6 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,9 @@ export class AuthService {
   private _browser!: boolean;
   private httpOptions = {
     headers: new HttpHeaders({
-  
+
       //Come vengono inviati i dati
-      'Content-Type' : 'application/json'
+      'Content-Type': 'application/json'
 
 
     }),
@@ -23,36 +24,29 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.getToken() !== null);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {
-    this._browser = isPlatformBrowser(platformId);
+  constructor(private http: HttpClient, private _localStorage: LocalStorageService) {
   }
 
   login(email: string, password: string): Observable<any> {
-    const value = this.http.post(`${this.baseUrl}/login`, { email, password }, this.httpOptions);
-    console.log(value)  
-    return value
+    return this.http.post(`${this.baseUrl}/login`, { email, password }, this.httpOptions);
   }
 
   setToken(token: string): void {
-    if(this._browser) {
-      localStorage.setItem(this.tokenKey, token);
+    if(this._localStorage != null){
+      this._localStorage.setItem(this.tokenKey, token);
       this.isAuthenticatedSubject.next(true);
-    }
-      
+    }else
+      console.log("set non andato")
   }
 
   getToken(): string | null {
-    if(this._browser)
-      return localStorage.getItem(this.tokenKey);
-    return null;
+    console.log(this._localStorage, this._localStorage == null)
+    return this._localStorage ? this._localStorage.getItem(this.tokenKey) : null;
   }
 
   logout(): void {
-    if(this._browser) {
-      localStorage.removeItem(this.tokenKey);
-      this.isAuthenticatedSubject.next(false);
-      window.location.reload();
-    }
-      
+    this._localStorage.removeItem(this.tokenKey);
+    this.isAuthenticatedSubject.next(false);
+    window.location.reload();
   }
 }
