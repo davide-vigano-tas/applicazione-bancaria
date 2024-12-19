@@ -21,10 +21,12 @@ export class AuthService {
     }),
   }
 
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.getToken() !== null);
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.getToken() != null);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(private http: HttpClient, private _localStorage: LocalStorageService) {
+   this.isAuthenticatedSubject.next(this._localStorage.getItem(this.tokenKey) != null);
+   console.log(this.isAuthenticated$)
   }
 
   login(email: string, password: string): Observable<any> {

@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
     // Controlla se il token è presente al caricamento della pagina
     this.authService.isAuthenticated$.subscribe((authStatus) => {
       this.isAuthenticated = authStatus;
+      console.log(this.isAuthenticated)
     });
   }
 
