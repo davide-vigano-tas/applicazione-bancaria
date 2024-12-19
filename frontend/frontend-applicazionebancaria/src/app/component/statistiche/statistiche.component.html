@@ -1,119 +1,201 @@
+<div class="row g-3">
+    <!-- Statistica: Numero di Clienti -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-info fs-1">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h5 class="card-title mt-2">Numero Clienti</h5>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleCliente }}</p>
+            </div>
+        </div>
+    </div>
 
-<div>
-    <p><strong>Numero di clienti: </strong>{{statistiche.numeroTotaleCliente}}</p>
-</div>
-<div>
-    <p><strong>Media transazioni per cliente:</strong> {{statistiche.mediaTransazioniPerCliente}}</p>
-</div>
-<div>
-    <p><strong>Data ultima transazione: </strong>{{statistiche.dataUltimaTransazione}}</p>
-</div>
-<div>
-    <p><strong>Numero totale di transazioni:</strong>{{statistiche.numeroTotaleTransazioni}}</p>
-</div>
-<div>
-    <p><strong>Somma totale delle transazioni: </strong>{{statistiche.sommaTotaleTransazioni}}</p>
-</div>
-<div>
-    <p><strong>Saldo medio dei conti: </strong>{{statistiche.saldoMedioConti}}</p>
-</div>
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">
-            clienteSaldoMaggiore
-        </h3>
+    <!-- Statistica: Media Transazioni per Cliente -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-success fs-1">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h5 class="card-title mt-2">Media Transazioni per Cliente</h5>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.mediaTransazioniPerCliente }}</p>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <th>Codice cliente</th>
-                <th>NOme cliente</th>
-                <th>Cognome cliente</th>
-                <th>Email cliente</th>
-                <th>saldo cliente</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cli of statistiche.clienteSaldoMaggiore">
-                    <td>{{cli.codCliente}}</td>
-                    <td>{{cli.nomeCliente}}</td>
-                    <td>{{cli.cognomeCliente}}</td>
-                    <td>{{cli.emailCliente}}</td>
-                    <td>{{cli.saldoConto}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">
-            Statistiche per cliente
-        </h3>
+    <!-- Statistica: Data Ultima Transazione -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-warning fs-1">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h5 class="card-title mt-2">Ultima Transazione</h5>
+                <p class="card-text fs-5 text-dark">{{ statistiche.dataUltimaTransazione }}</p>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <th>Codice cliente</th>
-                <th>Numero conti</th>
-                <th>Numero carte</th>
-                <th>importoTotPrestitiPerClientee</th>
-                <th>importoTotPagamentiPerCliente</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cli of statistiche.contiPerCliente | keyvalue">
-                    <td>{{cli.key}}</td>
-                    <td>{{cli.value}}</td>
-                    <td>{{statistiche.cartePerCliente[cli.key]}}</td>
-                    <td>{{statistiche.importoTotPrestitiPerCliente[cli.key]}}</td>
-                    <td>{{statistiche.importoTotPagamentiPerCliente[cli.key]}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">
-            Transazioni per tipo
-        </h3>
+    <!-- Statistica: Numero Totale di Transazioni -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-danger fs-1">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h5 class="card-title mt-2">Totale Transazioni</h5>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleTransazioni }}</p>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <th>TIPo</th>
-                <th>Numero transazioni</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let tipo of statistiche.numeroTransazioniPerTipo | keyvalue">
-                    <td>{{tipo.key}}</td>
-                    <td>{{tipo.value}}</td>
-                </tr>
-            </tbody>
-        </table>
+
+    <!-- Statistica: Somma Totale delle Transazioni -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-primary fs-1">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h5 class="card-title mt-2">Somma Totale Transazioni</h5>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.sommaTotaleTransazioni }} €</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistica: Saldo Medio dei Conti -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card shadow-sm text-center h-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-secondary fs-1">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <h5 class="card-title mt-2">Saldo Medio</h5>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti }} €</p>
+            </div>
+        </div>
     </div>
 </div>
 
 
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="card-title">
-            Importo totale per mese
-        </h3>
-    </div>
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <th>mese</th>
-                <th>totale importo</th>
-            </thead>
-            <tbody>
-                <tr *ngFor="let mese of statistiche.totaleImportoTranszioniPerMese | keyvalue">
-                    <td>{{mese.key}}</td>
-                    <td>{{mese.value}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+
+<!-- Clienti con Saldo Maggiore -->
+<a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+   data-bs-toggle="collapse" href="#saldoMaxSection" role="button" 
+   aria-expanded="false" aria-controls="saldoMaxSection">
+    <span class="me-2 fs-3"> 
+        <i class="fa-solid fa-wallet"></i>
+        &nbsp;Clienti con Saldo Maggiore
+    </span>
+    <i class="fas fa-chevron-down fa-lg"></i>
+</a>
+<div class="collapse" id="saldoMaxSection">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Codice Cliente</th>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Email</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cli of statistiche.clienteSaldoMaggiore">
+                <td>{{cli.codCliente}}</td>
+                <td>{{cli.nomeCliente}}</td>
+                <td>{{cli.cognomeCliente}}</td>
+                <td>{{cli.emailCliente}}</td>
+                <td>{{cli.saldoConto}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Statistiche per Cliente -->
+<a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+   data-bs-toggle="collapse" href="#statisticheClientiSection" role="button" 
+   aria-expanded="false" aria-controls="statisticheClientiSection">
+    <span class="me-2 fs-3"> 
+        <i class="fa-solid fa-chart-line"></i>
+        &nbsp;Statistiche per Cliente
+    </span>
+    <i class="fas fa-chevron-down fa-lg"></i>
+</a>
+<div class="collapse" id="statisticheClientiSection">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Codice Cliente</th>
+                <th>Numero Conti</th>
+                <th>Numero Carte</th>
+                <th>Importo Totale Prestiti</th>
+                <th>Importo Totale Pagamenti</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cli of statistiche.contiPerCliente | keyvalue">
+                <td>{{cli.key}}</td>
+                <td>{{cli.value}}</td>
+                <td>{{statistiche.cartePerCliente[cli.key]}}</td>
+                <td>{{statistiche.importoTotPrestitiPerCliente[cli.key]}}</td>
+                <td>{{statistiche.importoTotPagamentiPerCliente[cli.key]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Transazioni per Tipo -->
+<a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+   data-bs-toggle="collapse" href="#transazioniTipoSection" role="button" 
+   aria-expanded="false" aria-controls="transazioniTipoSection">
+    <span class="me-2 fs-3"> 
+        <i class="fa-regular fa-handshake"></i>
+        &nbsp;Transazioni per Tipo
+    </span>
+    <i class="fas fa-chevron-down fa-lg"></i>
+</a>
+<div class="collapse" id="transazioniTipoSection">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Numero Transazioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tipo of statistiche.numeroTransazioniPerTipo | keyvalue">
+                <td>{{tipo.key}}</td>
+                <td>{{tipo.value}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Importo Totale per Mese -->
+<a class="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-between w-100 mt-4 mb-4" 
+   data-bs-toggle="collapse" href="#importoMeseSection" role="button" 
+   aria-expanded="false" aria-controls="importoMeseSection">
+    <span class="me-2 fs-3"> 
+        <i class="fa-solid fa-calendar-days"></i>
+        &nbsp;Importo Totale delle Transazioni per Mese
+    </span>
+    <i class="fas fa-chevron-down fa-lg"></i>
+</a>
+<div class="collapse" id="importoMeseSection">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mese</th>
+                <th>Importo Totale</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let mese of statistiche.totaleImportoTranszioniPerMese | keyvalue">
+                <td>{{mese.key}}</td>
+                <td>{{mese.value}}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
