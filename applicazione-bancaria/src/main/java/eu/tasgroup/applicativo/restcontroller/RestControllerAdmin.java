@@ -168,7 +168,7 @@ public class RestControllerAdmin {
 	}
 
 	@Operation(summary = "Elimina Conto by id", description = "Elimina il conto specifico con determinato id")
-	@DeleteMapping("/conti/{id}")
+	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> eliminaConto(@PathVariable long id) {
 		try {
 			contiService.deleteContoById(id);
