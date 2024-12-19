@@ -13,12 +13,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // Controlla se il token è presente al caricamento della pagina
-    this.isAuthenticated = !!this.authService.getToken();
+    this.authService.isAuthenticated$.subscribe((authStatus) => {
+      this.isAuthenticated = authStatus;
+    });
   }
 
   // Metodo per il logout
   logout(): void {
     this.authService.logout();
-    this.isAuthenticated = false;  // Aggiorna lo stato di autenticazione
   }
 }

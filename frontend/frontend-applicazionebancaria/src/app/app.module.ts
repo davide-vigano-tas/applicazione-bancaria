@@ -7,19 +7,19 @@ import { StatisticheComponent } from './component/statistiche/statistiche.compon
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { APP_BASE_HREF } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ContoService } from './service/conto.service';
 import { ClienteService } from './service/cliente.service';
 import { AuthService } from './service/auth.service';
 import { AuthGuard } from './classi/auth-guard';
-import { ContiComponent } from './component/conti/conti.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: LoginFormComponent },
   { path: 'crea-cliente', component: ClienteFormComponent, canActivate: [AuthGuard] },
   { path: 'statistiche', component: StatisticheComponent, canActivate: [AuthGuard] },
-  { path: 'conti', component: ContiComponent, canActivate: [AuthGuard] }
+
 ]
 
 @NgModule({
@@ -28,7 +28,7 @@ const routes: Routes = [
     LoginFormComponent,
     ClienteFormComponent,
     StatisticheComponent,
-    ContiComponent
+    
   ],
   imports: [
     BrowserModule,

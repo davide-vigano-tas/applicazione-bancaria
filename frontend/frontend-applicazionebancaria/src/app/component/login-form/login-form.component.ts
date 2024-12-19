@@ -40,8 +40,10 @@ export class LoginFormComponent {
         if (response && response.token) {
           console.log(response.token)
           this.token = response.token;
-          localStorage.setItem('jwtToken', this.token); // Salva il token
+          this.authService.setToken(this.token);
+          //localStorage.setItem('jwtToken', this.token); // Salva il token
           this.router.navigate(['/statistiche']);
+          
         }
       },
       error: (err) => {
