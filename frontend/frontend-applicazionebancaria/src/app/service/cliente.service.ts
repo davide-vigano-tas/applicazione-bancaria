@@ -32,7 +32,7 @@ export class ClienteService {
     );
   }
 
-  getCliente(id: string): Observable<any> {
+  getCliente(id: number): Observable<any> {
     return this._http.get(`${this.baseUrl}/clienti/${id}`, this.httpOptions).pipe(
       catchError(this.errorHandler<any>("Get Cliente by id"))
     );
