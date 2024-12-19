@@ -34,7 +34,6 @@ const routes: Routes = [
     StatisticheComponent,
     ClientiComponent,
     ContiComponent,
-    
   ],
   imports: [
     BrowserModule,

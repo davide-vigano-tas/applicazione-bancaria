@@ -13,18 +13,15 @@ export class Statistiche {
 
     // dati per cliente
     
-    contiPerCliente!: Map<number, number>; // conti per cliente
-    // cartePerCliente!: Map<number, number>; // carte per cliente
-    cartePerCliente!: { [key: string]: number }; // carte per cliente
-    importoTotPrestitiPerCliente!: { [key: string]: number };  // importo totale prestiti per cliente
-    importoTotPagamentiPerCliente!: { [key: string]: number }; // umporto totale pagamenti per cliente
+    contiPerCliente!: Map<number, number>;
+    cartePerCliente!: { [key: string]: number };
+    importoTotPrestitiPerCliente!: { [key: string]: number };
+    importoTotPagamentiPerCliente!: { [key: string]: number };
     
 
-    numeroTransazioniPerTipo!: Map<TipoTransazione, number>; // transazioni per tipo
-
+    numeroTransazioniPerTipo!: { [key: string]: number };
     mediaTransazioniPerCliente!: number;
-
-    totaleImportoTranszioniPerMese!: Map<string, number>; // importo per mese
+    totaleImportoTranszioniPerMese!: Map<string, number>;
 }
 
 

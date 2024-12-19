@@ -27,7 +27,7 @@ export class StatisticheService {
   }
 
   getStatisticheExtra(): Observable<any> {
-    return this._http.get(this.baseUrl + '/statistche-extra', this.httpOptions).pipe(
+    return this._http.get(this.baseUrl + '/statistiche-extra', this.httpOptions).pipe(
       catchError(this.errorHandler<any>("Get statistche-extra"))
     );
   }
