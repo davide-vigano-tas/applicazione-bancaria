@@ -256,12 +256,26 @@ public class RestControllerAdmin {
 							cliente -> pagamentoService.sumPagamentiByCliente(cliente.getCodCliente())));
 			statistiche.setImportoTotPagamentiPerCliente(mappaImportoTotPagamentiPerCliente);
 
+			
+			
+			
 			// Numero totale di transazioni per tipo
 			Map<TipoTransazione, Integer> mappaNumeroTransazioniPerTipo = Arrays.stream(TipoTransazione.values())
 					.collect(Collectors.toMap(tipo -> tipo,
-							tipo -> transazioniMongoService.numeroTransazioniPerTipo(tipo)));
+							tipo -> {
+								if(tipo != TipoTransazione.TRASFERIMENTO) {
+									return transazioniMongoService.numeroTransazioniPerTipo(tipo)- pagamentoService.getAll().size();
+								} else {
+									return pagamentoService.getAll().size();
+								}
+									
+								}));
 			statistiche.setNumeroTransazioniPerTipo(mappaNumeroTransazioniPerTipo);
 
+			
+			
+			
+			
 			// Numero medio di transazioni per cliente
 			statistiche.setMediaTransazioniPerCliente(transazioniMongoService.numeroMedioTransazioniPerCliente());
 
