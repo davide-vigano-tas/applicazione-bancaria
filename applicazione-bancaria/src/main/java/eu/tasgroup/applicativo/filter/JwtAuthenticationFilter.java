@@ -1,6 +1,8 @@
 package eu.tasgroup.applicativo.filter;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
+	private Logger logger = Logger.getLogger("logger");
 
 	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
@@ -30,25 +33,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		String authHeader = request.getHeader("Authorization");
-		System.err.println("Sono all'interno del filtro");
 		try {
 			// Controlla che l'header Authorization sia presente e inizi con "Bearer "
 			// JWT segua il formato standard, ovvero inizia sempre con la stringa "Bearer "
 			if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 				filterChain.doFilter(request, response);
-				System.err.println("Header nullo oppure non inizia con Bearer");
+				logger.log(Level.WARNING,"Header nullo oppure non inizia con Bearer");
 				return;
 			}
 
 			// Estrai il token dall'header
-			System.err.println("HEADER:\n" + authHeader);
+			logger.log(Level.WARNING,"HEADER:\n" + authHeader);
 			
 			String jwtToken = authHeader.substring(7);
-			System.err.println("TOKEN:\n" + jwtToken);
+			logger.log(Level.WARNING,"TOKEN:\n" + jwtToken);
 			
 			// MI DA PROBLEMI AD ESTRARRE LO USERNAME
 			String username = jwtService.extractUsername(jwtToken);
-			System.err.println("USERNAME: " + username);
+			logger.log(Level.WARNING,"USERNAME: " + username);
 			
 			// Valida il token ed esegui l'autenticazione
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -60,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Errore durante l'autenticazione JWT: " + e.getMessage());
+			logger.log(Level.SEVERE,"Errore durante l'autenticazione JWT: " + e.getMessage());
 		}
 
 		filterChain.doFilter(request, response);

@@ -1,5 +1,8 @@
 package eu.tasgroup.applicativo.security;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.core.Ordered;
@@ -12,12 +15,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE) 
 public class AdminAspect {
+	
+	private Logger logger = Logger.getLogger("logger");
+	//Controllo operazioni admin
 	@Before("@annotation(eu.tasgroup.applicativo.security.AdminOnly)")
     public void checkAdminAccess() {
 	 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-        	System.err.println("Accesso negato: Utente non autenticato.");
             throw new SecurityException("Accesso negato: Utente non autenticato.");
         }
 
@@ -26,19 +31,18 @@ public class AdminAspect {
         boolean isAdmin = a.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         
         if (!isAdmin) {
-        	System.err.println("Accesso negato: Solo gli amministratori possono accedere a questa funzionalità.");
             throw new SecurityException("Accesso negato: Solo gli amministratori possono accedere a questa funzionalità.");
         }
         
-        System.err.println("Autorizzato");
+        logger.log(Level.WARNING,"Autorizzato");
     }
 	
+	//Controllo operazioni admin creator(creatore di utenti)
 	@Before("@annotation(eu.tasgroup.applicativo.security.CreatorOnly)")
 	public void checkCreator() {
 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 	        if (authentication == null || !authentication.isAuthenticated()) {
-	        	System.err.println("Accesso negato: Utente non autenticato.");
 	            throw new SecurityException("Accesso negato: Utente non autenticato.");
 	        }
 	        
@@ -46,19 +50,18 @@ public class AdminAspect {
 	        boolean isCreator = a.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN") ||
 	        		auth.getAuthority().equals("ROLE_CREATOR"));
 	        if (!isCreator) {
-	        	System.err.println("Accesso negato: Solo gli amministratori creator possono accedere a questa funzionalità.");
 	            throw new SecurityException("Accesso negato: Solo gli amministratori  creator possono accedere a questa funzionalità.");
 	        }
 	        
-	        System.err.println("Autorizzato creator");
+	        logger.log(Level.WARNING,"Autorizzato creator");
 	}
 	
+	//Controllo operazioni admin Approver(approva/rifiuta richieste prestiti)
 	@Before("@annotation(eu.tasgroup.applicativo.security.ApproverOnly)")
 	public void checkAprrover() {
 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 	        if (authentication == null || !authentication.isAuthenticated()) {
-	        	System.err.println("Accesso negato: Utente non autenticato.");
 	            throw new SecurityException("Accesso negato: Utente non autenticato.");
 	        }
 	        
@@ -66,10 +69,9 @@ public class AdminAspect {
 	        boolean isCreator = a.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN") ||
 	        		auth.getAuthority().equals("ROLE_APPROVER"));
 	        if (!isCreator) {
-	        	System.err.println("Accesso negato: Solo gli amministratori approver possono accedere a questa funzionalità.");
 	            throw new SecurityException("Accesso negato: Solo gli amministratori approver possono accedere a questa funzionalità.");
 	        }
 	        
-	        System.err.println("Autorizzato approver");
+	        logger.log(Level.WARNING,"Autorizzato approver");
 	}
 }

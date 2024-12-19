@@ -21,28 +21,20 @@ public class ExecutionTimeAspect {
 	private Logger logger = Logger.getLogger("timelog");
 	private FileHandler fileHandler;
 	
-	
+	//Log tempo di esecuzione delle query
 	@Around("execution( * eu.tasgroup.applicativo.repository..*(..))")
 	public Object logTime(ProceedingJoinPoint jp) throws Throwable {
 			
 		long start = System.currentTimeMillis();
-		
-		 Object pr =jp.proceed();
-	
-		
+		Object pr =jp.proceed();
 		long end = System.currentTimeMillis();
-		System.err.println("Tempo :"+(end-start));
-		if(end-start >= 2) {
-			
-		
+		if(end-start >= 2) {	
 		  try {
-				Path path = Paths.get("C:\\logAspectAppBancariaTime");
-				 
+				Path path = Paths.get("C:\\logAspectAppBancariaTime");	 
 				if(Files.notExists(path)) {
 					Files.createDirectory(path);
 			
 				}
-				   
 					fileHandler=new FileHandler("C:\\logAspectAppBancariaTime\\logTime.log", true);
 					logger.addHandler(fileHandler);
 					logger.setLevel(Level.ALL);

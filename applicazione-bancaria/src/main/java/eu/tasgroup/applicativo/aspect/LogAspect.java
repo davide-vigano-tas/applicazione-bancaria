@@ -55,18 +55,17 @@ public class LogAspect {
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
 
+	//Log richieste
 
 	@After("execution(* eu.tasgroup.applicativo.controller..*(..) )")
 	public void log(JoinPoint jp) {
 		 // Recupera il contesto di sicurezza
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    
         try {
 			Path path = Paths.get("C:\\logAspectAppBancaria");
 		
 			if(Files.notExists(path)) {
 				Files.createDirectory(path);
-		
 			}
 	
 				fileHandler=new FileHandler("C:\\logAspectAppBancaria\\logfile.log", true);
@@ -86,8 +85,6 @@ public class LogAspect {
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 if (attributes != null) {
                     HttpServletRequest request = attributes.getRequest();
-
-                    
                     // Recupera i dettagli dell'URL
                     String method = request.getMethod();
                     String requestUrl = request.getRequestURL().toString();
@@ -106,11 +103,9 @@ public class LogAspect {
             			for(Object object : args) {
             				logger.log(Level.INFO, "Modello :"+object.toString());
             			}
-                    
-                
                 } else {
                 	
-                	logger.log(Level.WARNING, "Attributes");
+                	logger.log(Level.WARNING, "Attributes null");
                 }
                 
             }  else {
@@ -133,6 +128,7 @@ public class LogAspect {
         fileHandler.close();
 	}
 	
+	//Log accesso admin
 	@Before("execution( * eu.tasgroup.applicativo.conf.CustomAuthenticationSuccessHandler.onAuthenticationSuccess*(..))")
 	public void logAccesso() {
 		System.out.println("LoginAdmin");
@@ -150,9 +146,9 @@ public class LogAspect {
 
 	}
 	
+	//Log Operazioni admin only
 	@Before("@annotation(eu.tasgroup.applicativo.security.AdminOnly)")
 	public void logOperazione(JoinPoint jp) {
-		System.out.println("Operazione");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Object principal = authentication.getPrincipal();
 		UserDetails userDetails = (UserDetails) principal;
@@ -168,8 +164,7 @@ public class LogAspect {
 				HttpServletRequest request = attributes.getRequest();
 				String[] uri = request.getRequestURL().toString().split("/");
 				String id = uri[uri.length - 1];
-				
-				
+		
 				
 				if(operazione.equals("accetta")) {
 					RichiestaPrestito rc = richiestePrestitoService.findById(Long.parseLong(id)).get();

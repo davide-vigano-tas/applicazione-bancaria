@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.tasgroup.applicativo.businesscomponent.enumerated.Mese;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.StatoRichiestaPrestito;
 import eu.tasgroup.applicativo.businesscomponent.enumerated.TipoTransazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mongo.ClienteMongo;
@@ -43,7 +42,6 @@ import eu.tasgroup.applicativo.service.OperazioniBancarieMongoService;
 import eu.tasgroup.applicativo.service.PagamentoService;
 import eu.tasgroup.applicativo.service.PrestitoService;
 import eu.tasgroup.applicativo.service.RichiestePrestitoService;
-import eu.tasgroup.applicativo.service.TransazioneBancariaService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import eu.tasgroup.applicativo.utility.DettTrans;
 import eu.tasgroup.applicativo.utility.Statistiche;
