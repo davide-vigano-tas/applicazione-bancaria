@@ -33,4 +33,8 @@ export class ContiComponent {
         this.conti.splice(this.conti.indexOf(conto), 1);
       })
     }
+
+    stampa(mex: string){
+      console.log(mex)
+    }
 }
