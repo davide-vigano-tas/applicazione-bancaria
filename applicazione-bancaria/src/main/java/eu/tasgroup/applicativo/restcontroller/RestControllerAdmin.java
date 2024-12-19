@@ -32,6 +32,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mongo.TransazioniMongo;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Conto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.RichiestaPrestito;
+import eu.tasgroup.applicativo.conf.BCryptEncoder;
 import eu.tasgroup.applicativo.dto.LoginRequest;
 import eu.tasgroup.applicativo.dto.LoginResponse;
 import eu.tasgroup.applicativo.security.AuthService;
@@ -125,6 +126,7 @@ public class RestControllerAdmin {
 
 		System.out.println("Cliente ricevuto: " + clienteMySQL);
 		try {
+			clienteMySQL.setPasswordCliente(BCryptEncoder.encode(clienteMySQL.getPasswordCliente()));
 			Cliente savedCliente = clientiService.createOrUpdate(clienteMySQL);
 			ClienteMongo clienteMongo = new ClienteMongo();
 
