@@ -1,1 +1,119 @@
-<p>statistiche works!</p>
+
+<div>
+    <p><strong>Numero di clienti: </strong>{{statistiche.numeroTotaleCliente}}</p>
+</div>
+<div>
+    <p><strong>Media transazioni per cliente:</strong> {{statistiche.mediaTransazioniPerCliente}}</p>
+</div>
+<div>
+    <p><strong>Data ultima transazione: </strong>{{statistiche.dataUltimaTransazione}}</p>
+</div>
+<div>
+    <p><strong>Numero totale di transazioni:</strong>{{statistiche.numeroTotaleTransazioni}}</p>
+</div>
+<div>
+    <p><strong>Somma totale delle transazioni: </strong>{{statistiche.sommaTotaleTransazioni}}</p>
+</div>
+<div>
+    <p><strong>Saldo medio dei conti: </strong>{{statistiche.saldoMedioConti}}</p>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            clienteSaldoMaggiore
+        </h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <th>Codice cliente</th>
+                <th>NOme cliente</th>
+                <th>Cognome cliente</th>
+                <th>Email cliente</th>
+                <th>saldo cliente</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cli of statistiche.clienteSaldoMaggiore">
+                    <td>{{cli.codCliente}}</td>
+                    <td>{{cli.nomeCliente}}</td>
+                    <td>{{cli.cognomeCliente}}</td>
+                    <td>{{cli.emailCliente}}</td>
+                    <td>{{cli.saldoConto}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            Statistiche per cliente
+        </h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <th>Codice cliente</th>
+                <th>Numero conti</th>
+                <th>Numero carte</th>
+                <th>importoTotPrestitiPerClientee</th>
+                <th>importoTotPagamentiPerCliente</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cli of statistiche.contiPerCliente | keyvalue">
+                    <td>{{cli.key}}</td>
+                    <td>{{cli.value}}</td>
+                    <td>{{statistiche.cartePerCliente[cli.key]}}</td>
+                    <td>{{statistiche.importoTotPrestitiPerCliente[cli.key]}}</td>
+                    <td>{{statistiche.importoTotPagamentiPerCliente[cli.key]}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            Transazioni per tipo
+        </h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <th>TIPo</th>
+                <th>Numero transazioni</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let tipo of statistiche.numeroTransazioniPerTipo | keyvalue">
+                    <td>{{tipo.key}}</td>
+                    <td>{{tipo.value}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            Importo totale per mese
+        </h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <th>mese</th>
+                <th>totale importo</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let mese of statistiche.totaleImportoTranszioniPerMese | keyvalue">
+                    <td>{{mese.key}}</td>
+                    <td>{{mese.value}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
