@@ -8,8 +8,8 @@
                 </div>
                 <h5 class="card-title mt-2">Numero Clienti</h5>
 
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.numeroTotaleCliente }}</p>
->>>>>>> Stashed changes
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleCliente }}</p>
+
             </div>
         </div>
     </div>
@@ -207,14 +207,14 @@
             <tr>
                 <th>ID Cliente</th>
                 <th>Importo Medio</th>
-                <th>Importo Totale</th>
+                <th>Totale transazioni</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let tipo of statisticheExtra.dettagliTransazioniPerCliente | keyvalue">
                 <td>{{tipo.key}}</td>
                 <td>{{tipo.value.importoMedio | currency:'EUR':true:'1.2-2' }}</td>
-                <td>{{tipo.value.numeroTotale | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{tipo.value.numeroTotale }}</td>
             </tr>
         </tbody>
     </table>
