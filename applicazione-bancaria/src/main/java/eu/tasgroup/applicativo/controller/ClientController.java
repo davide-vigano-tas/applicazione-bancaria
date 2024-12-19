@@ -525,9 +525,9 @@ public class ClientController {
 	// Richiesta prrestito
 	@PostMapping("/richiediPrestito")
 	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
-		if (richiestaPrestito.getImporto() < 0) {
+		if (richiestaPrestito.getImporto() <= 0) {
 			String message ="importo_negativo";
-			ModelAndView mv = new ModelAndView("redirect:/user/richiediPrestito/");
+			ModelAndView mv = new ModelAndView("redirect:/user/richiediPrestito");
 			mv.addObject("message",message);
 			return mv;
 		}

@@ -4,47 +4,56 @@
 <body>
 	<div th:insert="~{fragments/nav :: navbar}"></div>
 
-<div class="container py-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4>Informazioni Utente</h4>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
-                <hr>
-                  <div class="alert alert-danger" th:if="${message !=null}" role="alert">
-                	<p style="color: red" th:text="${message}"></p>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <h5><i class="fa-regular fa-building-columns"></i></h5>
-                        <p><strong>Richiesta prestito:</strong> </p>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <form th:action="@{/user/richiediPrestito}" th:object="${user_richiesta}" method="post"  class="form-horizontal" >
-                        		<div class="form-group">
-                        <input type="hidden" th:field="*{cliente}">
-						<label class="col-md-1 control-label">Importo</label>
+	<div class="container py-5">
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h4>Richiesta Prestito</h4>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
+				<hr>
+				<div class="row mb-3">
+					<div class="alert alert-danger" th:if="${message == 'importo_negativo'}" role="alert">
+						<span> <i class="fas fa-exclamation-circle"></i> Inserire un importo positivo </span>
+					</div>
+					<div class="col-md-4 text-center mb-2">
+						<p>
+							<strong>Cliente:</strong> <span th:text="${user.nomeCliente} + ' ' + ${user.cognomeCliente}"></span>
+						</p>
+					</div>
+					<div class="col-md-4 text-center mb-2">
+						<p>
+							<strong>Saldo Attuale:</strong> <span th:text="|${#numbers.formatDecimal(user.saldoConto, 1, 'WHITESPACE', 2, 'COMMA')} €|"></span>
+						</p>
+					</div>
+				</div>
+				<form th:action="@{/user/richiediPrestito}" th:object="${user_richiesta}" method="post" class="form-horizontal">
+					<div class="form-group row">
+						<input type="hidden" th:field="*{cliente}">
+						<div class="col-md-4 text-center">
+							<label for="importo" class="control-label">Importo:</label>
+						</div>
 						<div class="col-md-4">
 							<div class="input-group">
-								<span class="input-group-addon"> <i
-									class="fas fa-eur"></i>
-								</span> <input type="number" step="0.01" name="importo" id="importo" th:field="*{importo}"
-									placeholder="importo.." class="form-control" required>
+								<input type="number" step="0.01" name="importo" id="importo" th:field="*{importo}"
+									placeholder="Inserisci importo" class="form-control" required>
 							</div>
 						</div>
-						
+						<div class="col-md-4">
+							<button type="submit" class="btn btn-primary">
+								<i class="fas fa-plus"></i> Richiedi
+							</button>
+						</div>
 					</div>
-					<button type="submit" class="btn btn-primary">
-										<i class="fas fa-plus"></i> richiedi
-									</button>
-                        </form>
-                    </div>
-                   
+				</form>
+				<div class="row justify-content-center mt-3">
+					<div class="col-md-2">
+	                	<a class="btn btn-primary w-100" role="button" href="/user/richiestePrestiti">Torna alle richiesta</a>
+                	</div>	
                 </div>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 	<footer th:insert="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
