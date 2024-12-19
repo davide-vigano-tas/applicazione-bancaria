@@ -13,6 +13,7 @@ import { ClienteService } from './service/cliente.service';
 import { AuthService } from './service/auth.service';
 import { AuthGuard } from './classi/auth-guard';
 import { ClientiComponent } from './component/clienti/clienti.component';
+import { ContiComponent } from './component/conti/conti.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'home', component: LoginFormComponent },
   { path: 'crea-cliente', component: ClienteFormComponent, canActivate: [AuthGuard] },
   { path: 'statistiche', component: StatisticheComponent, canActivate: [AuthGuard] },
-  { path: 'clienti', component:ClientiComponent, canActivate: [AuthGuard]}
+  { path: 'clienti', component:ClientiComponent, canActivate: [AuthGuard]},
+  { path: 'conti', component:ContiComponent, canActivate: [AuthGuard]}
 
 ]
 
@@ -31,6 +33,7 @@ const routes: Routes = [
     ClienteFormComponent,
     StatisticheComponent,
     ClientiComponent,
+    ContiComponent,
     
   ],
   imports: [
