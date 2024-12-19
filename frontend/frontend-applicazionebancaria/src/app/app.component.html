@@ -1,33 +1,45 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand">Applicazione Bancaria</a>
+    <a class="navbar-brand">
+      <i class="fas fa-university"></i> Applicazione Bancaria
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ms-auto">
         <!-- Link di Login visibile solo se non autenticato -->
         <li class="nav-item">
-          <a *ngIf="!isAuthenticated" class="nav-link active" aria-current="page" [routerLink]="['/']">Login</a>
+          <a *ngIf="!isAuthenticated" class="nav-link active" aria-current="page" [routerLink]="['/']">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
         </li>
 
-        <!-- solo se autenticato -->
-        
+        <!-- Solo se autenticato -->
         <li class="nav-item">
-          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/statistiche']">Statistiche</a>
+          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/statistiche']">
+            <i class="fas fa-chart-bar"></i> Statistiche
+          </a>
         </li>
         <li class="nav-item">
-          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/crea-cliente']">Modulo nuovo cliente</a>
+          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/crea-cliente']">
+            <i class="fas fa-user-plus"></i> Nuovo Cliente
+          </a>
         </li>
         <li class="nav-item">
-          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/conti']">Conti</a>
-        </li>
-
-        <li class="nav-item">
-          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/clienti']">Clienti</a>
+          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/conti']">
+            <i class="fas fa-wallet"></i> Conti
+          </a>
         </li>
         <li class="nav-item">
-          <a *ngIf="isAuthenticated" class="nav-link" (click)="logout()">Logout</a>
+          <a *ngIf="isAuthenticated" class="nav-link" [routerLink]="['/clienti']">
+            <i class="fas fa-users"></i> Clienti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a *ngIf="isAuthenticated" class="nav-link" (click)="logout()" style="cursor: pointer;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
         </li>
       </ul>
     </div>
