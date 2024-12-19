@@ -7,11 +7,7 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <h5 class="card-title mt-2">Numero Clienti</h5>
-<<<<<<< Updated upstream
                 <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleCliente}}</p>
-=======
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.numeroTotaleCliente }}</p>
->>>>>>> Stashed changes
             </div>
         </div>
     </div>
@@ -24,7 +20,7 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <h5 class="card-title mt-2">Media Transazioni per Cliente</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.mediaTransazioniPerCliente }}</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.mediaTransazioniPerCliente }}</p>
             </div>
         </div>
     </div>
@@ -37,12 +33,8 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <h5 class="card-title mt-2">Ultima Transazione</h5>
-<<<<<<< Updated upstream
                 <p class="card-text fs-4 text-dark">{{ statistiche.dataUltimaTransazione | date:'yyyy-MM-dd HH:mm:ss' }}
                 </p>
-=======
-                <p class="card-text fs-5 text-dark">{{ statistiche?.dataUltimaTransazione }}</p>
->>>>>>> Stashed changes
             </div>
         </div>
     </div>
@@ -55,7 +47,7 @@
                     <i class="fas fa-exchange-alt"></i>
                 </div>
                 <h5 class="card-title mt-2">Totale Transazioni</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.numeroTotaleTransazioni }}</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.numeroTotaleTransazioni }}</p>
             </div>
         </div>
     </div>
@@ -68,12 +60,8 @@
                     <i class="fas fa-coins"></i>
                 </div>
                 <h5 class="card-title mt-2">Somma Totale Transazioni</h5>
-<<<<<<< Updated upstream
                 <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.sommaTotaleTransazioni |
                     currency:'EUR':true:'1.2-2' }}</p>
-=======
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.sommaTotaleTransazioni }} €</p>
->>>>>>> Stashed changes
             </div>
         </div>
     </div>
@@ -86,7 +74,6 @@
                     <i class="fas fa-wallet"></i>
                 </div>
                 <h5 class="card-title mt-2">Saldo Medio</h5>
-<<<<<<< Updated upstream
                 <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti | currency:'EUR':true:'1.2-2'
                     }}</p>
             </div>
@@ -102,9 +89,6 @@
                 </div>
                 <h5 class="card-title mt-2">Transazioni accredito</h5>
                 <p class="card-text fs-4 fw-bold text-dark">{{ statisticheExtra.percentualeTransazioniAccredito}}</p>
-=======
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche?.saldoMedioConti }} €</p>
->>>>>>> Stashed changes
             </div>
         </div>
     </div>
@@ -225,11 +209,7 @@
             </tr>
         </thead>
         <tbody>
-<<<<<<< Updated upstream
             <tr *ngFor="let tipo of statisticheExtra.dettagliTransazioniPerCliente | keyvalue">
-=======
-            <tr *ngFor="let tipo of statistiche?.numeroTransazioniPerTipo | keyvalue">
->>>>>>> Stashed changes
                 <td>{{tipo.key}}</td>
                 <td>{{tipo.value.importoMedio | currency:'EUR':true:'1.2-2' }}</td>
                 <td>{{tipo.value.numeroTotale | currency:'EUR':true:'1.2-2' }}</td>
