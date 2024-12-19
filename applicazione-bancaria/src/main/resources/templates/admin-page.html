@@ -93,7 +93,7 @@
 											&nbsp;Sospendi </a>
 									</div>
 								</td>
-								<td th:text="${cliente.saldoConto}"></td>
+								<td th:text="|${#numbers.formatDecimal(cliente.saldoConto, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 							</tr>
 						</tbody>
 					</table>

@@ -41,7 +41,7 @@
                 <div class="card text-center mb-3">
                     <div class="card-header bg-info text-white">Somma Importi</div>
                     <div class="card-body">
-                        <h3 th:text="${somma_importi} + ' €'"></h3>
+                        <h3 th:text="|${#numbers.formatDecimal(somma_importi, 1, 'WHITESPACE', 2, 'COMMA')} €|"></h3>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 <div class="card text-center mb-3">
                     <div class="card-header bg-info text-white">Saldo medio</div>
                     <div class="card-body">
-                        <h3 th:text="${saldo_medio} + ' €'"></h3>
+                        <h3 th:text="|${#numbers.formatDecimal(saldo_medio, 1, 'WHITESPACE', 2, 'COMMA')} €|"></h3>
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
 	                <tr th:each="cliente : ${clienti_saldo_max}">
 	                    <td th:text="${cliente.nomeCliente}"></td>
 	                    <td th:text="${cliente.cognomeCliente}"></td>
-	                    <td th:text="${cliente.saldoConto} + ' €'"></td>
+	                    <td th:text="|${#numbers.formatDecimal(cliente.saldoConto, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 	                </tr>
 	            </tbody>
 	        </table>
@@ -124,7 +124,7 @@
 	                <div class="card text-center mb-3">
 	                    <div class="card-header bg-info text-white">Somma di tutte le transazioni</div>
 	                    <div class="card-body">
-	                        <h3 th:text="${somma_importi} + ' €'"></h3>
+	                        <h3 th:text="|${#numbers.formatDecimal(somma_importi, 1, 'WHITESPACE', 2, 'COMMA')} €|"></h3>
 	                    </div>
 	                </div>
 	            </div>
@@ -188,8 +188,8 @@
 	                    <td th:text="${entry.key.nomeCliente} + ' ' + ${entry.key.cognomeCliente}"></td>
 	                    <td th:text="${entry.value[0]}"></td>
 	                    <td th:text="${entry.value[1]}"></td>
-	                    <td th:text="${entry.value[2]} + ' €'"></td>
-	                    <td th:text="${entry.value[3]} + ' €'"></td>
+	                    <td th:text="|${#numbers.formatDecimal(entry.value[2], 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
+	                    <td th:text="|${#numbers.formatDecimal(entry.value[3], 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 	                </tr>
 	            </tbody>
 	        </table>
@@ -217,7 +217,7 @@
 	            <tbody>
 	                <tr th:each="entry : ${importo_mese}">
 	                    <td th:text="${entry.key}"></td>
-	                    <td th:text="${entry.value} + ' €'"></td>
+	                    <td th:text="|${#numbers.formatDecimal(entry.value, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 	                </tr>
 	            </tbody>
 	        </table>
@@ -289,9 +289,9 @@
 	                	<td th:text="${entry.key.codCliente}"></td>
 	                    <td th:text="${entry.key.nomeCliente} + ' ' + ${entry.key.cognomeCliente}"></td>
 	                    <td th:text="${entry.value[0]}"></td>
-	                    <td th:text="${entry.value[1]}+ ' €'"></td>
+	                    <td th:text="|${#numbers.formatDecimal(entry.value[1], 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 	                    <td th:text="${entry.value[2]}"></td>
-	                    <td th:text="${entry.value[3]} + ' €'"></td>
+	                    <td th:text="|${#numbers.formatDecimal(entry.value[3], 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
 	                </tr>
 	            </tbody>
 	        </table>
