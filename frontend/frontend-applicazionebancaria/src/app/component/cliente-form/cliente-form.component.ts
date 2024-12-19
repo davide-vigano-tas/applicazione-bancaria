@@ -43,7 +43,7 @@ export class ClienteFormComponent {
     this.clienteService.createCliente(cliente).subscribe({
       next: (response) => {
         this.loading = false;
-        this.router.navigate(['/statistiche']);
+        this.router.navigate(['/clienti']);
       },
       error: (err) => {
         this.loading = false;
