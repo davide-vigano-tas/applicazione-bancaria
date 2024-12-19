@@ -42,7 +42,7 @@ class MovimentoContoServiceTest {
 		cliente.setNomeCliente("Paolo");
 		cliente.setCognomeCliente("Rossi");
 		cliente.setEmailCliente("mail@mail.it");
-		cliente.setPasswordCliente("pass");
+		cliente.setPasswordCliente("pass01$1");
 		cliente.setSaldoConto(300);
 		
 		conto = new Conto();

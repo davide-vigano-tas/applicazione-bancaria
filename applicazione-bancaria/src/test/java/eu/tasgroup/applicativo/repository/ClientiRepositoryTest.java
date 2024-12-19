@@ -32,7 +32,7 @@ class ClientiRepositoryTest {
 		cliente.setNomeCliente("Samuel");
 		cliente.setCognomeCliente("Mastrelli");
 		cliente.setEmailCliente("sam@prova.email");
-		cliente.setPasswordCliente("pass01$");
+		cliente.setPasswordCliente("pass01$!");
 		cliente.setSaldoConto(300);
 		
 		
@@ -42,7 +42,7 @@ class ClientiRepositoryTest {
 		cliente2.setNomeCliente("Davide");
 		cliente2.setCognomeCliente("Vigano");
 		cliente2.setEmailCliente("davide@prova.email");
-		cliente2.setPasswordCliente("pass01$");
+		cliente2.setPasswordCliente("pass01$!");
 		cliente2.setSaldoConto(250);
 	}
 

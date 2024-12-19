@@ -43,8 +43,8 @@ class TransazioneBancariaServiceTest {
 		
 		cliente.setNomeCliente("Paolo");
 		cliente.setCognomeCliente("Rossi");
-		cliente.setEmailCliente("mail@mail.it");
-		cliente.setPasswordCliente("pass");
+		cliente.setEmailCliente("mailpaolo@mail.it");
+		cliente.setPasswordCliente("pass01$1");
 		cliente.setSaldoConto(300);
 		
 		contoOrigin = new Conto();

@@ -37,7 +37,7 @@ class PagamentoRepositoryTest {
 		cliente.setNomeCliente("Samuel");
 		cliente.setCognomeCliente("Mastrelli");
 		cliente.setEmailCliente("sam@prova.email");
-		cliente.setPasswordCliente("pass01$");
+		cliente.setPasswordCliente("pass01$1");
 		cliente.setSaldoConto(300);
 		
 		
