@@ -22,7 +22,7 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <h5 class="card-title mt-2">Media Transazioni per Cliente</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.mediaTransazioniPerCliente }}</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.mediaTransazioniPerCliente || 'N/A'  }}</p>
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@
                 </div>
                 <h5 class="card-title mt-2">Somma Totale Transazioni</h5>
                 <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.sommaTotaleTransazioni |
-                    currency:'EUR':true:'1.2-2' }}</p>
+                    currency:'EUR':'symbol':'1.2-2' }}</p>
             </div>
         </div>
     </div>
@@ -76,7 +76,7 @@
                     <i class="fas fa-wallet"></i>
                 </div>
                 <h5 class="card-title mt-2">Saldo Medio</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti | currency:'EUR':true:'1.2-2'
+                <p class="card-text fs-4 fw-bold text-dark">{{ statistiche.saldoMedioConti | currency:'EUR':'symbol':'1.2-2'
                     }}</p>
             </div>
         </div>
@@ -90,7 +90,7 @@
                     <i class="fas fa-percent"></i>
                 </div>
                 <h5 class="card-title mt-2">Transazioni accredito</h5>
-                <p class="card-text fs-4 fw-bold text-dark">{{ statisticheExtra.percentualeTransazioniAccredito}}</p>
+                <p class="card-text fs-4 fw-bold text-dark">{{ statisticheExtra.percentualeTransazioniAccredito | number:'1.0-0'}}</p>
             </div>
         </div>
     </div>
@@ -125,7 +125,7 @@
                 <td>{{cli.nomeCliente}}</td>
                 <td>{{cli.cognomeCliente}}</td>
                 <td>{{cli.emailCliente}}</td>
-                <td>{{cli.saldoConto | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{cli.saldoConto | currency:'EUR':'symbol':'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -157,8 +157,8 @@
                 <td>{{cli.key}}</td>
                 <td>{{cli.value}}</td>
                 <td>{{statistiche.cartePerCliente[cli.key]}}</td>
-                <td>{{statistiche.importoTotPrestitiPerCliente[cli.key] | currency:'EUR':true:'1.2-2' }}</td>
-                <td>{{statistiche.importoTotPagamentiPerCliente[cli.key] | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{statistiche.importoTotPrestitiPerCliente[cli.key] | currency:'EUR':'symbol':'1.2-2' }}</td>
+                <td>{{statistiche.importoTotPagamentiPerCliente[cli.key] | currency:'EUR':'symbol':'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -213,7 +213,7 @@
         <tbody>
             <tr *ngFor="let tipo of statisticheExtra.dettagliTransazioniPerCliente | keyvalue">
                 <td>{{tipo.key}}</td>
-                <td>{{tipo.value.importoMedio | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{tipo.value.importoMedio | currency:'EUR':'symbol':'1.2-2' }}</td>
                 <td>{{tipo.value.numeroTotale }}</td>
             </tr>
         </tbody>
@@ -241,7 +241,7 @@
         <tbody>
             <tr *ngFor="let mese of statistiche?.totaleImportoTranszioniPerMese | keyvalue">
                 <td>{{mese.key}}</td>
-                <td>{{mese.value | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{mese.value | currency:'EUR':'symbol':'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>
@@ -306,7 +306,7 @@
         <tbody>
             <tr *ngFor="let tipo of statisticheExtra.sommaPrestitiApprovatiPerCliente| keyvalue">
                 <td>{{tipo.key}}</td>
-                <td>{{tipo.value | currency:'EUR':true:'1.2-2' }}</td>
+                <td>{{tipo.value | currency:'EUR':'symbol':'1.2-2' }}</td>
             </tr>
         </tbody>
     </table>

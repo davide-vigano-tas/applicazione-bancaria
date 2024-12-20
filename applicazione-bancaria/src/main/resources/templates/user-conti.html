@@ -35,7 +35,7 @@
                 			<tr th:each="conto : ${user_conti}">
                 				<td th:text="${conto.codConto}"></td>
                 				<td th:text="${conto.tipoConto}"></td>
-                				<td th:text="|${#numbers.formatDecimal(conto.saldo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
+                				<td th:text="|${#numbers.formatDecimal(conto.saldo, 1, 'COMMA', 2, 'POINT')} €|"></td>
                 				<td>
                 					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi transazioni</a>
                 				</td>
@@ -71,7 +71,8 @@
     $(document).ready(function() {
         $('#tabellaConti').DataTable({
         	columnDefs: [
-                { orderable: false, targets: [3, 4, 5, 6, 7] }
+                { orderable: false, targets: [3, 4, 5, 6, 7] },
+                {type: "num-fmt", targets: 2}
             ]
         });
     });

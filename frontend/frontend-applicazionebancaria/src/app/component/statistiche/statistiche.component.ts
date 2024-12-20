@@ -12,7 +12,7 @@ import { StatisticheExtra } from '../../classi/statistiche-extra';
 export class StatisticheComponent implements OnInit {
 
   statistiche!: Statistiche;
-  statisticheExtra!: StatisticheExtra;
+  statisticheExtra!: StatisticheExtra ;
     
   constructor(private _statService: StatisticheService, private _router: Router) { }
 

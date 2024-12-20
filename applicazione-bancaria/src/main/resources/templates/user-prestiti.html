@@ -25,7 +25,7 @@
                 		<tbody>
                 			<tr th:each="prestito : ${user_prestiti}">
                 				<td th:text="${prestito.codPrestito}"></td>
-                				<td th:text="|${#numbers.formatDecimal(prestito.importo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
+                				<td th:text="|${#numbers.formatDecimal(prestito.importo, 1, 'COMMA', 2, 'POINT')} €|"></td>
                 				<td th:text="${prestito.tassoInteresse}"></td>
                 				<td th:text="${prestito.durataMesi}"></td>
                 			</tr>

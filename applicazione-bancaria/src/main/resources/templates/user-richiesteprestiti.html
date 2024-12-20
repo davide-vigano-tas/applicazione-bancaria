@@ -26,7 +26,11 @@
                 		<tbody>
                 			<tr th:each="richiesta : ${user_richieste}">
                 				<td th:text="${richiesta.codRichiesta}"></td>
-                				<td th:text="|${#numbers.formatDecimal(richiesta.importo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></td>
+                				<!-- 
+                				<td th:text="${richiesta.importo}"></td>
+                				 <td th:text="|${#numbers.formatCurrency(richiesta.importo)}|"></td>
+                				 -->
+                				<td th:text="|${#numbers.formatDecimal(richiesta.importo, 1, 'COMMA', 2, 'POINT')} €|"></td>
                 				<td th:text="${#dates.format(richiesta.dataRichiesta, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 				<td th:text="${richiesta.stato}"></td>
                 			</tr>
@@ -49,11 +53,7 @@
 	<footer th:insert="~{fragments/footer :: footer}"></footer>
 	<script>
     $(document).ready(function() {
-        $('#tabella').DataTable({
-        	columnDefs: [
-        		{type: "num-fmt", targets: 1}
-        	]
-        });
+        $('#tabella').DataTable();
     });
 	</script>
 </body>

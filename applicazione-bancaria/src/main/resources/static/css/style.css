@@ -60,6 +60,10 @@ a:hover {
 	color: #30A3E6;
 }
 
+#logoutButtonFooter:hover{
+	color: #30A3E6 !important;
+}
+
 footer section {
 	float: left;
 	padding: 30px;

@@ -11,13 +11,12 @@
 			<li class="nav nav-item mt-1"><a href="/user">Sezione utenti</a>
 			<li class="nav nav-item mt-1"><a href="/user/conti">Elenco conti</a>
 			<li class="nav nav-item mt-1"><a href="/user/nuovoConto">Crea nuovo conto</a>
-			<li class="nav nav-item mt-1"><a href="/admin">Sezione Admin</a>
+			<li class="nav nav-item mt-1"><a id="logoutButtonFooter" style="cursor: pointer; " onclick="logOutFooter()">Sezione admin</a>
 		</ul>
 		<ul class="nav flex-column"  sec:authorize="hasRole('ADMIN')">
 			<li class="nav nav-item mt-1"><a href="/admin">Sezione Admin</a>
 			<li class="nav nav-item mt-1"><a href="/admin">Elenco conti</a>
 			<li class="nav nav-item mt-1"><a href="/admin">Elenco utenti</a>
-			<li class="nav nav-item mt-1"><a href="/user">Sezione Utenti</a>
 		</ul>
 	</nav>
 
@@ -42,4 +41,24 @@
 	</section>
 	</div>
 	</div>
+<script>
+function logOutFooter() {
+    const logoutButton = document.getElementById('logoutButton');
+
+    Swal.fire({
+        title: 'Sei sicuro?',
+        text: "Se effettui il logout tutte le modifiche che non hai salvato verranno perse",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sì, esci',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href ="/user/user-logout";
+        }
+    });
+}
+</script>
 </div>

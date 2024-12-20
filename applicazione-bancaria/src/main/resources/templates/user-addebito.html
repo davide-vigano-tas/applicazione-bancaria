@@ -51,7 +51,7 @@
 					</div>
 					<div class="col-md-4  text-center mb-2">
 						<p>
-							<strong>Saldo:</strong> <span th:text="|${#numbers.formatDecimal(user_conto.saldo, 1, 'WHITESPACE', 2, 'COMMA')} €|"></span>
+							<strong>Saldo:</strong> <span th:text="|${#numbers.formatDecimal(user_conto.saldo, 1, 'COMMA', 2, 'POINT')} €|"></span>
 						</p>
 					</div>
 				</div>
