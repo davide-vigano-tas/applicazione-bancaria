@@ -18,10 +18,15 @@ export class StatisticheComponent implements OnInit {
 
   ngOnInit(): void {
     this._statService.getStatistiche().subscribe({
-      next: (statistiche) => this.statistiche = statistiche,
+      next: (statistiche) => {
+        // Ordine corretto dei mesi in italiano
+        this.statistiche = statistiche;
+      },
       error: (e) => console.error(e),
-      complete: () => console.info(this.statistiche)
+      complete: () => console.info('Operazione completata')
     });
+  
+  
 
     this._statService.getStatisticheExtra().subscribe({
       next: (statisticheExtra) => this.statisticheExtra = statisticheExtra,

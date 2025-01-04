@@ -14,6 +14,7 @@ import { AuthService } from './service/auth.service';
 import { AuthGuard } from './classi/auth-guard';
 import { ClientiComponent } from './component/clienti/clienti.component';
 import { ContiComponent } from './component/conti/conti.component';
+import { OrdinaMesiPipe } from './pipes/ordina-mesi.pipe';
 
 
 const routes: Routes = [
@@ -34,6 +35,7 @@ const routes: Routes = [
     StatisticheComponent,
     ClientiComponent,
     ContiComponent,
+    OrdinaMesiPipe,
   ],
   imports: [
     BrowserModule,

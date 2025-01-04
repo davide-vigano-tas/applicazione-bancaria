@@ -239,7 +239,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let mese of statistiche?.totaleImportoTranszioniPerMese | keyvalue">
+            <tr *ngFor="let mese of (statistiche.totaleImportoTranszioniPerMese | ordinaMesi)">
                 <td>{{mese.key}}</td>
                 <td>{{mese.value | currency:'EUR':'symbol':'1.2-2' }}</td>
             </tr>
