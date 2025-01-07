@@ -55,8 +55,12 @@ public class LogAspect {
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
 
-	//Log richieste
-
+	
+    /**
+     * Metodo aspetto che logga ogni richiesta
+     * 
+     * @param JoinPoint del metodo che riceve la richesta
+     */
 	@After("execution(* eu.tasgroup.applicativo.controller..*(..) )")
 	public void log(JoinPoint jp) {
 		 // Recupera il contesto di sicurezza
@@ -129,7 +133,10 @@ public class LogAspect {
         fileHandler.close();
 	}
 	
-	//Log accesso admin
+    /**
+     * Metodo aspetto che logga ogni accesso dell'amministratore
+     * 
+     */
 	@Before("execution( * eu.tasgroup.applicativo.conf.CustomAuthenticationSuccessHandler.onAuthenticationSuccess*(..))")
 	public void logAccesso() {
 		System.out.println("LoginAdmin");
@@ -147,7 +154,11 @@ public class LogAspect {
 
 	}
 	
-	//Log Operazioni admin only
+    /**
+     * Metodo aspetto che logga ogni operazione che esegue l'amministratore
+     * 
+     * @param JoinPoint del metodo che scatena l'aspetto
+     */
 	@Before("@annotation(eu.tasgroup.applicativo.security.AdminOnly)")
 	public void logOperazione(JoinPoint jp) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

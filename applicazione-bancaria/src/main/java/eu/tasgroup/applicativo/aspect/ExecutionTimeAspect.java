@@ -21,7 +21,12 @@ public class ExecutionTimeAspect {
 	private Logger logger = Logger.getLogger("timelog");
 	private FileHandler fileHandler;
 	
-	//Log tempo di esecuzione delle query
+    /**
+     * Metodo aspetto che misura il tempo impiegato da una query
+     * 
+     * @param jp, Proceeding join point dell'aspetto
+     * @return Oggetto derivante dalla query effettuata, come risultati proceed
+     */
 	@Around("execution( * eu.tasgroup.applicativo.repository..*(..))")
 	public Object logTime(ProceedingJoinPoint jp) throws Throwable {
 			

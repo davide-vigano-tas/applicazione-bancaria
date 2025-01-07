@@ -17,7 +17,10 @@ import org.springframework.stereotype.Component;
 public class AdminAspect {
 	
 	private Logger logger = Logger.getLogger("logger");
-	//Controllo operazioni admin
+    /**
+     * Aspetto controllo admin
+     * 
+     */
 	@Before("@annotation(eu.tasgroup.applicativo.security.AdminOnly)")
     public void checkAdminAccess() {
 	 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -37,7 +40,10 @@ public class AdminAspect {
         logger.log(Level.WARNING,"Autorizzato");
     }
 	
-	//Controllo operazioni admin creator(creatore di utenti)
+    /**
+     * Aspetto controllo per admin Creator (Crea utenti)
+     *
+     */
 	@Before("@annotation(eu.tasgroup.applicativo.security.CreatorOnly)")
 	public void checkCreator() {
 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,7 +62,10 @@ public class AdminAspect {
 	        logger.log(Level.WARNING,"Autorizzato creator");
 	}
 	
-	//Controllo operazioni admin Approver(approva/rifiuta richieste prestiti)
+    /**
+     * Aspetto controllo per admin Approver(Approva e rifiuta prestiti)
+     *
+     */
 	@Before("@annotation(eu.tasgroup.applicativo.security.ApproverOnly)")
 	public void checkAprrover() {
 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
