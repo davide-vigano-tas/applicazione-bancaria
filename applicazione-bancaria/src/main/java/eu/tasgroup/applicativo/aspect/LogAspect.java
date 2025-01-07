@@ -101,7 +101,8 @@ public class LogAspect {
             			
             			Object[] args = jp.getArgs();
             			for(Object object : args) {
-            				logger.log(Level.INFO, "Modello :"+object.toString());
+            				if(object != null)
+            					logger.log(Level.INFO, "Modello :"+object.toString());
             			}
                 } else {
                 	

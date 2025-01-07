@@ -21,14 +21,14 @@
                 	<table class="table table-striped" id="tabellaConti">
                 		<thead>
                 			<tr>
-                				<th>Codice Conto</th>
-                				<th>Tipo Conto</th>
-                				<th>Saldo</th>
-                				<th>Transazioni</th>
-                				<th>Movimenti</th>
-                				<th>Prelievo</th>
-                				<th>Deposito</th>
-                				<th>Trasferimento</th>
+                				<th style="width: 200px;">Codice Conto</th>
+                				<th style="width: 200px;">Tipo Conto</th>
+                				<th style="width: 200px;">Saldo</th>
+                				<th style="width: 200px;">Transazioni</th>
+                				<th style="width: 200px;">Movimenti</th>
+                				<th style="width: 200px;">Prelievo</th>
+                				<th style="width: 200px;">Deposito</th>
+                				<th style="width: 200px;">Trasferimento</th>
                 			</tr>
                 		</thead>
                 		<tbody>
@@ -37,19 +37,19 @@
                 				<td th:text="${conto.tipoConto}"></td>
                 				<td th:text="|${#numbers.formatDecimal(conto.saldo, 1, 'COMMA', 2, 'POINT')} €|"></td>
                 				<td>
-                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi transazioni</a>
+                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">Vedi transazioni</a>
                 				</td>
                 				<td>
-                					<a th:href="@{'movimentiConto/'+${conto.codConto}}" class="btn btn-sm btn-primary">Vedi movimenti</a>
+                					<a th:href="@{'movimentiConto/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">Vedi movimenti</a>
                 				</td>
                 				<td>
-                					<a th:href="@{'preleva/'+${conto.codConto}}" class="btn btn-sm btn-primary">preleva</a>
+                					<a th:href="@{'preleva/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">preleva</a>
                 				</td>
                 				<td>
-                					<a th:href="@{'deposita/'+${conto.codConto}}" class="btn btn-sm btn-primary">deposita</a>
+                					<a th:href="@{'deposita/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">deposita</a>
                 				</td>
                 				<td>
-                					<a th:href="@{'contitarget/'+${conto.codConto}}" class="btn btn-sm btn-primary">trasferimento</a>
+                					<a th:href="@{'contitarget/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">trasferimento</a>
                 				</td>
                 			</tr>
                 		</tbody>
