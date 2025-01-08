@@ -17,5 +17,6 @@ public interface TransazioniMongoService {
 	Optional<TransazioniMongo> ultimaTransazione();
 	List<TransazioniMongo> findByCliente(long cliente);
 	void deleteTransazioneMongo(TransazioniMongo transazione);
+	Optional<TransazioniMongo> findByCodTransazione(long id);
 
 }

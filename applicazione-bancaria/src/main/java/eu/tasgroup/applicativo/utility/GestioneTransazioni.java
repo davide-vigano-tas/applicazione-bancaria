@@ -16,6 +16,7 @@ import eu.tasgroup.applicativo.businesscomponent.model.mysql.MovimentoConto;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Pagamento;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Transazione;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.TransazioneBancaria;
+import eu.tasgroup.applicativo.conf.KafkaProducer;
 import eu.tasgroup.applicativo.service.ClientiService;
 import eu.tasgroup.applicativo.service.ContiService;
 import eu.tasgroup.applicativo.service.EmailService;
@@ -55,6 +56,8 @@ public class GestioneTransazioni {
 	@Autowired
 	EmailService emailService;
 	
+	@Autowired
+	KafkaProducer kafkaProducer;
 	
 	
 	public boolean prelievo(Transazione t, Cliente c) {
@@ -69,15 +72,20 @@ public class GestioneTransazioni {
 				t.setDataTransazione(new Date());
 				t.setTipoTransazione(TipoTransazione.ADDEBITO);
 				t = transazioneService.createOrUpdate(t);
-				
 				tmongo.setCliente(c.getCodCliente());
 				tmongo.setCodTransazione(t.getCodTransazione());
 				tmongo.setDataTransazione(t.getDataTransazione());
 				tmongo.setImporto(t.getImporto());
 				tmongo.setTipoTransazione(t.getTipoTransazione());
-				transazioniMongoService.createOrUpdate(tmongo);
+				kafkaProducer.sendTransazione(tmongo);
+				Thread.sleep(1500);
 				
-				Conto conto = t.getConto();
+				if(transazioniMongoService.findByCodTransazione(t.getCodTransazione()).isEmpty()) {
+					transazioneService.deleteTransazioneById(t.getCodTransazione());
+					return false;
+				}
+				
+				Conto conto = t .getConto();
 				contiService.createOrUpdate(conto);
 				
 				conto = contiService.findById(conto.getCodConto()).get();
@@ -130,7 +138,7 @@ public class GestioneTransazioni {
 				tmongo.setDataTransazione(t.getDataTransazione());
 				tmongo.setImporto(t.getImporto());
 				tmongo.setTipoTransazione(t.getTipoTransazione());
-				transazioniMongoService.createOrUpdate(tmongo);
+				kafkaProducer.sendTransazione(tmongo);
 				
 				Conto conto = t.getConto();
 				contiService.createOrUpdate(conto);

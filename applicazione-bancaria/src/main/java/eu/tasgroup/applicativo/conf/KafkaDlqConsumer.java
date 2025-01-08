@@ -20,7 +20,11 @@ public class KafkaDlqConsumer {
 
 	private Logger logger = Logger.getLogger("DQL");
 	private FileHandler fileHandler;
-	
+
+	 
+
+
+
 	@KafkaListener(topics = "transazioni-dlq-topic", groupId = "transazioni-dlq-group")
 	public void receivedFailedTransazione(TransazioniMongo transazione) {
 		 try {

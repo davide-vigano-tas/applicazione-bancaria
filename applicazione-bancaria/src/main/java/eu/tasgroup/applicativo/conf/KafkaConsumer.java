@@ -28,7 +28,7 @@ public class KafkaConsumer {
 		
 		if(transazione.getImporto() > 1000.0 && transazione.getTipoTransazione().equals(TipoTransazione.ADDEBITO)) {
 			System.out.println("Transazione Fallita, importo massimo superato: " + transazione.getImporto());
-			kafkaTemplate.send("transazioni-dql-topic", transazione);
+			kafkaTemplate.send("transazioni-dlq-topic", transazione);
 		}else {
 			transazioneMongoRepository.save(transazione);
 			System.out.println("Transazione elaborata con successo !");

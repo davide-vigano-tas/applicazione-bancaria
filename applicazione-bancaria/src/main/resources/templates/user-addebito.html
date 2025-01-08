@@ -28,8 +28,9 @@
 					</div>
 					<hr>
 					<div class="alert alert-danger"
-						th:if="${message == 'errore-durante_il_prelievo'}">
-						<p style="color: red">Errore durante il prelievo</p>
+						th:if="${message == 'errore_durante_il_prelievo'}">
+						<p style="color: red">Errore durante il prelievo: </p>
+						<p style="color: red"> Il prelievo non può essere negativo e la cifra massima consentita è 1000&euro; al dì </p>
 					</div>
 					<div class="alert alert-danger"
 						th:if="${message == 'importo_troppo_alto'}" role="alert">

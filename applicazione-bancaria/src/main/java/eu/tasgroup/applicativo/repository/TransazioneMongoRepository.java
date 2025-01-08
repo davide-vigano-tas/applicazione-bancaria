@@ -33,4 +33,6 @@ public interface TransazioneMongoRepository extends MongoRepository<TransazioniM
 
 	// Transazioni per cliente
 	List<TransazioniMongo> findByCliente(long cliente);
+	
+	Optional<TransazioniMongo> findByCodTransazione(long codTransazione);
 }

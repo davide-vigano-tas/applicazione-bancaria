@@ -74,4 +74,9 @@ public class TransazioniMongoServiceImpl implements TransazioniMongoService {
 		return transazioneMongoRepository.findByCliente(cliente);
 	}
 
+	@Override
+	public Optional<TransazioniMongo> findByCodTransazione(long id) {
+		return transazioneMongoRepository.findByCodTransazione(id);
+	}
+
 }

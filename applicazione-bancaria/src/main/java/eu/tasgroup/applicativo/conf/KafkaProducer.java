@@ -15,7 +15,10 @@ public class KafkaProducer {
 	
 	public void sendTransazione(TransazioniMongo transazione) {
 		System.out.println("invio della transazione: "+ transazione);
-		kafkaTemplate.send("transazioni-topic",transazione);
+	
+			kafkaTemplate.send("transazioni-topic",transazione);
+	
+		
 	}
 	
 }
