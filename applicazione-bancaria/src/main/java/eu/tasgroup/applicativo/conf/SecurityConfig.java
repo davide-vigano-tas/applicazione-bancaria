@@ -22,6 +22,8 @@ import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 @Configuration
 @EnableWebSecurity
@@ -77,9 +79,18 @@ public class SecurityConfig {
 						.logoutSuccessUrl("/").permitAll());
 		return http.build();
 	}
+	@Bean 
+	 @Order(3) 
+	 SecurityFilterChain githubOAuth2FilterChain(HttpSecurity http) throws Exception { 
+	  http.securityMatcher("/oauth2/**").authorizeHttpRequests( (authorizeRequests) -> authorizeRequests 
+	    .requestMatchers("/").permitAll() 
+	    .anyRequest().authenticated()) 
+	   .oauth2Login(withDefaults()); 
+	  return http.build(); 
+	 }
 
 	@Bean
-	@Order(3)
+	@Order(4)
 	SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 		http.securityMatcher("/api/**")
 				// Abilita CORS e disabilita CSRF
