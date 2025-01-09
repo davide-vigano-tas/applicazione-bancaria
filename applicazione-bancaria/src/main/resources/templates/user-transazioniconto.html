@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:replace="~{fragments/cdn :: cdn('transazioni')}"></head>
+
+    
+
 <body>
 	<div th:insert="~{fragments/nav :: navbar}"></div>
 
@@ -9,6 +12,18 @@
             <div class="card-header bg-primary text-white">
                 <h4>Transazioni</h4>
             </div>
+    <form method="GET" th:action="@{{id}(id=${conto.codConto})}">
+        <label for="fromDate">Da:</label>
+        <input type="date" id="fromDate" name="from" th:value="${#dates.format(from, 'yyy-MM-dd')}">
+        
+        <label for="toDate">A:</label>
+        <input type="date" id="toDate" name="to" th:value="${#dates.format(to, 'yyy-MM-dd')}">
+
+        <button type="submit">Aggiorna</button>
+    </form>
+
+
+            
             <div class="card-body">
                  <div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
                 <hr>
@@ -43,6 +58,7 @@
     $(document).ready(function() {
         $('#tabella').DataTable();
     });
-	</script>
+</script>
+
 </body>
 </html>

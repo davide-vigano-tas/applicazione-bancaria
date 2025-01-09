@@ -1,5 +1,8 @@
 package eu.tasgroup.applicativo.controller;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -54,7 +58,7 @@ public class ClientController {
 
 	@Autowired
 	ContiService contiService;
-	
+
 	@Autowired
 	CartaService cartaService;
 
@@ -69,15 +73,15 @@ public class ClientController {
 
 	@Autowired
 	RichiestePrestitoService richiestePrestitoService;
-	
+
 	@Autowired
 	GestioneTransazioni gc;
-	
+
 	@Autowired
 	ClientResetTokenService clientResetTokenService;
-	
+
 	@Autowired
-	
+
 	EmailService emailService;
 
 	// Homepage user
@@ -93,76 +97,76 @@ public class ClientController {
 		return new ModelAndView("redirect:/user/user-login");
 
 	}
-	
+
 	@GetMapping("/account_info")
 	public ModelAndView accountInfo(@AuthenticationPrincipal UserDetails userDetails) {
 		String email = userDetails.getUsername();
 		ModelAndView mv = new ModelAndView("user-account-info");
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 
-		if(cliente.isPresent()) {
-			
+		if (cliente.isPresent()) {
+
 			mv.addObject("user", cliente.get());
 			return mv;
 		}
 		return new ModelAndView("redirect:/user/user-login");
 	}
-	
+
 	@PostMapping("/accountmodifica")
 	public ModelAndView accountModifica(Cliente cliente) {
 		clientiService.createOrUpdate(cliente);
 		return new ModelAndView("redirect:/user/");
 	}
-	
-	@GetMapping("/resetpage") 
+
+	@GetMapping("/resetpage")
 	public ModelAndView resetPage(@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
-		String token_expired=(String) session.getAttribute("token_expired");
-		
+		String token_expired = (String) session.getAttribute("token_expired");
+
 		ModelAndView mv = new ModelAndView("cliente-reset");
 		mv.addObject("error", token_expired);
 		session.removeAttribute("token_expired");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent()) {
-			
+		if (cliente.isPresent()) {
+
 			mv.addObject("user", cliente.get());
 			return mv;
 		}
 		return new ModelAndView("redirect:/user/user-login");
-		
+
 	}
-	
+
 	@PostMapping("/sendresetlink")
 	public ModelAndView sendResetLink(@RequestParam String email, HttpServletRequest request,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		String emailCliente = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
-		if(cliente.isPresent() && emailCliente.equals(email)) {
+		if (cliente.isPresent() && emailCliente.equals(email)) {
 			ModelAndView mv = new ModelAndView("cliente-reset-sent");
 			mv.addObject("user", cliente.get());
 			Optional<ClientResetToken> optoken = clientResetTokenService.findByClientEmail(emailCliente);
-			if(optoken.isPresent()) {
+			if (optoken.isPresent()) {
 				clientResetTokenService.delete(optoken.get());
 			}
 			String token = UUID.randomUUID().toString();
 			ClientResetToken cdt = new ClientResetToken();
 			cdt.setCliente(cliente.get());
-			cdt.setExpiryDate(new Date(System.currentTimeMillis()+AdminResetToken.getExpiration()));
+			cdt.setExpiryDate(new Date(System.currentTimeMillis() + AdminResetToken.getExpiration()));
 			cdt.setToken(token);
 			clientResetTokenService.create(cdt);
-			String url = request.getRequestURL()
-					.toString().replace("sendresetlink", "changepassword")+"?token="+token;
+			String url = request.getRequestURL().toString().replace("sendresetlink", "changepassword") + "?token="
+					+ token;
 			emailService.sendResetLinkClient(url, email);
 			return mv;
-		} 
+		}
 		return new ModelAndView("redirect:/user/user-login");
 	}
-	
+
 	@GetMapping("/changepassword")
 	public ModelAndView changePassword(@RequestParam String token, HttpSession session) {
 		Optional<ClientResetToken> optoken = clientResetTokenService.findByToken(token);
-		if(optoken.isPresent()) {
-			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+		if (optoken.isPresent()) {
+			if (optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
 				ModelAndView mv = new ModelAndView("cliente-reset-form");
 				mv.addObject("token", optoken.get().getToken());
 				return mv;
@@ -170,30 +174,30 @@ public class ClientController {
 				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/user/resetpage");
 			}
-		} return new ModelAndView("redirect:/user/user-login");
+		}
+		return new ModelAndView("redirect:/user/user-login");
 	}
-	
+
 	@PostMapping("/resetpassword")
-	public ModelAndView saveNewPassword(@RequestParam String newPass, HttpSession session,
-			@RequestParam String confirm, @RequestParam String token) {
+	public ModelAndView saveNewPassword(@RequestParam String newPass, HttpSession session, @RequestParam String confirm,
+			@RequestParam String token) {
 		Optional<ClientResetToken> optoken = clientResetTokenService.findByToken(token);
-		if(newPass.equals(confirm)) {
-			if(optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
+		if (newPass.equals(confirm)) {
+			if (optoken.get().getExpiryDate().compareTo(new Date()) > 0) {
 				Cliente cliente = clientResetTokenService.getClientByToken(token).get();
 				cliente.setPasswordCliente(BCryptEncoder.encode(newPass));
 				clientiService.createOrUpdate(cliente);
 				session.invalidate();
-				
-				
+
 				emailService.sendPasswordConfirmationCliente(cliente.getEmailCliente());
 				return new ModelAndView("redirect:/user/user-login");
-				
+
 			} else {
 				session.setAttribute("token_expired", "Token Expired");
 				return new ModelAndView("redirect:/user/resetpage");
 			}
-		}  else {
-			return new ModelAndView("redirect:/user/changepassword?token="+token);
+		} else {
+			return new ModelAndView("redirect:/user/changepassword?token=" + token);
 		}
 	}
 
@@ -208,6 +212,10 @@ public class ClientController {
 			mv.addObject("user", c);
 			List<Conto> conti = new ArrayList<Conto>(c.getConti());
 			mv.addObject("user_conti", conti);
+			
+			mv.addObject("standardDate", new Date());
+
+			
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -215,8 +223,7 @@ public class ClientController {
 
 	// Pagina del form per aprire un nuovo conto
 	@GetMapping("/nuovoConto")
-	public ModelAndView contoForm(@AuthenticationPrincipal UserDetails userDetails,
-			HttpSession session) {
+	public ModelAndView contoForm(@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
 		String errore = (String) session.getAttribute("conto_error");
 		ModelAndView mv = new ModelAndView("user-contoform");
 		mv.addObject("error", errore);
@@ -237,7 +244,7 @@ public class ClientController {
 	// Inserimento nuovo conto
 	@PostMapping("/nuovoConto")
 	public ModelAndView contoForm(Conto conto) {
-	
+
 		contiService.createOrUpdate(conto);
 		return new ModelAndView("redirect:/user/conti");
 	}
@@ -281,19 +288,21 @@ public class ClientController {
 
 		return new ModelAndView("redirect:/user/carte");
 	}
-	
-	// 
+
+	//
 	@GetMapping("/eliminaCarta/{id}")
 	public ModelAndView cartaForm(@PathVariable long id) {
 		cartaService.deleteCartaById(id);
-		
+
 		return new ModelAndView("redirect:/user/carte");
 	}
 
 	// Transazioni legate a un conto
 	@GetMapping("/transazioniConto/{id}")
-	public ModelAndView transazioniConto(@PathVariable long id, 
-			HttpSession session, 
+	public ModelAndView transazioniConto(
+			@PathVariable long id, HttpSession session,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-transazioniconto");
 		String email = userDetails.getUsername();
@@ -301,10 +310,16 @@ public class ClientController {
 		if (cliente.isPresent()) {
 			mv.addObject("user", cliente.get());
 			if (contiService.findById(id).isPresent()) {
-				Conto conto = contiService.findById(id).get();
-				List<Transazione> transazioni = transazioneService.getAll().stream()
-						.filter((t) -> t.getConto().equals(conto)).toList();
+				
+//				Conto conto = contiService.findById(id).get();
+//				List<Transazione> transazioni = transazioneService.getAll().stream()
+//						.filter((t) -> t.getConto().equals(conto)).toList();
+				
+				List<Transazione> transazioni = transazioneService.getByDates(contiService.findById(id).get(), from, to);
+				mv.addObject("conto",contiService.findById(id).get());
 				mv.addObject("user_transazioni", transazioni);
+				mv.addObject("from", from); 
+				mv.addObject("to", to);
 				return mv;
 			}
 			session.setAttribute("conto_error", "Errore nel trovare il conto");
@@ -317,8 +332,7 @@ public class ClientController {
 
 	// Movimenti legate a un conto
 	@GetMapping("/movimentiConto/{id}")
-	public ModelAndView movimentiConto(@PathVariable long id,
-			HttpSession session,
+	public ModelAndView movimentiConto(@PathVariable long id, HttpSession session,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-movimenticonto");
 		String email = userDetails.getUsername();
@@ -347,7 +361,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			List<RichiestaPrestito> rp = new ArrayList<RichiestaPrestito>(c.getRichiestePrestiti());
 			mv.addObject("user_richieste", rp);
 			return mv;
@@ -363,7 +377,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			List<Prestito> prestiti = clientiService.listaPrestitiClienti(c.getCodCliente());
 			mv.addObject("user_prestiti", prestiti);
 			return mv;
@@ -379,7 +393,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			List<Pagamento> pagamenti = clientiService.listaPagamentiClienti(c.getCodCliente());
 			mv.addObject("user_pagamenti", pagamenti);
 			return mv;
@@ -389,26 +403,24 @@ public class ClientController {
 
 	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/preleva/{id}")
-	public ModelAndView prelevaPage(HttpServletRequest request,
-			HttpSession session,
-			@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
-				@RequestParam(required = false) String message) {
-	   
-	    //Rimuovo messaggi 
-		
+	public ModelAndView prelevaPage(HttpServletRequest request, HttpSession session, @PathVariable long id,
+			@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false) String message) {
+
+		// Rimuovo messaggi
+
 		ModelAndView mv = new ModelAndView("user-addebito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
 				mv.addObject("transazione", tr);
-				mv.addObject("message",message);
+				mv.addObject("message", message);
 				return mv;
 			}
 			session.setAttribute("conto_error", "Errore nel trovare il conto");
@@ -419,8 +431,9 @@ public class ClientController {
 
 	// Prelievo
 	@PostMapping("/preleva")
-	public ModelAndView preleva(HttpServletRequest request, Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
-		
+	public ModelAndView preleva(HttpServletRequest request, Transazione transazione,
+			@AuthenticationPrincipal UserDetails userDetails) {
+
 		request.getSession().removeAttribute("message");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
@@ -428,23 +441,23 @@ public class ClientController {
 			Cliente c = cliente.get();
 
 			if (transazione.getImporto() <= 0) {
-				String message ="importo_negativo";
-				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
-				mv.addObject("message",message);
+				String message = "importo_negativo";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+				mv.addObject("message", message);
 				return mv;
 			} else if (transazione.getImporto() > transazione.getConto().getSaldo()) {
-				String message ="importo_troppo_alto";
-				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
-				mv.addObject("message",message);
+				String message = "importo_troppo_alto";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+				mv.addObject("message", message);
 				return mv;
 			} else if (!gc.prelievo(transazione, c)) {
-				String message ="errore_durante_il_prelievo";
-				ModelAndView mv = new ModelAndView("redirect:/user/preleva/"+ transazione.getConto().getCodConto());
-				mv.addObject("message",message);
+				String message = "errore_durante_il_prelievo";
+				ModelAndView mv = new ModelAndView("redirect:/user/preleva/" + transazione.getConto().getCodConto());
+				mv.addObject("message", message);
 				return mv;
 			}
 			ModelAndView mv = new ModelAndView("redirect:/user/conti");
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			return mv;
 
 		} else
@@ -453,22 +466,21 @@ public class ClientController {
 
 	// Pagina per inserire la quantità che si desidera prelevare
 	@GetMapping("/deposita/{id}")
-	public ModelAndView depositaPage(@PathVariable long id,
-			@RequestParam(required = false) String message,
+	public ModelAndView depositaPage(@PathVariable long id, @RequestParam(required = false) String message,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("user-deposito");
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			if (contiService.findById(id).isPresent()) {
 				Conto conto = contiService.findById(id).get();
 				mv.addObject("user_conto", conto);
 				Transazione tr = new Transazione();
 				tr.setConto(conto);
 				mv.addObject("transazione", tr);
-				mv.addObject("message",message);
+				mv.addObject("message", message);
 				return mv;
 			}
 			return new ModelAndView("redirect:/user/conti");
@@ -486,17 +498,17 @@ public class ClientController {
 			Cliente c = cliente.get();
 
 			if (transazione.getImporto() <= 0) {
-				String message ="importo_negativo";
-				mv = new ModelAndView("redirect:/user/deposita/"+ transazione.getConto().getCodConto());
-				mv.addObject("message",message);
+				String message = "importo_negativo";
+				mv = new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
+				mv.addObject("message", message);
 				return mv;
 			} else if (!gc.deposito(transazione, c)) {
-				String message ="errore_deposito";
-			    mv = new ModelAndView("redirect:/user/deposita/"+ transazione.getConto().getCodConto());
-				mv.addObject("message",message);
+				String message = "errore_deposito";
+				mv = new ModelAndView("redirect:/user/deposita/" + transazione.getConto().getCodConto());
+				mv.addObject("message", message);
 				return mv;
 			}
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			return mv;
 
 		} else
@@ -505,7 +517,7 @@ public class ClientController {
 
 	// Form richiesta prestito
 	@GetMapping("/richiediPrestito")
-	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails, 
+	public ModelAndView richiestaForm(@AuthenticationPrincipal UserDetails userDetails,
 			@RequestParam(required = false) String message) {
 		ModelAndView mv = new ModelAndView("user-richiestaform");
 		String email = userDetails.getUsername();
@@ -516,7 +528,7 @@ public class ClientController {
 			RichiestaPrestito rp = new RichiestaPrestito();
 			rp.setCliente(c);
 			mv.addObject("user_richiesta", rp);
-			mv.addObject("message",message);
+			mv.addObject("message", message);
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -526,19 +538,20 @@ public class ClientController {
 	@PostMapping("/richiediPrestito")
 	public ModelAndView richiesta(RichiestaPrestito richiestaPrestito) {
 		if (richiestaPrestito.getImporto() <= 0) {
-			String message ="importo_negativo";
+			String message = "importo_negativo";
 			ModelAndView mv = new ModelAndView("redirect:/user/richiediPrestito");
-			mv.addObject("message",message);
+			mv.addObject("message", message);
 			return mv;
 		}
-			
+
 		richiestaPrestito.setDataRichiesta(new Date());
 		richiestaPrestito.setStato(StatoRichiestaPrestito.IN_ATTESA);
 		richiestePrestitoService.createOrUpdate(richiestaPrestito);
 		return new ModelAndView("redirect:/user/richiestePrestiti");
 	}
 
-	// Lista di conti,tra cui scegliere a quale si vuole trasferire denaro dal conto identificato da id
+	// Lista di conti,tra cui scegliere a quale si vuole trasferire denaro dal conto
+	// identificato da id
 	@GetMapping("/contitarget/{id}")
 	public ModelAndView conti(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails,
 			HttpSession session) {
@@ -547,12 +560,12 @@ public class ClientController {
 			session.setAttribute("conto_error", "Errore nel trovare il conto");
 			return new ModelAndView("redirect:/user/conti");
 		}
-			
+
 		String email = userDetails.getUsername();
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			Conto conto = contiService.findById(id).get();
 			session.setAttribute("user_conto", conto);
 			List<Conto> conti = contiService.getAll();
@@ -576,7 +589,7 @@ public class ClientController {
 		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
 		if (cliente.isPresent()) {
 			Cliente c = cliente.get();
-			mv.addObject("user",c);
+			mv.addObject("user", c);
 			Conto origine = (Conto) session.getAttribute("user_conto");
 			if (!contiService.findById(id).isPresent())
 				return new ModelAndView("redirect:/user/contitarget/" + origine.getCodConto());
@@ -605,7 +618,6 @@ public class ClientController {
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		}
-			
 
 		Pagamento p = new Pagamento();
 		try {
@@ -621,9 +633,11 @@ public class ClientController {
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		}
-			
+
 		session.removeAttribute("user_conto");
 		return new ModelAndView("redirect:/user/conti");
 	}
+
+	
 
 }

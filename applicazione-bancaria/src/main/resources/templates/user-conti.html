@@ -37,7 +37,9 @@
                 				<td th:text="${conto.tipoConto}"></td>
                 				<td th:text="|${#numbers.formatDecimal(conto.saldo, 1, 'COMMA', 2, 'POINT')} €|"></td>
                 				<td>
-                					<a th:href="@{'transazioniConto/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">Vedi transazioni</a>
+                					<a th:href="@{'transazioniConto/'+${conto.codConto}+'?from=2001-09-11&to='
+                					+${#dates.format(standardDate, 'yyy-MM-dd')}
+                					}" class="btn btn-sm btn-primary d-block">Vedi transazioni</a>
                 				</td>
                 				<td>
                 					<a th:href="@{'movimentiConto/'+${conto.codConto}}" class="btn btn-sm btn-primary d-block">Vedi movimenti</a>
