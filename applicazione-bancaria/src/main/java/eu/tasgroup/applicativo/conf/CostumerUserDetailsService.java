@@ -9,6 +9,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
 
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Amministratore;
 import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
@@ -18,7 +23,8 @@ import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 
 @Configuration
-public class CostumerUserDetailsService implements UserDetailsService {
+@Service
+public class CostumerUserDetailsService extends DefaultOAuth2UserService implements UserDetailsService {
 	
 	private final AmministratoriRepository ar;
 	private final ClientiRepository cr;
@@ -86,6 +92,27 @@ public class CostumerUserDetailsService implements UserDetailsService {
 			e.printStackTrace();
 		}
 		throw new UsernameNotFoundException(email);
+	}
+	
+	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User user = super.loadUser(userRequest);
+        String email = user.getAttribute("email");
+        
+        Optional<Cliente> cliente = cr.findByEmailCliente(email);
+        if(!cliente.isPresent()) {
+        	Cliente c = new Cliente();
+        	c.setAccountBloccato(false);
+        	c.setEmailCliente(email);
+        	c.setNomeCliente(user.getAttribute("name"));
+        	c.setCognomeCliente(user.getAttribute("name"));
+        	c.setTentativiErrati(0);
+        	c.setSaldoConto(0);
+        	c.setPasswordCliente(BCryptEncoder.encode("SEC:379a2a1ebf5423e0a6001bf384f28fc144456918"));
+        	cr.save(c);
+        }
+        
+        return new OAuth2UserDetails(user);
 	}
 
 }
