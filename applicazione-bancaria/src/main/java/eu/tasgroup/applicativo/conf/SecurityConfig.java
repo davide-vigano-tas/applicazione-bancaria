@@ -11,18 +11,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.filter.JwtAuthenticationFilter;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
+import eu.tasgroup.applicativo.security.JwtService;
+import eu.tasgroup.applicativo.service.ClientiService;
+
 import static org.springframework.security.config.Customizer.withDefaults;
+
+import java.util.Optional;
 
 
 @Configuration
@@ -34,18 +42,19 @@ public class SecurityConfig {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final PermessiAmministratoriRepository pr;
+	private CostumerUserDetailsService cs;
 
 	public SecurityConfig(ClientiRepository cr, AmministratoriRepository ar, PermessiAmministratoriRepository pr,
-			JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+			JwtAuthenticationFilter jwtAuthenticationFilter, CostumerUserDetailsService cs, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.cr = cr;
 		this.ar = ar;
 		this.pr = pr;
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+		this.cs = cs;
 	}
 
 	@Bean
-
 	@Order(1)
 	SecurityFilterChain adminFilterChain(HttpSecurity http, CustomAuthenticationFailureHandler failureHandler,
 			CustomAuthenticationSuccessHandler successHandler) throws Exception {
@@ -76,16 +85,24 @@ public class SecurityConfig {
 				.formLogin(form -> form.loginPage("/user/user-login").usernameParameter("email")
 						.failureHandler(failureHandler).successHandler(successHandler).permitAll())
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
-						.logoutSuccessUrl("/").permitAll());
+						.logoutSuccessUrl("/").permitAll()
+	                );
 		return http.build();
 	}
 	@Bean 
 	 @Order(3) 
-	 SecurityFilterChain githubOAuth2FilterChain(HttpSecurity http) throws Exception { 
-	  http.securityMatcher("/oauth2/**").authorizeHttpRequests( (authorizeRequests) -> authorizeRequests 
-	    .requestMatchers("/").permitAll() 
-	    .anyRequest().authenticated()) 
-	   .oauth2Login(withDefaults()); 
+	 SecurityFilterChain githubOAuth2FilterChain(HttpSecurity http,  CustomAuthenticationFailureHandler failureHandler,
+				CustomAuthenticationSuccessHandler successHandler) throws Exception { 
+	  http.securityMatcher("/oauth2/**", "/login/oauth2/**").authorizeHttpRequests( (authorizeRequests) -> authorizeRequests 
+			  .requestMatchers("/").permitAll()
+			  .anyRequest().authenticated())
+	   .oauth2Login(oauth2 -> oauth2
+			   .defaultSuccessUrl("/oauth2/chatgpt/", true)
+               .failureUrl("/user/user-login")
+			   .userInfoEndpoint(infoEndpoint ->
+               infoEndpoint.userService(cs)))
+		.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
+				.logoutSuccessUrl("/").permitAll());
 	  return http.build(); 
 	 }
 
@@ -138,5 +155,8 @@ public class SecurityConfig {
 	    source.registerCorsConfiguration("/**", config);
 	    return source;
 	}
+	
+	
+
 
 }

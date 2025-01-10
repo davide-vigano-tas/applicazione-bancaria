@@ -1,6 +1,8 @@
 package eu.tasgroup.applicativo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,6 +49,17 @@ public class BaseController {
 
 	    return mv;
 	}
+	
+	@GetMapping("/oauth2/")
+	public ModelAndView userOauth(@AuthenticationPrincipal UserDetails ud) {
+	
+	    System.err.println("Qui ci arrivo cosi? "+ud);
+	    ModelAndView mv = new  ModelAndView("oauth");
+	 
+
+	    return mv;
+	}
+
 
 	@GetMapping(value = "/user/user-registrazione")
 	public ModelAndView registrazioneUtente() {
