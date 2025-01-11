@@ -2,6 +2,7 @@ package eu.tasgroup.applicativo.conf;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -142,6 +143,9 @@ public class CostumerUserDetailsService extends DefaultOAuth2UserService impleme
         System.out.println("QUIIII");
         System.err.println("User: "+ user);
         System.err.println("Email :"+email);
+        Map<String, Object> attributes = new HashMap<String, Object>(user.getAttributes());
+        attributes.put("email", email);
+        user = new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), attributes, "login");
         Optional<Cliente> cliente = cr.findByEmailCliente(email);
         if(!cliente.isPresent()) {
         	Cliente c = new Cliente();
@@ -154,9 +158,9 @@ public class CostumerUserDetailsService extends DefaultOAuth2UserService impleme
         	c.setPasswordCliente(BCryptEncoder.encode("SEC:379a2a1ebf5423e0a6001bf384f28fc144456918"));
         	cr.save(c);
         }
-        
+       
         OAuth2UserDetails us = new OAuth2UserDetails(user);
-     
+        System.err.println(us.getUsername());
         return us;
 	}
 

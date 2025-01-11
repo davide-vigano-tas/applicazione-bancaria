@@ -97,7 +97,7 @@ public class SecurityConfig {
 			  .requestMatchers("/").permitAll()
 			  .anyRequest().authenticated())
 	   .oauth2Login(oauth2 -> oauth2
-			   .defaultSuccessUrl("/oauth2/chatgpt/", true)
+			   .defaultSuccessUrl("/user/", true)
                .failureUrl("/user/user-login")
 			   .userInfoEndpoint(infoEndpoint ->
                infoEndpoint.userService(cs)))
