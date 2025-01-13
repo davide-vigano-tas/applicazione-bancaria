@@ -68,7 +68,7 @@
 							<label for="conti">Conti:</label>
 						</div>
 						<div class="col-md-6">
-							<select name="conti"  th:field="*{transazione.conto}">
+							<select name="conti"  th:field="*{transazione.conto}" class="mb-4">
 								
 							 	<option th:each="conto : ${user_conti}" th:value="${conto.codConto}" th:text="${conto.codConto}"></option>
 							</select>
