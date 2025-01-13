@@ -23,6 +23,7 @@ import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
