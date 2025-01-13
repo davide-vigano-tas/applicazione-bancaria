@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,8 +35,8 @@ import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 
 @Configuration
 @Service
-public class CostumerUserDetailsService extends DefaultOAuth2UserService implements  UserDetailsService {
-	
+public class CostumerUserDetailsService extends DefaultOAuth2UserService implements UserDetailsService {
+
 	private final AmministratoriRepository ar;
 	private final ClientiRepository cr;
 	private final PermessiAmministratoriRepository pr;
@@ -50,114 +51,101 @@ public class CostumerUserDetailsService extends DefaultOAuth2UserService impleme
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		if (email.endsWith("@tasgroup.eu")) {
-			System.err.println("Sono entrato in admin");
-			
 			try {
 				Optional<Amministratore> adminOptional = ar.findByEmailAdmin(email);
 
 				if (adminOptional.isPresent()) {
-					
+
 					Amministratore admin = adminOptional.get();
-				        
-				     List<String> roles = new ArrayList<String>();
-				     roles.add("ADMIN");
-				     for(PermessiAmministratori prm : pr.getByAdminId(admin.getCodAdmin())) {
-				    	 roles.add(prm.getRuolo().name());
-				     }
-				  
-				    String[] rolesArray = new String[roles.size()];
-			
-				
-				    for(int i = 0; i<rolesArray.length; i++) {
-				    	rolesArray[i] = roles.get(i);
-				    }
-					return User.withUsername(admin.getEmailAdmin())
-							.accountLocked(admin.isAccountBloccato())
-							.password(admin.getPasswordAdmin()).roles(rolesArray)
-							.build();
+
+					List<String> roles = new ArrayList<String>();
+					roles.add("ADMIN");
+					for (PermessiAmministratori prm : pr.getByAdminId(admin.getCodAdmin())) {
+						roles.add(prm.getRuolo().name());
+					}
+
+					String[] rolesArray = new String[roles.size()];
+
+					for (int i = 0; i < rolesArray.length; i++) {
+						rolesArray[i] = roles.get(i);
+					}
+					return User.withUsername(admin.getEmailAdmin()).accountLocked(admin.isAccountBloccato())
+							.password(admin.getPasswordAdmin()).roles(rolesArray).build();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			throw new UsernameNotFoundException(email);
 
-			
 		}
 
 		try {
 			Optional<Cliente> clienteOptional = cr.findByEmailCliente(email);
-			
+
 			System.err.println(clienteOptional);
 			if (clienteOptional.isPresent()) {
-				
+
 				Cliente cliente = clienteOptional.get();
-				
+
 				System.err.println("Cliente: \n" + cliente);
-				return User.withUsername(cliente.getEmailCliente())
-						.accountLocked(cliente.isAccountBloccato())
-						.password(cliente.getPasswordCliente()).roles("USER")
-						.build();
+				return User.withUsername(cliente.getEmailCliente()).accountLocked(cliente.isAccountBloccato())
+						.password(cliente.getPasswordCliente()).roles("USER").build();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		throw new UsernameNotFoundException(email);
 	}
-	
+
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User user = super.loadUser(userRequest);
-        RestTemplate restTemplate = new RestTemplate(); 
-        HttpHeaders headers = new HttpHeaders(); 
-        String accessToken = userRequest.getAccessToken().getTokenValue();
-        System.err.println(accessToken);
-        headers.set("Authorization", "Bearer " + accessToken); 
-        // Fetch access token
-        HttpEntity<String> request = new HttpEntity<>(headers); 
-        
-        String email = user.getAttribute("email");
-        if (email == null) { 
-            ResponseEntity<List> emailsResponse = restTemplate.exchange( 
-                    "https://api.github.com/user/emails", 
-                    HttpMethod.GET, 
-                    request, 
-                    List.class); 
- 
-            List<Map<String, Object>> emails = emailsResponse.getBody(); 
-            if (emails != null && !emails.isEmpty()) { 
-                // Recupera la prima email principale 
-                for (Map<String, Object> emailEntry : emails) { 
-                    if ((boolean) emailEntry.get("primary")) { 
-                    	System.err.println(email);
-                        email = (String) emailEntry.get("email"); 
-                        break; 
-                    } 
-                } 
-            } 
-        } 
-       
-        System.out.println("QUIIII");
-        System.err.println("User: "+ user);
-        System.err.println("Email :"+email);
-        Map<String, Object> attributes = new HashMap<String, Object>(user.getAttributes());
-        attributes.put("email", email);
-        user = new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), attributes, "login");
-        Optional<Cliente> cliente = cr.findByEmailCliente(email);
-        if(!cliente.isPresent()) {
-        	Cliente c = new Cliente();
-        	c.setAccountBloccato(false);
-        	c.setEmailCliente(email);
-        	c.setNomeCliente(user.getAttribute("login"));
-        	c.setCognomeCliente("");
-        	c.setTentativiErrati(0);
-        	c.setSaldoConto(0);
-        	c.setPasswordCliente(BCryptEncoder.encode(accessToken));
-        	cr.save(c);
-        }
-       
-        OAuth2UserDetails us = new OAuth2UserDetails(user);
-        System.err.println(us.getUsername());
-        return us;
+		OAuth2User user = super.loadUser(userRequest);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		String accessToken = userRequest.getAccessToken().getTokenValue();
+		System.err.println(accessToken);
+		headers.set("Authorization", "Bearer " + accessToken);
+		// Fetch access token
+		HttpEntity<String> request = new HttpEntity<>(headers);
+
+		String email = user.getAttribute("email");
+		if (email == null) {
+			// Usa ParameterizedTypeReference per evitare warning
+			ResponseEntity<List<Map<String, Object>>> emailsResponse = restTemplate.exchange(
+					"https://api.github.com/user/emails", HttpMethod.GET, request,
+					new ParameterizedTypeReference<List<Map<String, Object>>>() {
+					});
+			List<Map<String, Object>> emails = emailsResponse.getBody();
+			if (emails != null && !emails.isEmpty()) {
+				// Recupera la prima email principale
+				for (Map<String, Object> emailEntry : emails) {
+					if ((boolean) emailEntry.get("primary")) {
+						System.err.println(email);
+						email = (String) emailEntry.get("email");
+						break;
+					}
+				}
+			}
+		}
+		Map<String, Object> attributes = new HashMap<String, Object>(user.getAttributes());
+		attributes.put("email", email);
+		user = new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), attributes,
+				"login");
+		Optional<Cliente> cliente = cr.findByEmailCliente(email);
+		if (!cliente.isPresent()) {
+			Cliente c = new Cliente();
+			c.setAccountBloccato(false);
+			c.setEmailCliente(email);
+			c.setNomeCliente(user.getAttribute("login"));
+			c.setCognomeCliente("");
+			c.setTentativiErrati(0);
+			c.setSaldoConto(0);
+			c.setPasswordCliente(BCryptEncoder.encode(accessToken));
+			cr.save(c);
+		}
+
+		OAuth2UserDetails us = new OAuth2UserDetails(user);
+		return us;
 	}
 
 }
