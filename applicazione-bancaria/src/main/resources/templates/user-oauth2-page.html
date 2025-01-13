@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+<div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4>Informazioni Utente</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
+                <hr>
+                <div class="row my-4">
+                    <div class="col-md-4 text-center">
+                    	<a href="/user/carte">
+	                        <i class="fas fa-credit-card"></i><br>
+	                        <strong>Carte:</strong> <span th:text="${user.carte.size()}"></span>
+                    	</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+	                    <a href="/user/conti">
+	                        <i class="fas fa-university"></i><br>
+	                        <strong>Conti:</strong> <span th:text="${user.conti.size()}"></span>
+	                    </a>
+                    </div>
+                    <div class="col-md-4 text-center">
+	                    <a href="/user/prestiti">
+	                        <i class="fas fa-hand-holding-usd"></i><br>
+	                        <strong>Prestiti:</strong> <span th:text="${user.prestiti.size()}"></span>
+	                    </a>
+                    </div>
+                </div>
+                <div class="row my-4">
+                    <div class="col-md-4 text-center">
+                    	<a href="/user/pagamenti">
+	                        <i class="fas fa-euro"></i><br>
+	                        <strong>Pagamenti:</strong> <span th:text="${user.pagamenti.size()}"></span>
+                    	</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+	                    <a href="/user/richiestePrestiti">
+	                        <i class="fas fa-hand-holding-usd"></i><br>
+	                        <strong>Prestiti Richiesti:</strong> <span th:text="${user.richiestePrestiti.size()}"></span>
+	                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

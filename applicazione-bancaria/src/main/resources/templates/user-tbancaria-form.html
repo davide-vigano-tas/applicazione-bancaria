@@ -27,25 +27,32 @@
                     </div>
                 </div>     
             	<div class="row">
-                        <form th:action="@{/user/transazionebancaria}" th:object="${user_transazionebancaria}" method="post"  class="form-horizontal" >
+                        <form th:action="@{/user/transazionebancaria}" th:object="${user_transazionebancariacarta}" method="post"  class="form-horizontal" >
                         	<div class="form-group">
                         		<div class="mb-3 col-md-5">
 	                        		<label for="metodoPagamento" class="form-label">Metodo di Pagamento:</label>
-			                        <select class="form-select" id="metodoPagamento" name="metodoPagamento" required>
+			                        <select class="form-select" id="metodoPagamento" name="metodoPagamento" required onchange="showCardDetails()">
 			                            <option value="" disabled selected>Seleziona un metodo</option>
 			                            <option value="BONIFICO">Bonifico</option>
 			                            <option value="CARTA_CREDITO">Carta</option>
 			                            <option value="CONTANTI">Contanti</option>
 			                        </select>
                         		</div>
+                        		<div class="mb-3 col-md-5" id="div_carte" style="display: none;">
+	                        		<label for="carte" class="form-label">Carta:</label>
+			                        <select name="carte" th:attr="name='codCarta'">
+			                        	<option disabled value="scegli carta" >
+									 	<option th:each="carta : ${carte}" th:value="${carta.codCarta}" th:text="${carta.codCarta}"></option>
+									</select>
+                        		</div>
                         
 								<div class="mb-3 col-md-5">
 			                        <label for="importo" class="form-label">Importo:</label>
 			                        <input type="number" class="form-control" id="importo" name="importo"
-			                               placeholder="Inserisci l'importo" th:field="*{importo}" required>
+			                               placeholder="Inserisci l'importo" th:field="*{transazioneBancaria.importo}" required>
                     			</div>
-                    			<input type="hidden" th:field="*{contoOrigine}" th:value="${user_transazionebancaria.contoOrigine}">
-                    			<input type="hidden" th:field="*{contoDestinazione}" th:value="${user_transazionebancaria.contoDestinazione}">
+                    			<input type="hidden" th:field="*{transazioneBancaria.contoOrigine}" th:value="${user_transazionebancaria.contoOrigine}">
+                    			<input type="hidden" th:field="*{transazioneBancaria.contoDestinazione}" th:value="${user_transazionebancaria.contoDestinazione}">
 								<div class="d-grid">
 									<button type="submit" class="btn btn-primary">
 										<i class="fas fa-plus"></i> Traseferisci
@@ -60,4 +67,17 @@
     </div>
 	<footer th:insert="~{fragments/footer :: footer}"></footer>
 </body>
+<script>
+function showCardDetails() {
+    var metodoPagamento = document.getElementById("metodoPagamento").value;
+    var cardDetails = document.getElementById("div_carte");
+
+    if (metodoPagamento === "CARTA_CREDITO") {
+        cardDetails.style.display = "block";
+    } else {
+        cardDetails.style.display = "none";
+    }
+}
+</script>
+
 </html>

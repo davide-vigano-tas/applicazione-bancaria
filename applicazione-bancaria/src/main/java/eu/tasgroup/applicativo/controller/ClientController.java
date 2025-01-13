@@ -43,6 +43,8 @@ import eu.tasgroup.applicativo.service.RichiestePrestitoService;
 import eu.tasgroup.applicativo.service.TransazioneService;
 import eu.tasgroup.applicativo.service.TransazioniMongoService;
 import eu.tasgroup.applicativo.utility.GestioneTransazioni;
+import eu.tasgroup.applicativo.utility.TransazioneBancariaCarta;
+import eu.tasgroup.applicativo.utility.TransazioneCarta;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -209,10 +211,9 @@ public class ClientController {
 			mv.addObject("user", c);
 			List<Conto> conti = new ArrayList<Conto>(c.getConti());
 			mv.addObject("user_conti", conti);
-			
+
 			mv.addObject("standardDate", new Date());
 
-			
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -286,6 +287,73 @@ public class ClientController {
 		return new ModelAndView("redirect:/user/carte");
 	}
 
+	// pagina ricarica di una carta
+	@GetMapping("/ricarica-carta/{id}")
+	public ModelAndView ricarica(HttpServletRequest request, HttpSession session, @PathVariable long id,
+			@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false) String message) {
+
+		ModelAndView mv = new ModelAndView("user-ricarica-carta");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+
+		if (cliente.isPresent()) {
+			Cliente c = cliente.get();
+			mv.addObject("user", c);
+			mv.addObject("transazioneCarta", new TransazioneCarta());
+			if (cartaService.getCartaById(id).isPresent()) {
+				Carta carta = cartaService.getCartaById(id).get();
+				List<Conto> conti = new ArrayList<Conto>(c.getConti());
+				mv.addObject("user_conti", conti);
+				mv.addObject("carta", carta);
+				mv.addObject("message", message);
+				return mv;
+			}
+			session.setAttribute("carta_error", "Errore nel trovare la carta");
+			return new ModelAndView("redirect:/user/carte");
+		} else
+			return new ModelAndView("redirect:/user/user-login");
+	}
+
+	@PostMapping("/ricaricaCarta")
+	public ModelAndView ricaricaCarta(HttpServletRequest request, TransazioneCarta transazioneCarta,
+			@AuthenticationPrincipal UserDetails userDetails) {
+
+		Transazione transazione = transazioneCarta.getTransazione();
+		Carta carta = transazioneCarta.getCarta();
+		
+		request.getSession().removeAttribute("message");
+		String email = userDetails.getUsername();
+		Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+		
+		System.err.println("hello");
+		System.out.println("transazionecarta: "+transazioneCarta);
+		System.err.println("carta: " +carta);
+		System.err.println(transazione.getImporto());
+		System.err.println(transazione.getConto());
+		
+		if (cliente.isPresent()) {
+			Cliente c = cliente.get();
+
+			if (transazione.getImporto() <= 0) {
+				String message = "importo_negativo";
+				ModelAndView mv = new ModelAndView("redirect:/user/ricarica-carta/" + carta.getCodCarta());
+				mv.addObject("message", message);
+				return mv;
+			} else if (!gc.prelievo(transazione, c)) {
+				String message = "errore_durante_il_prelievo";
+				ModelAndView mv = new ModelAndView("redirect:/user/ricarica-carta/" + carta.getCodCarta());
+				mv.addObject("message", message);
+				return mv;
+			} 
+			carta.setSaldo(carta.getSaldo() + transazione.getImporto());
+			cartaService.createOrUpdate(carta);
+			return new ModelAndView("redirect:/user/carte");
+		}else {
+			return new ModelAndView("redirect:/user/user-login");
+		}
+
+	}
+
 	//
 	@GetMapping("/eliminaCarta/{id}")
 	public ModelAndView cartaForm(@PathVariable long id) {
@@ -296,8 +364,7 @@ public class ClientController {
 
 	// Transazioni legate a un conto
 	@GetMapping("/transazioniConto/{id}")
-	public ModelAndView transazioniConto(
-			@PathVariable long id, HttpSession session,
+	public ModelAndView transazioniConto(@PathVariable long id, HttpSession session,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -307,15 +374,16 @@ public class ClientController {
 		if (cliente.isPresent()) {
 			mv.addObject("user", cliente.get());
 			if (contiService.findById(id).isPresent()) {
-				
+
 //				Conto conto = contiService.findById(id).get();
 //				List<Transazione> transazioni = transazioneService.getAll().stream()
 //						.filter((t) -> t.getConto().equals(conto)).toList();
-				
-				List<Transazione> transazioni = transazioneService.getByDates(contiService.findById(id).get(), from, to);
-				mv.addObject("conto",contiService.findById(id).get());
+
+				List<Transazione> transazioni = transazioneService.getByDates(contiService.findById(id).get(), from,
+						to);
+				mv.addObject("conto", contiService.findById(id).get());
 				mv.addObject("user_transazioni", transazioni);
-				mv.addObject("from", from); 
+				mv.addObject("from", from);
 				mv.addObject("to", to);
 				return mv;
 			}
@@ -485,7 +553,7 @@ public class ClientController {
 			return new ModelAndView("redirect:/user/user-login");
 	}
 
-	// Prelievo
+	// deposito
 	@PostMapping("/deposita")
 	public ModelAndView deposita(Transazione transazione, @AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mv = new ModelAndView("redirect:/user/conti");
@@ -595,7 +663,12 @@ public class ClientController {
 			tb.setContoOrigine(origine);
 			tb.setContoDestinazione(destinazione);
 
+			TransazioneBancariaCarta tbc = new TransazioneBancariaCarta();
+			tbc.setTransazioneBancaria(tb);
+			List<Carta> carte = new ArrayList<Carta>(c.getCarte());
+			mv.addObject("carte", carte);
 			mv.addObject("user_transazionebancaria", tb);
+			mv.addObject("user_transazionebancariacarta", tbc);
 			return mv;
 		} else
 			return new ModelAndView("redirect:/user/user-login");
@@ -603,8 +676,9 @@ public class ClientController {
 	}
 
 	@PostMapping("/transazionebancaria")
-	public ModelAndView transazioneBancaria(@RequestParam String metodoPagamento, TransazioneBancaria tb,
+	public ModelAndView transazioneBancaria(@RequestParam String metodoPagamento, TransazioneBancariaCarta tbc,
 			HttpSession session) {
+		TransazioneBancaria tb = tbc.getTransazioneBancaria();
 		if (tb.getImporto() < 0) {
 			session.setAttribute("error", "L'importo deve essere positivo");
 			return new ModelAndView(
@@ -615,9 +689,9 @@ public class ClientController {
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
 		}
-
 		Pagamento p = new Pagamento();
 		try {
+			
 			p.setMetodoPagamento(TipoMetodo.valueOf(metodoPagamento.toUpperCase()));
 		} catch (IllegalArgumentException e) {
 			session.setAttribute("error", "Errore durante il pagamento");
@@ -629,12 +703,128 @@ public class ClientController {
 			session.setAttribute("error", "Transazione non andata a buon fine");
 			return new ModelAndView(
 					"redirect:/user/formtransazionebancaria/" + tb.getContoDestinazione().getCodConto());
-		}
-
+		} else if(TipoMetodo.valueOf(metodoPagamento.toUpperCase())== TipoMetodo.CARTA_CREDITO) {
+			
+			
+		} 
 		session.removeAttribute("user_conto");
 		return new ModelAndView("redirect:/user/conti");
-	}
 
+	}
 	
+	// CARTE
+		@GetMapping("/preleva-carta/{id}")
+		public ModelAndView prelevaCartaPage(HttpServletRequest request, HttpSession session, @PathVariable long id,
+				@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false) String message) {
+
+			ModelAndView mv = new ModelAndView("user-addebito-carta");
+			String email = userDetails.getUsername();
+			Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+
+			if (cliente.isPresent()) {
+				Cliente c = cliente.get();
+				mv.addObject("user", c);
+				mv.addObject("transazioneCarta", new TransazioneCarta());
+				if (cartaService.getCartaById(id).isPresent()) {
+					Carta carta = cartaService.getCartaById(id).get();
+					List<Conto> conti = new ArrayList<Conto>(c.getConti());
+					mv.addObject("user_conti", conti);
+					mv.addObject("carta", carta);
+					mv.addObject("message", message);
+					return mv;
+				}
+				session.setAttribute("carta_error", "Errore nel trovare la carta");
+				return new ModelAndView("redirect:/user/carte");
+			} else
+				return new ModelAndView("redirect:/user/user-login");
+		}
+
+		// Prelievo
+		@PostMapping("/preleva-carta")
+		public ModelAndView prelevaCarta(HttpServletRequest request, TransazioneCarta transazioneCarta,
+				@AuthenticationPrincipal UserDetails userDetails) {
+
+			Transazione transazione = transazioneCarta.getTransazione();
+			Carta carta = transazioneCarta.getCarta();
+			
+			request.getSession().removeAttribute("message");
+			String email = userDetails.getUsername();
+			Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+			
+			if (cliente.isPresent()) {
+				if (transazione.getImporto() <= 0) {
+					String message = "importo_negativo";
+					ModelAndView mv = new ModelAndView("redirect:/user/ricarica-carta/" + carta.getCodCarta());
+					mv.addObject("message", message);
+					return mv;
+				} else if (transazione.getImporto() > carta.getSaldo()) {
+					String message = "importo_troppo_alto";
+					ModelAndView mv = new ModelAndView("redirect:/user/ricarica-carta/" + carta.getCodCarta());
+					mv.addObject("message", message);
+					return mv;
+				} 
+				carta.setSaldo(carta.getSaldo() - transazione.getImporto());
+				cartaService.createOrUpdate(carta);
+				return new ModelAndView("redirect:/user/carte");
+			}else {
+				return new ModelAndView("redirect:/user/user-login");
+			}
+
+		}
+
+		// Pagina per inserire la quantità che si desidera prelevare
+		@GetMapping("/deposita-carta/{id}")
+		public ModelAndView depositaCartaPage(HttpServletRequest request, HttpSession session, @PathVariable long id,
+				@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false) String message) {
+
+			ModelAndView mv = new ModelAndView("user-deposito-carta");
+			String email = userDetails.getUsername();
+			Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+
+			if (cliente.isPresent()) {
+				Cliente c = cliente.get();
+				mv.addObject("user", c);
+				mv.addObject("transazioneCarta", new TransazioneCarta());
+				if (cartaService.getCartaById(id).isPresent()) {
+					Carta carta = cartaService.getCartaById(id).get();
+					List<Conto> conti = new ArrayList<Conto>(c.getConti());
+					mv.addObject("user_conti", conti);
+					mv.addObject("carta", carta);
+					mv.addObject("message", message);
+					return mv;
+				}
+				session.setAttribute("carta_error", "Errore nel trovare la carta");
+				return new ModelAndView("redirect:/user/carte");
+			} else
+				return new ModelAndView("redirect:/user/user-login");
+		}
+
+		// deposito
+		@PostMapping("/deposita-carta")
+		public ModelAndView depositaCarta(HttpServletRequest request, TransazioneCarta transazioneCarta,
+				@AuthenticationPrincipal UserDetails userDetails) {
+
+			Transazione transazione = transazioneCarta.getTransazione();
+			Carta carta = transazioneCarta.getCarta();
+			
+			request.getSession().removeAttribute("message");
+			String email = userDetails.getUsername();
+			Optional<Cliente> cliente = clientiService.findByEmailCliente(email);
+			
+			if (cliente.isPresent()) {
+				if (transazione.getImporto() <= 0) {
+					String message = "importo_negativo";
+					ModelAndView mv = new ModelAndView("redirect:/user/ricarica-carta/" + carta.getCodCarta());
+					mv.addObject("message", message);
+					return mv;
+				}
+				carta.setSaldo(carta.getSaldo() + transazione.getImporto());
+				cartaService.createOrUpdate(carta);
+				return new ModelAndView("redirect:/user/carte");
+			}else {
+				return new ModelAndView("redirect:/user/user-login");
+			}
+
+		}
 
 }

@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,10 @@ public class Carta implements Serializable {
 	@Column(name = "numero_carta", nullable = false)
 	private String numeroCarta;
 
+	@Column(nullable = false)
+    @Schema(description = "saldo della carta", example = "100")
+    private double saldo = 0.0;
+	
 	@Column(name = "data_scadenza", nullable = false)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dataScadenza;
@@ -81,9 +86,17 @@ public class Carta implements Serializable {
 		this.cliente = cliente;
 	}
 
+	public double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(cliente, codCarta, cvv, dataScadenza, numeroCarta);
+		return Objects.hash(cliente, codCarta, cvv, dataScadenza, numeroCarta, saldo);
 	}
 
 	@Override
@@ -96,14 +109,16 @@ public class Carta implements Serializable {
 			return false;
 		Carta other = (Carta) obj;
 		return Objects.equals(cliente, other.cliente) && codCarta == other.codCarta && Objects.equals(cvv, other.cvv)
-				&& Objects.equals(dataScadenza, other.dataScadenza) && Objects.equals(numeroCarta, other.numeroCarta);
+				&& Objects.equals(dataScadenza, other.dataScadenza) && Objects.equals(numeroCarta, other.numeroCarta)
+				&& Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo);
 	}
 
 	@Override
 	public String toString() {
-		return "Carta [codCarta=" + codCarta + ", numeroCarta=" + numeroCarta + ", dataScadenza=" + dataScadenza
-				+ ", cvv=" + cvv + ", cliente=" + cliente + "]";
+		return "Carta [codCarta=" + codCarta + ", numeroCarta=" + numeroCarta + ", saldo=" + saldo + ", dataScadenza="
+				+ dataScadenza + ", cvv=" + cvv + ", cliente=" + cliente + "]";
 	}
+
 
 	
 }

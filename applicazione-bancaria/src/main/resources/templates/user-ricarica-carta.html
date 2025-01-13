@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/cdn :: cdn('Home page')}"></head>
+<body>
+	<div th:insert="~{fragments/nav :: navbar}"></div>
+
+	<div class="container py-5">
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h4>Ricarica carta</h4>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3" th:insert="~{fragments/user-data :: user-data}"></div>
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<p>
+							<strong>Saldo Carta:</strong> &euro;<span
+								th:text="${user.saldoConto}"></span>
+						</p>
+						<p>
+							<strong>Tentativi Errati:</strong> <span
+								th:text="${user.tentativiErrati}"></span>
+						</p>
+						<p>
+							<strong>Account Bloccato:</strong> <span
+								th:text="${user.accountBloccato ? 'Sì' : 'No'}"></span>
+						</p>
+					</div>
+					<hr>
+					<div class="alert alert-danger"
+						th:if="${message == 'errore_durante_il_prelievo'}">
+						<p style="color: red">Errore durante il prelievo: </p>
+						<p style="color: red"> Il prelievo non può essere negativo e la cifra massima consentita è 1000&euro; al dì </p>
+					</div>
+					<div class="alert alert-danger"
+						th:if="${message == 'importo_troppo_alto'}" role="alert">
+						<span> <i class="fas fa-exclamation-circle"></i> Il
+							prelievo supera il saldo del conto
+						</span>
+					</div>
+					<div class="alert alert-danger"
+						th:if="${message == 'importo_negativo'}" role="alert">
+						<span> <i class="fas fa-exclamation-circle"></i> inserire
+							un importo positivo
+						</span>
+					</div>
+					<div class="col-md-4  text-center mb-2">
+						<p>
+							<strong>codice carta:</strong> <span
+								th:text="${carta.codCarta}"></span>
+						</p>
+					</div>
+					<div class="col-md-4  text-center mb-2">
+						<p>
+							<strong>Saldo:</strong> <span th:text="|${#numbers.formatDecimal(carta.saldo, 1, 'COMMA', 2, 'POINT')} €|"></span>
+						</p>
+					</div>
+				</div>
+				
+				
+				<form th:action="@{/user/ricaricaCarta}" th:object="${transazioneCarta}"
+					method="post" class="form-horizontal">
+					<div class="form-group row">
+						<input type="hidden" th:value="${carta.codCarta}" th:attr="name='carta'">
+						
+						
+						<div class="col-md-4 text-center">
+							<label for="conti">Conti:</label>
+						</div>
+						<div class="col-md-6">
+							<select name="conti"  th:field="*{transazione.conto}">
+								
+							 	<option th:each="conto : ${user_conti}" th:value="${conto.codConto}" th:text="${conto.codConto}"></option>
+							</select>
+						</div>
+						
+						<div class="col-md-4 text-center">
+							<label for="importo" class="control-label:">Importo:</label>
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<input type="number" step="0.01" name="importo" id="importo"
+									th:field="*{transazione.importo}" placeholder="importo.."
+									class="form-control" required>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<button type="submit" class="btn btn-primary">
+								ricarica<i class="fas fa-minus"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+				<div class="row justify-content-center mt-3">
+					<div class="col-md-2">
+	                	<a class="btn btn-primary w-100" role="button" href="/user/carte">Torna alle carte</a>
+                	</div>	
+                </div>
+			</div>
+		</div>
+	</div>
+	<footer th:insert="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -18,8 +18,12 @@
                 			<tr>
                 				<th>Codice Carta</th>
                 				<th>Numero Carta</th>
+                				<th>Saldo</th>
                 				<th>CVV</th>
                 				<th>Data Scadenza</th>
+                				<th>Ricarica</th>
+                				<th>Deposito</th>
+                				<th>Prelievo</th>
                 				<th>Elimina Carta</th>
                 			</tr>
                 		</thead>
@@ -27,8 +31,18 @@
                 			<tr th:each="carta : ${user_carte}">
                 				<td th:text="${carta.codCarta}"></td>
                 				<td th:text="${carta.numeroCarta}"></td>
+                				<td th:text="${carta.saldo}"></td>
                 				<td th:text="${carta.cvv}"></td>
                 				<td th:text="${#dates.format(carta.dataScadenza, 'dd/MM/yyyy')}"></td>
+                				<td>
+				               		<a class="btn btn-primary" role="button" th:href="@{'ricarica-carta/'+${carta.codCarta}}">Ricarica</a>
+				               	</td>
+                				<td>
+                					<a th:href="@{'deposita-carta/'+${carta.codCarta}}" class="btn btn-sm btn-primary d-block">deposita</a>
+                				</td>
+				               	<td>
+                					<a th:href="@{'preleva-carta/'+${carta.codCarta}}" class="btn btn-sm btn-primary d-block">preleva</a>
+                				</td>
                 				<td>
                 					<a class="btn btn-danger" th:href="@{'eliminaCarta/'+${carta.codCarta}}">elimina</a>
                 				</td>
