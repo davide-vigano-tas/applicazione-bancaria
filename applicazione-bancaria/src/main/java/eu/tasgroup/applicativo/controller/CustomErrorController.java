@@ -14,13 +14,12 @@ public class CustomErrorController implements ErrorController {
 	@GetMapping("/error")
 	public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-		System.out.println(statusCode);
-
+		
 		// Fallback per il codice di stato
 		if (statusCode == null) {
 			statusCode = response.getStatus();
 		}
-		
+
 		switch (statusCode) {
 		case 404:
 			return "error404";

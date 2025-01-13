@@ -11,27 +11,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import eu.tasgroup.applicativo.businesscomponent.model.mysql.Cliente;
 import eu.tasgroup.applicativo.filter.JwtAuthenticationFilter;
 import eu.tasgroup.applicativo.repository.AmministratoriRepository;
 import eu.tasgroup.applicativo.repository.ClientiRepository;
 import eu.tasgroup.applicativo.repository.PermessiAmministratoriRepository;
 import eu.tasgroup.applicativo.security.JwtAuthenticationEntryPoint;
-import eu.tasgroup.applicativo.security.JwtService;
-import eu.tasgroup.applicativo.service.ClientiService;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
-import java.util.Optional;
-
 
 @Configuration
 @EnableWebSecurity
@@ -45,7 +35,8 @@ public class SecurityConfig {
 	private CostumerUserDetailsService cs;
 
 	public SecurityConfig(ClientiRepository cr, AmministratoriRepository ar, PermessiAmministratoriRepository pr,
-			JwtAuthenticationFilter jwtAuthenticationFilter, CostumerUserDetailsService cs, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+			JwtAuthenticationFilter jwtAuthenticationFilter, CostumerUserDetailsService cs,
+			JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.cr = cr;
 		this.ar = ar;
 		this.pr = pr;
@@ -66,7 +57,7 @@ public class SecurityConfig {
 								.requestMatchers("/admin/**").hasRole("ADMIN"))
 				.formLogin((form) -> form.loginPage("/admin/admin-login").failureHandler(failureHandler)
 						.successHandler(successHandler).usernameParameter("email").permitAll())
-				
+
 				.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/admin/admin-logout"))
 						.logoutSuccessUrl("/").invalidateHttpSession(true).clearAuthentication(true).permitAll());
 		return http.build();
@@ -85,26 +76,22 @@ public class SecurityConfig {
 				.formLogin(form -> form.loginPage("/user/user-login").usernameParameter("email")
 						.failureHandler(failureHandler).successHandler(successHandler).permitAll())
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
-						.logoutSuccessUrl("/").permitAll()
-	                );
+						.logoutSuccessUrl("/").permitAll());
 		return http.build();
 	}
-	@Bean 
-	 @Order(3) 
-	 SecurityFilterChain githubOAuth2FilterChain(HttpSecurity http,  CustomAuthenticationFailureHandler failureHandler,
-				CustomAuthenticationSuccessHandler successHandler) throws Exception { 
-	  http.securityMatcher("/oauth2/**", "/login/oauth2/**").authorizeHttpRequests( (authorizeRequests) -> authorizeRequests 
-			  .requestMatchers("/").permitAll()
-			  .anyRequest().authenticated())
-	   .oauth2Login(oauth2 -> oauth2
-			   .defaultSuccessUrl("/user/", true)
-               .failureUrl("/user/user-login")
-			   .userInfoEndpoint(infoEndpoint ->
-               infoEndpoint.userService(cs)))
-		.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
-				.logoutSuccessUrl("/").permitAll());
-	  return http.build(); 
-	 }
+
+	@Bean
+	@Order(3)
+	SecurityFilterChain githubOAuth2FilterChain(HttpSecurity http, CustomAuthenticationFailureHandler failureHandler,
+			CustomAuthenticationSuccessHandler successHandler) throws Exception {
+		http.securityMatcher("/oauth2/**", "/login/oauth2/**").authorizeHttpRequests(
+				(authorizeRequests) -> authorizeRequests.requestMatchers("/").permitAll().anyRequest().authenticated())
+				.oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/user/", true).failureUrl("/user/user-login")
+						.userInfoEndpoint(infoEndpoint -> infoEndpoint.userService(cs)))
+				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/user-logout"))
+						.logoutSuccessUrl("/").permitAll());
+		return http.build();
+	}
 
 	@Bean
 	@Order(4)
@@ -118,7 +105,8 @@ public class SecurityConfig {
 				.exceptionHandling(handling -> handling.authenticationEntryPoint(jwtAuthenticationEntryPoint))
 				// setto permessi per endpoints pubblici
 				// setto endpoint privati
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/login").permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests(
+						auth -> auth.requestMatchers("/api/login").permitAll().anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -146,17 +134,14 @@ public class SecurityConfig {
 	@Bean
 	UrlBasedCorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowCredentials(true);
-	    config.addAllowedOriginPattern("http://localhost:4200");  // Uso di pattern
-	    config.addAllowedHeader("*");
-	    config.addAllowedMethod("*");
+		config.setAllowCredentials(true);
+		config.addAllowedOriginPattern("http://localhost:4200");
+		config.addAllowedHeader("*");
+		config.addAllowedMethod("*");
 
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    source.registerCorsConfiguration("/**", config);
-	    return source;
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return source;
 	}
-	
-	
-
 
 }
