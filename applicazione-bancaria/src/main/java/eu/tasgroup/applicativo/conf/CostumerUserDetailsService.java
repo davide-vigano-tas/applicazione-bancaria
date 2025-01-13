@@ -155,7 +155,7 @@ public class CostumerUserDetailsService extends DefaultOAuth2UserService impleme
         	c.setCognomeCliente(user.getAttribute("login"));
         	c.setTentativiErrati(0);
         	c.setSaldoConto(0);
-        	c.setPasswordCliente(BCryptEncoder.encode("SEC:379a2a1ebf5423e0a6001bf384f28fc144456918"));
+        	c.setPasswordCliente(BCryptEncoder.encode(accessToken));
         	cr.save(c);
         }
        
